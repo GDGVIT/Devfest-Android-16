@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    android:gravity="center"
+    tools:context="com.gdgvitvellore.devfest.Entity.Onboarding.Activities.SplashActivity">
+
+
+
+    <android.support.v7.widget.CardView
+        android:layout_marginTop="-80dp"
+        android:layout_marginLeft="24dp"
+        android:layout_width="600dp"
+        android:layout_height="150dp"
+        android:id="@+id/cardView4"
+        android:rotation="38"
+        app:cardBackgroundColor="@color/cardview4colour"
+        app:cardElevation="2dp"
+        >
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_marginTop="-120dp"
+        android:layout_marginLeft="-170dp"
+        android:layout_width="600dp"
+        android:layout_height="150dp"
+        android:id="@+id/cardView3"
+        android:rotation="5"
+        app:cardBackgroundColor="@color/cardview3colour"
+        app:cardElevation="4dp">
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_marginTop="-130dp"
+        android:layout_marginLeft="-15dp"
+        android:layout_width="500dp"
+        android:layout_height="150dp"
+        android:id="@+id/cardView2"
+        android:rotation="-15"
+        app:cardBackgroundColor="@color/cardview2colour"
+        app:cardElevation="6dp">
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView
+        android:layout_marginTop="-110dp"
+        android:layout_marginLeft="-190dp"
+        android:layout_width="500dp"
+        android:layout_height="150dp"
+        android:id="@+id/cardView1"
+        android:rotation="-35"
+        app:cardBackgroundColor="@color/cardview1colour"
+        app:cardElevation="8dp"
+        >
+
+    </android.support.v7.widget.CardView>
+    <LinearLayout
+        android:layout_marginTop="80dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|top"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="30dp"
+        >
+
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="140dp"
+            android:id="@+id/image"
+            android:src="@drawable/logox"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:src="@drawable/ic_chevron_right_black_24dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/VitText"
+            android:textSize="30sp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/textColor"
+            android:fontFamily="sans-serif"
+            />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/ic_astro"
+        android:id="@+id/astronaut"
+        android:layout_marginTop="350dp"
+        android:layout_marginLeft="200dp"
+        />
+
+
+</FrameLayout>
