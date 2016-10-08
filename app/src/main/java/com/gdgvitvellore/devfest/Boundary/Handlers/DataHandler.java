@@ -8,7 +8,7 @@ package com.gdgvitvellore.devfest.Boundary.Handlers;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.gdgvitvellore.devfest.Control.Contracts.PrivateContracts;
+import com.gdgvitvellore.devfest.Control.Contracts.PrivateContract;
 
 import java.util.HashSet;
 
@@ -46,7 +46,7 @@ public class DataHandler {
 
     private DataHandler(Context context){
         mContext=context;
-        mPreferences=context.getSharedPreferences(PrivateContracts.PREFERENCES_FILE,Context.MODE_PRIVATE);
+        mPreferences=context.getSharedPreferences(PrivateContract.PREFERENCES_FILE,Context.MODE_PRIVATE);
     }
 
     /**
