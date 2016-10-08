@@ -6,6 +6,7 @@ package com.gdgvitvellore.devfest.Boundary.API;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -21,6 +22,9 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is API Boundary class. All network calls should be made in this class with uniform format.
@@ -60,7 +64,7 @@ public class ConnectAPI {
      * @param password Password of the user
      */
 
-    public void login(String email, String password) {
+    public void login(final String email, final String password) {
 
         String url = APIContract.getLoginUrl();
         mServerAuthenticateListener.onRequestInitiated(LOGIN_CODE);
@@ -91,7 +95,12 @@ public class ConnectAPI {
                 Log.v(TAG, "Login:error:"+error.getMessage());
                 mServerAuthenticateListener.onRequestError(LOGIN_CODE, error.getMessage());
             }
-        });
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                return APIContract.getLoginParams(email,password);
+            }
+        };
 
         // Adding request to request queue
         RetryPolicy policy = new DefaultRetryPolicy((int) REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
@@ -101,7 +110,7 @@ public class ConnectAPI {
 
 
     /**
-     * Validates whether th response from API is not empty and is in JSON format.
+     * Validates whether the response from API is not empty and is in JSON format.
      * @param response Response string from API
      * @return true/false
      */
