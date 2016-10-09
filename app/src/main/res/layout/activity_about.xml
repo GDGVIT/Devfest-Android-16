@@ -68,7 +68,7 @@
         android:id="@+id/speaker_dp"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@mipmap/speakers_one"
+        android:src="@drawable/img_speakers_one"
         android:layout_margin="@dimen/activity_vertical_margin"/>
 
     <LinearLayout
@@ -123,7 +123,7 @@
             android:id="@+id/speaker_two_dp"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@mipmap/speaker_two"
+            android:src="@drawable/img_speaker_two"
             android:layout_margin="@dimen/activity_vertical_margin"/>
 
         <LinearLayout
