@@ -26,6 +26,8 @@
         </activity>
 
 
+        <activity android:name="com.gdgvitvellore.devfest.Entity.About.Activities.AboutActivity"/>
+
     </application>
 
 </manifest>

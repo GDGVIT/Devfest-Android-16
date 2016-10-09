@@ -1,4 +1,25 @@
 <resources>
     <string name="app_name">GDGDevfest</string>
     <string name="VitText">VIT Vellore</string>
+    <string name="devfest_16">DevFest\'16</string>
+    <string name="gdg_vellore">Google Developers Group VIT Vellore</string>
+    <string name="event_desp">This Devfest will witness two keynote speakers with more than 2 years industry experience along with 24 hours hackathon</string>
+    <string name="speakers">Speakers</string>
+    <string name="speaker_one">Manoranjan Padhy</string>
+    <string name="speaker_one_desp">Social Media &amp; Community Manager, \nGoogle"</string>
+    <string name="speaker_two">Ashish Rajput</string>
+    <string name="speaker_two_desp">Co - Founder, Roder.in</string>
+    <string name="guidelines">Guidelines</string>
+
+    <string name="guidelines_one">Guidelines 1</string>
+    <string name="guidelines_two">Guidelines 2</string>
+    <string name="guidelines_three">Guidelines 3</string>
+
+    <string name="contact_one">Contact 1</string>
+    <string name="contact_two">Contact 2</string>
+    <string name="contact">Contact 3</string>
+
+    <string name="about_one">About 1</string>
+    <string name="about_two">About 2</string>
+    <string name="about_three">About 3</string>
 </resources>
