@@ -42,6 +42,7 @@
         android:layout_marginLeft="-15dp"
         android:layout_width="500dp"
         android:layout_height="150dp"
+
         android:id="@+id/cardView2"
         android:rotation="-15"
         app:cardBackgroundColor="@color/cardview2colour"
