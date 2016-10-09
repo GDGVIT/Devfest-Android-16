@@ -13,8 +13,6 @@
 
     </style>
 
-    <style name="NoAnimation" parent="AppTheme">
-        <item name="android:windowAnimationStyle">@null</item>
-    </style>
+
 
 </resources>

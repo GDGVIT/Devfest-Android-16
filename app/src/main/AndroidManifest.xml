@@ -17,8 +17,7 @@
             </intent-filter>-->
         </activity>
 
-        <activity android:name="com.gdgvitvellore.devfest.Entity.Onboarding.Activities.TestSplashActivity"
-            android:theme="@style/NoAnimation">
+        <activity android:name="com.gdgvitvellore.devfest.Entity.Onboarding.Activities.TestSplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -9,8 +9,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.gdgvitvellore.devfest.Control.Contracts.PrivateContract;
+import com.gdgvitvellore.devfest.Entity.Actors.LoginResult;
+import com.gdgvitvellore.devfest.Entity.Actors.User;
 
 import java.util.HashSet;
+
+import io.realm.Realm;
 
 /**
  * This singleton class will be used to fetch as well as store any data.
@@ -24,6 +28,7 @@ public class DataHandler {
 
     private Context mContext;
     private SharedPreferences mPreferences;
+    private Realm mRealm;
 
     /**
      * Method to retrieve the singleton reference of this class
@@ -47,6 +52,7 @@ public class DataHandler {
     private DataHandler(Context context){
         mContext=context;
         mPreferences=context.getSharedPreferences(PrivateContract.PREFERENCES_FILE,Context.MODE_PRIVATE);
+        mRealm=Realm.getInstance(context);
     }
 
     /**
@@ -161,4 +167,13 @@ public class DataHandler {
         return getPreference("firstTimeUser", true);
     }
 
+    /**
+     * Use this method to store user data returned after login in the form of {@link com.gdgvitvellore.devfest.Entity.Actors.User}
+     * @param user This is the user object which contains all info about user
+     */
+    public void saveUser(User user) {
+        mRealm.beginTransaction();
+        mRealm.copyToRealm(user);
+        mRealm.commitTransaction();
+    }
 }
