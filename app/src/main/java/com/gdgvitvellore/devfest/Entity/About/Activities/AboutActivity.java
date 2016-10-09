@@ -24,10 +24,10 @@ import java.util.List;
 
 public class AboutActivity extends AppCompatActivity {
 
-    ExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
-    List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
+    private ExpandableListAdapter listAdapter;
+    private ExpandableListView expListView;
+    private List<String> listDataHeader;
+    private HashMap<String, List<String>> listDataChild;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

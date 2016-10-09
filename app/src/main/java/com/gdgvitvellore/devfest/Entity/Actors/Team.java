@@ -2,6 +2,7 @@ package com.gdgvitvellore.devfest.Entity.Actors;
 
 import java.util.List;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 
 /**
@@ -15,7 +16,7 @@ import io.realm.RealmObject;
 public class Team extends RealmObject {
 
     private String name;
-    private List<Member> members;
+    private RealmList<Member> members;
 
     public String getName() {
         return name;
@@ -25,11 +26,11 @@ public class Team extends RealmObject {
         this.name = name;
     }
 
-    public List<Member> getMembers() {
+    public RealmList<Member> getMembers() {
         return members;
     }
 
-    public void setMembers(List<Member> members) {
+    public void setMembers(RealmList<Member> members) {
         this.members = members;
     }
 

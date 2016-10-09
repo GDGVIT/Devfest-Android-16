@@ -25,7 +25,8 @@
         </activity>
 
 
-        <activity android:name="com.gdgvitvellore.devfest.Entity.About.Activities.AboutActivity"/>
+        <activity android:name="com.gdgvitvellore.devfest.Entity.About.Activities.AboutActivity"
+            android:exported="true"/>
 
     </application>
 
