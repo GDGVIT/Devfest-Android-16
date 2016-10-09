@@ -41,5 +41,7 @@ dependencies {
 
     compile 'io.realm:realm-android:0.87.5'
 
+    /*UI Libraries*/
+    compile 'de.hdodenhof:circleimageview:2.1.0'
 
 }

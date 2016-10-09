@@ -8,5 +8,7 @@
     <color name="cardview3colour">#0F9D58</color>
     <color name="cardview4colour">#FFC107</color>
     <color name="textColor">#355b78</color>
+    <color name="material_dark">#263238</color>
+    <color name="white">#FFFFFF</color>
 </resources>
 
