@@ -3,6 +3,7 @@
 
 package com.gdgvitvellore.devfest.Boundary.API;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -19,12 +20,15 @@ import com.gdgvitvellore.devfest.Control.Contracts.APIContract;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
 import com.gdgvitvellore.devfest.Entity.Actors.LoginResult;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.realm.Realm;
 
 /**
  * This is API Boundary class. All network calls should be made in this class with uniform format.
@@ -48,14 +52,15 @@ public class ConnectAPI {
     private ServerAuthenticateListener mServerAuthenticateListener;
     private DataHandler dataHandler;
 
-
+    Context context;
     /**
      * Constructor for ConnectAPI
      * Initialize all class attributes here.
      */
-    public ConnectAPI() {
+    public ConnectAPI(Context context) {
         appController = AppController.getInstance();
         dataHandler = DataHandler.getInstance(appController.getApplicationContext());
+        this.context=context;
     }
 
     /**
@@ -75,8 +80,11 @@ public class ConnectAPI {
                         Log.i(TAG, "Login:onResponse: " + response);
                         try {
                             if(validateResponse(response)) {
-                                Gson gson = new Gson();
+                             //   Gson gson = new Gson();
+                                GsonBuilder gsonBuilder=new GsonBuilder();
+                                Gson gson=gsonBuilder.create();
                                 LoginResult loginResult = gson.fromJson(response, LoginResult.class);
+                                storetorealm(loginResult);
                                 mServerAuthenticateListener.onRequestCompleted(LOGIN_CODE, loginResult);
                             }else{
                                 mServerAuthenticateListener.onRequestError(LOGIN_CODE, ErrorDefinitions.getMessage(ErrorDefinitions.CODE_WRONG_FORMAT));
@@ -127,6 +135,14 @@ public class ConnectAPI {
         }
         return true;
 
+    }
+
+    private void storetorealm(LoginResult loginResult)
+    {
+        Realm realm=Realm.getInstance(context);
+        realm.beginTransaction();
+        LoginResult login=realm.copyToRealm(loginResult);
+        realm.commitTransaction();
     }
 
     /**

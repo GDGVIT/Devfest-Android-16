@@ -4,11 +4,13 @@ package com.gdgvitvellore.devfest.Entity.Actors;
  * Created by Prince Bansal Local on 10/8/2016.
  */
 
+import io.realm.RealmObject;
+
 /**
  * @see <a href="https://github.com/GDGVIT/devfest-portal/wiki">API Reference</a>
  */
 
-public class LoginResult {
+public class LoginResult extends RealmObject {
     private int status;
     private String message;
     private User user;
