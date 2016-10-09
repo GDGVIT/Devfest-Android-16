@@ -105,7 +105,6 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
 
-
 </RelativeLayout>
 
     <View
