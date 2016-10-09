@@ -80,7 +80,6 @@ public class ConnectAPI {
                         Log.i(TAG, "Login:onResponse: " + response);
                         try {
                             if(validateResponse(response)) {
-                             //   Gson gson = new Gson();
                                 GsonBuilder gsonBuilder=new GsonBuilder();
                                 Gson gson=gsonBuilder.create();
                                 LoginResult loginResult = gson.fromJson(response, LoginResult.class);
