@@ -27,7 +27,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.realm.Realm;
 
 /**
  * This is API Boundary class. All network calls should be made in this class with uniform format.
