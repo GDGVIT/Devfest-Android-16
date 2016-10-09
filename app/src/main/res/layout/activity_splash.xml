@@ -42,6 +42,7 @@
         android:layout_marginLeft="-15dp"
         android:layout_width="500dp"
         android:layout_height="150dp"
+
         android:id="@+id/cardView2"
         android:rotation="-15"
         app:cardBackgroundColor="@color/cardview2colour"
@@ -91,6 +92,7 @@
             android:layout_height="wrap_content"
             android:text="@string/VitText"
             android:textSize="30sp"
+
             android:layout_marginTop="20dp"
             android:textColor="@color/textColor"
             android:fontFamily="sans-serif"
@@ -102,6 +104,7 @@
         android:layout_height="300dp"
         android:src="@drawable/ic_astro"
         android:id="@+id/astronaut"
+        android:alpha="0.7"
         android:layout_marginTop="350dp"
         android:layout_marginLeft="200dp"
         />
