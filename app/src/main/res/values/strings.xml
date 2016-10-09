@@ -22,4 +22,8 @@
     <string name="about_one">About 1</string>
     <string name="about_two">About 2</string>
     <string name="about_three">About 3</string>
+    <string name="emailHint">Email Address</string>
+    <string name="passwordHint">Password</string>
+    <string name="SignIn">Sign In</string>
+    <string name="GuestContinue">Continue as guest</string>
 </resources>
