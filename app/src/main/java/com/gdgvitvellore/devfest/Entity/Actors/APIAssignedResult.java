@@ -29,11 +29,12 @@ public class APIAssignedResult extends RealmObject {
     }
 
 
-    public RealmList<APIAssigned> getAPIAssigned() {
+    public RealmList<APIAssigned> getApis() {
         return apis;
     }
 
-    public void setAPIAssigned(RealmList<APIAssigned> apis) {
+
+    public void setApis(RealmList<APIAssigned> apis) {
         this.apis = apis;
     }
 

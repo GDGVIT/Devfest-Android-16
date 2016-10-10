@@ -29,11 +29,11 @@ public class FAQResult extends RealmObject {
     }
 
 
-    public RealmList<FAQ> getFAQ() {
+    public RealmList<FAQ> getFaqs() {
         return faqs;
     }
 
-    public void setFAQ(RealmList<FAQ> faqs) {
+    public void setFaqs(RealmList<FAQ> faqs) {
         this.faqs = faqs;
     }
 
