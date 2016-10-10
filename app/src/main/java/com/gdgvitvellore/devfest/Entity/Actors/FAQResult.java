@@ -14,12 +14,7 @@ public class FAQResult extends RealmObject {
     private int status;
     private String message;
 
-    /*
-     *TODO Giving build error. To be corrected
-     * Already opened an issue at
-     * @see <a href="https://github.com/realm/realm-java/issues/3607">Issue</a>
-     */
-    //private RealmList<Faq> faqs;
+    private RealmList<Faq> faqs;
 
 
     public int getStatus() {
@@ -38,17 +33,12 @@ public class FAQResult extends RealmObject {
         this.message = message;
     }
 
-    /*
-     *TODO Giving build error. To be corrected
-     * Already opened an issue at
-     * @see <a href="https://github.com/realm/realm-java/issues/3607">Issue</a>
-     */
 
-   /* public RealmList<Faq> getFaqs() {
+    public RealmList<Faq> getFaqs() {
         return faqs;
     }
 
     public void setFaqs(RealmList<Faq> faqs) {
         this.faqs = faqs;
-    }*/
+    }
 }

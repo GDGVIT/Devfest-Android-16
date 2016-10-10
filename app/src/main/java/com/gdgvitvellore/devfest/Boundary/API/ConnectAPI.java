@@ -236,7 +236,7 @@ public class ConnectAPI {
                         try {
                             if (validateResponse(response)) {
                                 FAQResult faqResult = CustomTypeAdapter.typeRealmString().fromJson(response, FAQResult.class);
-                                //DataHandler.getInstance(context).saveFAQ(faqResult.getFaqs());
+                                DataHandler.getInstance(context).saveFAQ(faqResult.getFaqs());
 
                                 mServerAuthenticateListener.onRequestCompleted(FAQ_CODE, faqResult);
                             } else {
