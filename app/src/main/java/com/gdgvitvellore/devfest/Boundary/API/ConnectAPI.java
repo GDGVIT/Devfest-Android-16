@@ -20,7 +20,6 @@ import com.gdgvitvellore.devfest.Control.Contracts.APIContract;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
 import com.gdgvitvellore.devfest.Control.Customs.CustomTypeAdapter;
 import com.gdgvitvellore.devfest.Entity.Actors.APIAssignedResult;
-import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQResult;
 import com.gdgvitvellore.devfest.Entity.Actors.LoginResult;
 import com.gdgvitvellore.devfest.Entity.Actors.LogoutResult;
@@ -237,7 +236,7 @@ public class ConnectAPI {
                         try {
                             if (validateResponse(response)) {
                                 FAQResult faqResult = CustomTypeAdapter.typeRealmString().fromJson(response, FAQResult.class);
-                                DataHandler.getInstance(context).saveFAQ(faqResult.getFAQ());
+                                //DataHandler.getInstance(context).saveFAQ(faqResult.getFaqs());
 
                                 mServerAuthenticateListener.onRequestCompleted(FAQ_CODE, faqResult);
                             } else {
@@ -283,7 +282,7 @@ public class ConnectAPI {
                         try {
                             if (validateResponse(response)) {
                                 APIAssignedResult apiAssignedResult = CustomTypeAdapter.typeRealmString().fromJson(response, APIAssignedResult.class);
-                                DataHandler.getInstance(context).saveApi(apiAssignedResult.getAPIAssigned());
+                                DataHandler.getInstance(context).saveApi(apiAssignedResult.getApis());
 
                                 mServerAuthenticateListener.onRequestCompleted(APIS_CODE, apiAssignedResult);
                             } else {

@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.gdgvitvellore.devfest.Control.Animations.Main.DrawerCircularReveal;
 import com.gdgvitvellore.devfest.Control.Animations.Main.ObjectAnimations;
+import com.gdgvitvellore.devfest.Entity.About.Fragments.AboutFragment;
 import com.gdgvitvellore.devfest.Entity.Actors.DrawerItem;
 import com.gdgvitvellore.devfest.Entity.Timeline.Fragments.TimelineFragment;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private List<DrawerItem> drawerItems;
     private int lastFragmentSelected = -1;
-    private int drawerHeight=0;
+    private String[] toolbarTitles;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         linearLayoutManager = new LinearLayoutManager(this);
 
         drawerItems = new ArrayList<>();
+        toolbarTitles=getResources().getStringArray(R.array.drawer_titles);
     }
 
     private void setInit() {
@@ -83,13 +85,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
         drawerTrigger.setOnClickListener(this);
 
-        drawerHeight=drawer.getHeight();
-
-        String[] drawerTitles = getResources().getStringArray(R.array.drawer_titles);
         TypedArray drawerIcons = getResources().obtainTypedArray(R.array.drawer_icons);
-        for (int i = 0; i < drawerTitles.length; i++) {
+        for (int i = 0; i < toolbarTitles.length; i++) {
             //TODO To change the default icon later
-            drawerItems.add(new DrawerItem(drawerTitles[i], drawerIcons.getResourceId(i, R.drawable.ic_default)));
+            drawerItems.add(new DrawerItem(toolbarTitles[i], drawerIcons.getResourceId(i, R.drawable.ic_default)));
         }
     }
 
@@ -114,11 +113,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             switch (i) {
                 case 0:
-                    Fragment fragment = new TimelineFragment();
-                    manager.beginTransaction().replace(R.id.fragment_holder, fragment, TimelineFragment.class.getSimpleName()).commit();
+                    Fragment timelineFragment = new TimelineFragment();
+                    manager.beginTransaction().replace(R.id.fragment_holder, timelineFragment, TimelineFragment.class.getSimpleName()).commit();
                     break;
+                case 4:
+                    Fragment aboutFragment = new AboutFragment();
+                    manager.beginTransaction().replace(R.id.fragment_holder, aboutFragment, AboutFragment.class.getSimpleName()).commit();
             }
         }
+    }
+
+
+    private void setToolbarTitle(int position) {
+        titleView.setText(toolbarTitles[position]);
     }
 
     private void toggle() {
@@ -149,124 +156,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
                 animator.start();
                 ObjectAnimations.drawerArrowAnimator(arrowIcon, ObjectAnimations.Position.DOWN).start();
-                ObjectAnimator holderAnimator=ObjectAnimator.ofFloat(fragmentHolder,"translationY",drawer.getHeight(),0);
-                /*fragmentHolder.animate()
-                        .translationYBy(drawerHeight)*/
-                holderAnimator.setStartDelay(300);
-                holderAnimator.setInterpolator(new OvershootInterpolator());
-                holderAnimator.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        //drawer.setVisibility(View.VISIBLE);
-                    }
+                ObjectAnimations.fragmentHolderAnimator(fragmentHolder, drawer.getHeight(),0,300).start();
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        //drawer.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
-                holderAnimator.setDuration(500).start();
-                /*fragmentHolder.animate()
-                        .translationYBy(-drawerHeight)
-                        .setInterpolator(new OvershootInterpolator())
-                        .setDuration(500)
-                        .setStartDelay(300)
-                        .setListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-
-                                //drawer.setVisibility(View.GONE);
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-
-                            }
-                        })
-                        .start();*/
             } else {
                 drawer.setVisibility(View.GONE);
             }
             isDrawerOpened = false;
         } else {
             if (Build.VERSION.SDK_INT >= 21) {
-                float finalRadius = Math.max(drawer.getWidth(), drawer.getHeight());
                 drawer.setVisibility(View.VISIBLE);
-                Animator animator=DrawerCircularReveal.circularRevealDrawer(drawer, 0, 0);
+                DrawerCircularReveal.circularRevealDrawer(drawer, 0, 0).start();
                 ObjectAnimations.drawerArrowAnimator(arrowIcon, ObjectAnimations.Position.UP).start();
-                        animator.addListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-
-                                //drawer.setVisibility(View.VISIBLE);
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-
-                            }
-                        });
-                animator.start();
-                ObjectAnimator holderAnimator=ObjectAnimator.ofFloat(fragmentHolder,"translationY",0,drawer.getHeight());
-                /*fragmentHolder.animate()
-                        .translationYBy(drawerHeight)*/
-                        holderAnimator.setInterpolator(new OvershootInterpolator());
-                        holderAnimator.addListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-                                //drawer.setVisibility(View.VISIBLE);
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                //drawer.setVisibility(View.VISIBLE);
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-
-                            }
-                        });
-                        holderAnimator.setDuration(500).start();
+                ObjectAnimations.fragmentHolderAnimator(fragmentHolder,0,drawer.getHeight(),0).start();
             } else {
                 drawer.setVisibility(View.VISIBLE);
             }
             isDrawerOpened = true;
         }
     }
+
+
+
 
     @Override
     public void onClick(View v) {
@@ -313,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             data.remove(position);
         }
 
-        class DrawerViewHolder extends RecyclerView.ViewHolder {
+        class DrawerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
             private TextView title;
             private ImageView icon;
@@ -322,9 +232,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 super(itemView);
                 title = (TextView) itemView.findViewById(R.id.title);
                 icon = (ImageView) itemView.findViewById(R.id.icon);
+                itemView.setOnClickListener(this);
             }
 
 
+            @Override
+            public void onClick(View v) {
+                toggle();
+                setFragment(getAdapterPosition());
+                setToolbarTitle(getAdapterPosition());
+            }
         }
     }
 

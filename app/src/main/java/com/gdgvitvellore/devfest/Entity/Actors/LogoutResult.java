@@ -10,7 +10,7 @@ import io.realm.RealmObject;
 public class LogoutResult extends RealmObject {
     private int status;
     private String message;
-    private RealmList<FAQ> faqs;
+    private RealmList<Faq> faqs;
 
 
     public int getStatus() {

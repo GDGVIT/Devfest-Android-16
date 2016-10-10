@@ -24,9 +24,6 @@
         </activity>
 
 
-        <activity android:name="com.gdgvitvellore.devfest.Entity.About.Activities.AboutActivity"
-            android:exported="true"/>
-
         <activity android:name="com.gdgvitvellore.devfest.Entity.Main.Activities.MainActivity"
             android:exported="true"></activity>
 

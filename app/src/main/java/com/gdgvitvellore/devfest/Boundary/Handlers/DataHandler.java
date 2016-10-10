@@ -10,18 +10,15 @@ import android.content.SharedPreferences;
 
 import com.gdgvitvellore.devfest.Control.Contracts.PrivateContract;
 import com.gdgvitvellore.devfest.Entity.Actors.APIAssigned;
-import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
+import com.gdgvitvellore.devfest.Entity.Actors.Faq;
 import com.gdgvitvellore.devfest.Entity.Actors.LogoutResult;
-import com.gdgvitvellore.devfest.Entity.Actors.Member;
 import com.gdgvitvellore.devfest.Entity.Actors.Slots;
 import com.gdgvitvellore.devfest.Entity.Actors.Speakers;
 import com.gdgvitvellore.devfest.Entity.Actors.Team;
 import com.gdgvitvellore.devfest.Entity.Actors.Timeline;
-import com.gdgvitvellore.devfest.Entity.Actors.TimelineResult;
 import com.gdgvitvellore.devfest.Entity.Actors.User;
 
 import java.util.HashSet;
-import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -62,7 +59,7 @@ public class DataHandler {
     private DataHandler(Context context){
         mContext=context;
         mPreferences=context.getSharedPreferences(PrivateContract.PREFERENCES_FILE,Context.MODE_PRIVATE);
-        mRealm=Realm.getInstance(context);
+        mRealm=Realm.getDefaultInstance();
     }
 
     /**
@@ -211,7 +208,7 @@ public class DataHandler {
         mRealm.copyToRealm(speakers);
         mRealm.commitTransaction();
     }
-    public void saveFAQ(RealmList<FAQ> faqs) {
+    public void saveFAQ(RealmList<Faq> faqs) {
         mRealm.beginTransaction();
         mRealm.copyToRealm(faqs);
         mRealm.commitTransaction();

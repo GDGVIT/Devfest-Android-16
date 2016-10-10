@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 24
@@ -38,7 +39,6 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'io.reactivex:rxandroid:1.2.1'
 
-    compile 'io.realm:realm-android:0.87.5'
 
     /*UI Libraries*/
     compile 'de.hdodenhof:circleimageview:2.1.0'

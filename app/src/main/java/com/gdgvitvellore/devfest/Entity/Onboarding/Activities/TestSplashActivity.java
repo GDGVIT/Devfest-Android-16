@@ -10,6 +10,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 
 import com.gdgvitvellore.devfest.Entity.Customs.RevealActivity;
+import com.gdgvitvellore.devfest.Entity.Main.Activities.MainActivity;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 /**
@@ -54,7 +55,7 @@ public class TestSplashActivity extends RevealActivity {
     @Override
     public void destroyAnimationFinished() {
         super.destroyAnimationFinished();
-        Intent intent=new Intent(TestSplashActivity.this,SplashActivity.class);
+        Intent intent=new Intent(TestSplashActivity.this,MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         finish();
