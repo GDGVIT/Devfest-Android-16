@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#0497bc</color>
     <!--<color name="colorPrimaryDark">#d43840</color>-->
     <color name="colorPrimaryDark">#272739</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#26a69a</color>
     <color name="cardview1colour">#DB4437</color>
     <color name="cardview2colour">#4285F4</color>
     <color name="cardview3colour">#0F9D58</color>
@@ -11,5 +11,9 @@
     <color name="textColor">#355b78</color>
     <color name="material_dark">#263238</color>
     <color name="white">#FFFFFF</color>
+    <color name="fade_white">#23FFFFFF</color>
+    <color name="window_bg">#272739</color>
+    <color name="transparent">#00ffffff</color>
+
 </resources>
 
