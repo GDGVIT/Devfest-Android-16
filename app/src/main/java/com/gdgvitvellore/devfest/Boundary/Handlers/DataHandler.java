@@ -9,12 +9,22 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.gdgvitvellore.devfest.Control.Contracts.PrivateContract;
-import com.gdgvitvellore.devfest.Entity.Actors.LoginResult;
+import com.gdgvitvellore.devfest.Entity.Actors.APIAssigned;
+import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
+import com.gdgvitvellore.devfest.Entity.Actors.LogoutResult;
+import com.gdgvitvellore.devfest.Entity.Actors.Member;
+import com.gdgvitvellore.devfest.Entity.Actors.Slots;
+import com.gdgvitvellore.devfest.Entity.Actors.Speakers;
+import com.gdgvitvellore.devfest.Entity.Actors.Team;
+import com.gdgvitvellore.devfest.Entity.Actors.Timeline;
+import com.gdgvitvellore.devfest.Entity.Actors.TimelineResult;
 import com.gdgvitvellore.devfest.Entity.Actors.User;
 
 import java.util.HashSet;
+import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 
 /**
  * This singleton class will be used to fetch as well as store any data.
@@ -176,4 +186,53 @@ public class DataHandler {
         mRealm.copyToRealm(user);
         mRealm.commitTransaction();
     }
+
+    /**
+     * Use this method to store user's team data returned after login in the form of {@link com.gdgvitvellore.devfest.Entity.Actors.Team}
+     * @param team
+     */
+
+    public void saveTeam(Team team) {
+        mRealm.beginTransaction();
+        mRealm.copyToRealm(team);
+        mRealm.commitTransaction();
+    }
+    /**
+     * Use this method to store timeline {@link com.gdgvitvellore.devfest.Entity.Actors.Timeline}
+     * @param timeline
+     */
+    public void saveTimeline(RealmList<Timeline> timeline) {
+        mRealm.beginTransaction();
+        mRealm.copyToRealm(timeline);
+        mRealm.commitTransaction();
+    }
+    public void saveSpeakers(RealmList<Speakers> speakers) {
+        mRealm.beginTransaction();
+        mRealm.copyToRealm(speakers);
+        mRealm.commitTransaction();
+    }
+    public void saveFAQ(RealmList<FAQ> faqs) {
+        mRealm.beginTransaction();
+        mRealm.copyToRealm(faqs);
+        mRealm.commitTransaction();
+    }
+    public void saveApi(RealmList<APIAssigned> apis) {
+        mRealm.beginTransaction();
+        mRealm.copyToRealm(apis);
+        mRealm.commitTransaction();
+    }
+    public void saveSlots(RealmList<Slots> slots) {
+        mRealm.beginTransaction();
+        mRealm.copyToRealm(slots);
+        mRealm.commitTransaction();
+    }
+    public void saveLogout(LogoutResult logoutResults) {
+        mRealm.beginTransaction();
+        mRealm.copyToRealm(logoutResults);
+        mRealm.commitTransaction();
+    }
+
+
+
+
 }
