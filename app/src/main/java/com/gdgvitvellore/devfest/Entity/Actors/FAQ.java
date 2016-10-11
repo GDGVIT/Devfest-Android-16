@@ -7,6 +7,7 @@ public class Faq extends RealmObject{
     private String question;
     private String answer;
 
+
     public String getQuestion() {
         return question;
     }

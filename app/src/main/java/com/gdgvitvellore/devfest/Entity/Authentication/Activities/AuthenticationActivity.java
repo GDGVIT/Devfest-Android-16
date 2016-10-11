@@ -123,6 +123,8 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
     }
 
     private void login() {
+        //TODO: Have to test the Login functionality after fixing the Realm error.
+
         getCredentials();
         connectAPI = new ConnectAPI(this);
         connectAPI.login("email","pass");
