@@ -1,5 +1,6 @@
 package com.gdgvitvellore.devfest.Entity.Authentication.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
+import com.gdgvitvellore.devfest.Entity.Main.Activities.MainActivity;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 /**
@@ -119,7 +121,8 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
     }
 
     private void guestLogin() {
-        connectAPI.login("guest","guest");
+        //connectAPI.login("guest","guest");
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     private void login() {

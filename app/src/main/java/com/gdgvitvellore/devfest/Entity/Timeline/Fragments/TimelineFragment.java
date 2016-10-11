@@ -15,10 +15,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.gdgvitvellore.devfest.Control.Customs.PhasesAdapter;
 import com.gdgvitvellore.devfest.Entity.Actors.Phase;
+import com.gdgvitvellore.devfest.Entity.Customs.VerticalPageTransformer;
 import com.gdgvitvellore.devfest.Entity.Customs.VerticalViewPager;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
@@ -43,13 +44,13 @@ public class TimelineFragment extends Fragment {
     private int minutesToGo = 0;
     private int secondsToGo = 0;
 
-    private int millisToGo = secondsToGo*1000+minutesToGo*1000*60+hoursToGo*1000*60*60;
+    private int millisToGo = secondsToGo * 1000 + minutesToGo * 1000 * 60 + hoursToGo * 1000 * 60 * 60;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_timeline,container,false);
+        View rootView = inflater.inflate(R.layout.fragment_timeline, container, false);
         return rootView;
     }
 
@@ -59,25 +60,25 @@ public class TimelineFragment extends Fragment {
         init(view);
         setInit();
         setData();
-        startTimer();
     }
 
     private void init(View view) {
         viewPager = (VerticalViewPager) view.findViewById(R.id.pager);
         recyclerView = (RecyclerView) view.findViewById(R.id.phases_list);
         timer = (TextView) view.findViewById(R.id.time);
-        setupViewPager(viewPager);
     }
 
     private void setInit() {
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(),LinearLayoutManager.HORIZONTAL,false);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        viewPager.setPageTransformer(false, new VerticalPageTransformer());
+        startTimer();
     }
 
     private void setData() {
+        setupViewPager(viewPager);
 
-        recyclerView.setAdapter(mAdapter);
         Phase phase = new Phase("Hackathon Phase 1", "10:00 - 12:30");
         phaseList.add(phase);
 
@@ -88,6 +89,7 @@ public class TimelineFragment extends Fragment {
         phaseList.add(phase);
         mAdapter = new PhasesAdapter(phaseList);
 
+        recyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -99,14 +101,14 @@ public class TimelineFragment extends Fragment {
     }
 
     private void startTimer() {
-        new CountDownTimer(millisToGo,1000) {
+        new CountDownTimer(millisToGo, 1000) {
 
             @Override
             public void onTick(long millis) {
-                int seconds = (int) (millis / 1000) % 60 ;
-                int minutes = (int) ((millis / (1000*60)) % 60);
-                int hours   = (int) ((millis / (1000*60*60)) % 24);
-                String text = String.format("%02d hours, %02d minutes, %02d seconds",hours,minutes,seconds);
+                int seconds = (int) (millis / 1000) % 60;
+                int minutes = (int) ((millis / (1000 * 60)) % 60);
+                int hours = (int) ((millis / (1000 * 60 * 60)) % 24);
+                String text = String.format("%02d hours, %02d minutes, %02d seconds", hours, minutes, seconds);
                 timer.setText(text);
             }
 
@@ -116,7 +118,8 @@ public class TimelineFragment extends Fragment {
                 //Start post Hackathon activity
 
             }
-        };}
+        };
+    }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -138,6 +141,63 @@ public class TimelineFragment extends Fragment {
         public void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
         }
+    }
+
+    public class PhasesAdapter extends RecyclerView.Adapter<PhasesAdapter.MyViewHolder> {
+
+        private List<Phase> phasesList;
+        private Phase nowPhase;
+
+        public PhasesAdapter(List<Phase> phasesList) {
+            this.phasesList = phasesList;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.fragment_timeline_card, parent, false);
+
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+
+            Phase phase = phasesList.get(position);
+            holder.name.setText(phase.getName());
+            holder.time.setText(phase.getTime());
+            if(phase.isRunning()){
+                holder.time.setActivated(true);
+                if(nowPhase!=null)
+                nowPhase.setRunning(false);
+                nowPhase=phase;
+            }
+        }
+
+
+        @Override
+        public int getItemCount() {
+            return phasesList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            public TextView name, time;
+
+            public MyViewHolder(View view) {
+                super(view);
+                name = (TextView) view.findViewById(R.id.phase_name);
+                time = (TextView) view.findViewById(R.id.phase_time);
+                itemView.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View v) {
+                phaseList.get(getAdapterPosition()).setRunning(true);
+                notifyDataSetChanged();
+            }
+        }
+
+
     }
 
 }

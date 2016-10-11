@@ -44,12 +44,13 @@ public class SplashActivity extends RevealActivity {
         if (!DataHandler.getInstance(getApplicationContext()).isLoggedIn()) {
             showOnboarding();
         } else {
-            showRevealEffect(savedInstanceState, findViewById(R.id.root));
+            showRevealEffect(mSavedInstanceState, findViewById(R.id.root));
         }
     }
 
     private void showOnboarding() {
         startActivity(new Intent(this, OnboardingActivity.class));
+        finish();
     }
 
     @Override

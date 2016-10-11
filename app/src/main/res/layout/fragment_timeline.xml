@@ -4,12 +4,13 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="10">
+    android:weightSum="10"
+
+    android:background="@color/colorPrimary">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/colorPrimary"
         android:weightSum="2"
         android:layout_weight="1"
         android:paddingLeft="@dimen/activity_vertical_margin"
@@ -38,8 +39,10 @@
             android:gravity="end"/>
 
     </LinearLayout>
-
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/horizontal_line_color"></View>
     <!--<TextView-->
     <!--android:layout_width="wrap_content"-->
     <!--android:layout_height="wrap_content"-->
@@ -63,7 +66,7 @@
 
 <com.gdgvitvellore.devfest.Entity.Customs.VerticalViewPager
     android:id="@+id/pager"
-    android:layout_weight="7"
+    android:layout_weight="6"
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:background="@color/colorPrimary"
@@ -73,9 +76,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
-        android:background="@color/material_dark"
-        android:padding="@dimen/activity_vertical_margin_24dp">
+        android:layout_weight="3"
+        android:background="@color/material_dark">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/phases_list"
