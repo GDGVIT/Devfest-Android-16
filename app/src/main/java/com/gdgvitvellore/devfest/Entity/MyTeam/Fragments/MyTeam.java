@@ -37,7 +37,7 @@ public class MyTeam extends Fragment{
     private void initRootView(View rootView) {
 
         apiRecView=(RecyclerView)rootView.findViewById(R.id.apisRecView);
-        LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
+        LinearLayoutManager manager = new LinearLayoutManager(rootView.getContext(),LinearLayoutManager.HORIZONTAL,false);
         apiRecView.setLayoutManager(manager);
 
         apis = new ArrayList<APIAssigned>();
