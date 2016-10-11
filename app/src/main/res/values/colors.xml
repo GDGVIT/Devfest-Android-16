@@ -14,6 +14,7 @@
     <color name="fade_white">#23FFFFFF</color>
     <color name="window_bg">#272739</color>
     <color name="transparent">#00ffffff</color>
+    <color name="text_hint">#d3d3d3</color>
 
 </resources>
 
