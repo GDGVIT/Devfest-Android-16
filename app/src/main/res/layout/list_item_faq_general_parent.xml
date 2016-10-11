@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:background="@drawable/box_bottom_line"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="20"
+        >
+
+        <TextView
+            android:id="@+id/card_list_parent_question_title"
+            android:textColor="@android:color/black"
+            android:padding="15dp"
+            android:text="How many members can be in a team?"
+            android:layout_width="0dp"
+            android:layout_weight="19"
+            android:layout_height="wrap_content" />
+
+        <ImageButton
+            android:id="@+id/card_list_parent_question_answer"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_add_24px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>
