@@ -225,7 +225,6 @@ public class DataHandler {
         mRealm.copyToRealm(speakers);
         mRealm.commitTransaction();
     }
-
     public void saveFAQ(RealmList<Faq> faqs) {
         mRealm.beginTransaction();
         mRealm.copyToRealm(faqs);

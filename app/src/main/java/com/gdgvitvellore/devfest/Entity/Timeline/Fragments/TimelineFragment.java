@@ -166,12 +166,15 @@ public class TimelineFragment extends Fragment {
             Phase phase = phasesList.get(position);
             holder.name.setText(phase.getName());
             holder.time.setText(phase.getTime());
-            if(phase.isRunning()){
+            if(position==0){
+                holder.time.setActivated(true);
+            }
+            /*if(phase.isRunning()){
                 holder.time.setActivated(true);
                 if(nowPhase!=null)
                 nowPhase.setRunning(false);
                 nowPhase=phase;
-            }
+            }*/
         }
 
 
@@ -192,8 +195,8 @@ public class TimelineFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                phaseList.get(getAdapterPosition()).setRunning(true);
-                notifyDataSetChanged();
+                //phaseList.get(getAdapterPosition()).setRunning(true);
+                //notifyDataSetChanged();
             }
         }
 

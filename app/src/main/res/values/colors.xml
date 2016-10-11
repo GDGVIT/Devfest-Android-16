@@ -18,5 +18,8 @@
     <color name="horizontal_line_color">#14FFFFFF</color>
     <color name="black">#000000</color>
 
+    <color name="colorBlueAltFAQ">#1aa5b6</color>
+    <color name="colorBlueFAQ">#3167d4</color>
+    <color name="colorBackground">#28282f</color>
 </resources>
 
