@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#272739"
-    tools:context="com.gdgvitvellore.devfest.Entity.SlotMachine.Fragments.SlotMachine">
+    tools:context="com.gdgvitvellore.devfest.Entity.SlotMachine.Fragments.SlotMachineFragment">
 
     <FrameLayout
         android:layout_width="match_parent"

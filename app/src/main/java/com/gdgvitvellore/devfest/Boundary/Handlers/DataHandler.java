@@ -39,13 +39,14 @@ public class DataHandler {
 
     /**
      * Method to retrieve the singleton reference of this class
+     *
      * @param context The context reference passed from the calling class
      * @return Returns static reference of {@link DataHandler} class
      */
 
-    public static DataHandler getInstance(Context context){
-        if(myInstance==null){
-            myInstance=new DataHandler(context);
+    public static DataHandler getInstance(Context context) {
+        if (myInstance == null) {
+            myInstance = new DataHandler(context);
         }
         return myInstance;
     }
@@ -53,18 +54,20 @@ public class DataHandler {
     /**
      * Private constructor. This class cannot be instantiated outside this class.
      * All class attrbutes should be initialised here
+     *
      * @param context The context reference passed while instantiating
      */
 
-    private DataHandler(Context context){
-        mContext=context;
-        mPreferences=context.getSharedPreferences(PrivateContract.PREFERENCES_FILE,Context.MODE_PRIVATE);
-        mRealm=Realm.getDefaultInstance();
+    private DataHandler(Context context) {
+        mContext = context;
+        mPreferences = context.getSharedPreferences(PrivateContract.PREFERENCES_FILE, Context.MODE_PRIVATE);
+        mRealm = Realm.getDefaultInstance();
     }
 
     /**
      * Use this method to save {@link String} to SharedPreferences
-     * @param key Key value of the pair to store
+     *
+     * @param key   Key value of the pair to store
      * @param value String value to store
      */
 
@@ -75,6 +78,7 @@ public class DataHandler {
 
     /**
      * Use this method to retrieve {@link String} from SharedPreferences using key
+     *
      * @param key Key of the pair to fetch
      * @param def Default String value to fetch
      * @return Returns String value with associated key from SharedPreferences.
@@ -88,7 +92,8 @@ public class DataHandler {
 
     /**
      * Use this method to save {@link boolean} to SharedPreferences
-     * @param key Key value of the pair to store
+     *
+     * @param key   Key value of the pair to store
      * @param value boolean value to store
      */
 
@@ -98,6 +103,7 @@ public class DataHandler {
 
     /**
      * Use this method to retrieve {@link boolean} from SharedPreferences using key
+     *
      * @param key Key of the pair to fetch
      * @param def Default boolean value to fetch
      * @return Returns boolean value with associated key from SharedPreferences.
@@ -111,7 +117,8 @@ public class DataHandler {
 
     /**
      * Use this method to save {@link int} to SharedPreferences
-     * @param key Key value of the pair to store
+     *
+     * @param key   Key value of the pair to store
      * @param value int value to store
      */
     private void savePreference(String key, int value) {
@@ -120,6 +127,7 @@ public class DataHandler {
 
     /**
      * Use this method to retrieve {@link int} from SharedPreferences using key
+     *
      * @param key Key of the pair to fetch
      * @param def Default int value to fetch
      * @return Returns int value with associated key from SharedPreferences.
@@ -134,7 +142,8 @@ public class DataHandler {
 
     /**
      * Use this method to save {@link HashSet<String>} to SharedPreferences
-     * @param key Key value of the pair to store
+     *
+     * @param key   Key value of the pair to store
      * @param value {@link HashSet<String>} value to store
      */
 
@@ -145,6 +154,7 @@ public class DataHandler {
 
     /**
      * Use this method to retrieve {@link HashSet} from SharedPreferences using key
+     *
      * @param key Key of the pair to fetch
      * @param def Default {@link HashSet<String>} value to fetch
      * @return Returns {@link HashSet<String>} value with associated key from SharedPreferences.
@@ -159,6 +169,7 @@ public class DataHandler {
 
     /**
      * Use this method to change whether user opened the app for first time or not.
+     *
      * @param isFirstTimeUser pass true to set first time user and false if he has already been t the app before
      */
     public void saveFirstTimeUser(boolean isFirstTimeUser) {
@@ -167,6 +178,7 @@ public class DataHandler {
 
     /**
      * Use this method to know whether user is a first time user or not
+     *
      * @return Returns true if yes else false
      * If value doesn't exist, returns true.
      */
@@ -176,6 +188,7 @@ public class DataHandler {
 
     /**
      * Use this method to store user data returned after login in the form of {@link com.gdgvitvellore.devfest.Entity.Actors.User}
+     *
      * @param user This is the user object which contains all info about user
      */
     public void saveUser(User user) {
@@ -186,6 +199,7 @@ public class DataHandler {
 
     /**
      * Use this method to store user's team data returned after login in the form of {@link com.gdgvitvellore.devfest.Entity.Actors.Team}
+     *
      * @param team
      */
 
@@ -194,8 +208,10 @@ public class DataHandler {
         mRealm.copyToRealm(team);
         mRealm.commitTransaction();
     }
+
     /**
      * Use this method to store timeline {@link com.gdgvitvellore.devfest.Entity.Actors.Timeline}
+     *
      * @param timeline
      */
     public void saveTimeline(RealmList<Timeline> timeline) {
@@ -203,26 +219,31 @@ public class DataHandler {
         mRealm.copyToRealm(timeline);
         mRealm.commitTransaction();
     }
+
     public void saveSpeakers(RealmList<Speakers> speakers) {
         mRealm.beginTransaction();
         mRealm.copyToRealm(speakers);
         mRealm.commitTransaction();
     }
+
     public void saveFAQ(RealmList<Faq> faqs) {
         mRealm.beginTransaction();
         mRealm.copyToRealm(faqs);
         mRealm.commitTransaction();
     }
+
     public void saveApi(RealmList<APIAssigned> apis) {
         mRealm.beginTransaction();
         mRealm.copyToRealm(apis);
         mRealm.commitTransaction();
     }
+
     public void saveSlots(RealmList<Slots> slots) {
         mRealm.beginTransaction();
         mRealm.copyToRealm(slots);
         mRealm.commitTransaction();
     }
+
     public void saveLogout(LogoutResult logoutResults) {
         mRealm.beginTransaction();
         mRealm.copyToRealm(logoutResults);
@@ -230,6 +251,12 @@ public class DataHandler {
     }
 
 
+    public boolean isLoggedIn() {
+        return getPreference("loggedIn", false);
+    }
 
+    public void saveLoggedIn(boolean isloggedIn) {
+        savePreference("loggedIn", isloggedIn);
+    }
 
 }

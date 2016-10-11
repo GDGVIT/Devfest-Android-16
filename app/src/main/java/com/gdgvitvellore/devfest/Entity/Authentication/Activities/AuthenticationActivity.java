@@ -20,13 +20,13 @@ import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 public class AuthenticationActivity extends AppCompatActivity implements ConnectAPI.ServerAuthenticateListener, View.OnClickListener {
 
-    TextInputEditText email, password;
-    TextInputLayout emailLayout, passwordLayout;
-    Button signin;
-    TextView guestLogin;
-    String emailInput, passInput;
+    private TextInputEditText email, password;
+    private TextInputLayout emailLayout, passwordLayout;
+    private Button signin;
+    private TextView guestLogin;
+    private String emailInput, passInput;
 
-    ConnectAPI connectAPI;
+    private ConnectAPI connectAPI;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
