@@ -16,5 +16,8 @@
     <color name="transparent">#00ffffff</color>
     <color name="text_hint">#d3d3d3</color>
 
+    <color name="colorBlueAltFAQ">#1aa5b6</color>
+    <color name="colorBlueFAQ">#3167d4</color>
+    <color name="colorBackground">#28282f</color>
 </resources>
 
