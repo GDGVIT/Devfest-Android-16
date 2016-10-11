@@ -1,20 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    android:weightSum="10">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Timeline Layout. Should be implemented same as about. Please refer fragment_about.xml."
-        android:padding="20dp"
-        android:textColor="@color/white"/>
-    <TextView
+        android:background="@color/colorPrimary"
+        android:weightSum="2"
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_vertical_margin"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hackathon_phase_1"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:gravity="start"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_weight="1"
+            android:gravity="end"/>
+
+    </LinearLayout>
+
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Timeline Layout. Should be implemented same as about. Please refer fragment_about.xml."-->
+    <!--android:padding="20dp"-->
+    <!--android:textColor="@color/white"/>-->
+<!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Also checkout About page from navigation."-->
+    <!--android:padding="20dp"-->
+    <!--android:textColor="@color/white"/>-->
+
+<!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--android:orientation="vertical"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="match_parent"-->
+<!--android:background="@color/material_dark"-->
+<!--android:weightSum="10">-->
+
+
+<com.gdgvitvellore.devfest.Entity.Customs.VerticalViewPager
+    android:id="@+id/pager"
+    android:visibility="gone"
+    android:layout_weight="7"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:background="@color/colorPrimary"
+    />
+
+<HorizontalScrollView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="2">
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Also checkout About page from navigation."
-        android:padding="20dp"
-        android:textColor="@color/white"/>
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/material_dark"
+        android:padding="@dimen/activity_vertical_margin_24dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/phases_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:scrollbars="horizontal"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+
+    </LinearLayout>
+</HorizontalScrollView>
 
 </LinearLayout>
