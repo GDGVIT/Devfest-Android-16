@@ -31,19 +31,19 @@ import java.util.List;
 
 public class TimelineFragment extends Fragment {
 
-    VerticalViewPager viewPager;
-    private List<Phase> phaseList = new ArrayList<>();
+    private VerticalViewPager viewPager;
     private RecyclerView recyclerView;
-    private PhasesAdapter mAdapter;
+    private TextView timer;
 
-    TextView timer;
+    private PhasesAdapter mAdapter;
+    private List<Phase> phaseList = new ArrayList<>();
 
     private Handler customHandler = new Handler();
-    int hoursToGo = 24;
-    int minutesToGo = 0;
-    int secondsToGo = 0;
+    private int hoursToGo = 24;
+    private int minutesToGo = 0;
+    private int secondsToGo = 0;
 
-    int millisToGo = secondsToGo*1000+minutesToGo*1000*60+hoursToGo*1000*60*60;
+    private int millisToGo = secondsToGo*1000+minutesToGo*1000*60+hoursToGo*1000*60*60;
 
 
     @Nullable
@@ -57,9 +57,45 @@ public class TimelineFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init(view);
-        initRecycler();
+        setInit();
         setData();
         startTimer();
+    }
+
+    private void init(View view) {
+        viewPager = (VerticalViewPager) view.findViewById(R.id.pager);
+        recyclerView = (RecyclerView) view.findViewById(R.id.phases_list);
+        timer = (TextView) view.findViewById(R.id.time);
+        setupViewPager(viewPager);
+    }
+
+    private void setInit() {
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(),LinearLayoutManager.HORIZONTAL,false);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    private void setData() {
+
+        recyclerView.setAdapter(mAdapter);
+        Phase phase = new Phase("Hackathon Phase 1", "10:00 - 12:30");
+        phaseList.add(phase);
+
+        phase = new Phase("Hackathon Phase 2", "12:30 - 15:00");
+        phaseList.add(phase);
+
+        phase = new Phase("Hackathon Phase 3", "15:00 - 17:00");
+        phaseList.add(phase);
+        mAdapter = new PhasesAdapter(phaseList);
+
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
+        adapter.addFragment(new TimelineDisplayFragment(), "IMAGE");
+        adapter.addFragment(new TimelineAboutFragment(), "ABOUT");
+        viewPager.setAdapter(adapter);
     }
 
     private void startTimer() {
@@ -82,61 +118,28 @@ public class TimelineFragment extends Fragment {
             }
         };}
 
-    private void init(View view) {
-        viewPager = (VerticalViewPager) view.findViewById(R.id.pager);
-        recyclerView = (RecyclerView) view.findViewById(R.id.phases_list);
-        timer = (TextView) view.findViewById(R.id.time);
-        setupViewPager(viewPager);
-    }
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
 
-    private void setData() {
-        Phase phase = new Phase("Hackathon Phase 1", "10:00 - 12:30");
-        phaseList.add(phase);
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
 
-        phase = new Phase("Hackathon Phase 2", "12:30 - 15:00");
-        phaseList.add(phase);
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
 
-        phase = new Phase("Hackathon Phase 3", "15:00 - 17:00");
-        phaseList.add(phase);
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
 
-        mAdapter.notifyDataSetChanged();
-    }
-
-    private void initRecycler() {
-        mAdapter = new PhasesAdapter(phaseList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
-    }
-
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        adapter.addFragment(new TimelineDisplayFragment(), "IMAGE");
-        adapter.addFragment(new TimelineAboutFragment(), "ABOUT");
-        viewPager.setAdapter(adapter);
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+        }
     }
 
 }
 
-class ViewPagerAdapter extends FragmentPagerAdapter {
-    private final List<Fragment> mFragmentList = new ArrayList<>();
 
-    public ViewPagerAdapter(FragmentManager manager) {
-        super(manager);
-    }
-
-    @Override
-    public Fragment getItem(int position) {
-        return mFragmentList.get(position);
-    }
-
-    @Override
-    public int getCount() {
-        return mFragmentList.size();
-    }
-
-    public void addFragment(Fragment fragment, String title) {
-        mFragmentList.add(fragment);
-    }
-}

@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="@color/colorPrimary"
         android:weightSum="2"
         android:layout_weight="1"
@@ -63,34 +63,25 @@
 
 <com.gdgvitvellore.devfest.Entity.Customs.VerticalViewPager
     android:id="@+id/pager"
-    android:visibility="gone"
     android:layout_weight="7"
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:background="@color/colorPrimary"
     />
 
-<HorizontalScrollView
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="2">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
         android:background="@color/material_dark"
         android:padding="@dimen/activity_vertical_margin_24dp">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/phases_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:scrollbars="horizontal"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
-</HorizontalScrollView>
 
 </LinearLayout>
