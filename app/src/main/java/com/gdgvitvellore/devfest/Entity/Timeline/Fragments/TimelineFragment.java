@@ -24,6 +24,7 @@ import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Prince Bansal Local on 10/10/2016.
@@ -31,7 +32,7 @@ import java.util.List;
 
 public class TimelineFragment extends Fragment {
 
-    VerticalViewPager viewPager;
+    ViewPager viewPager;
     private List<Phase> phaseList = new ArrayList<>();
     private RecyclerView recyclerView;
     private PhasesAdapter mAdapter;
@@ -44,12 +45,14 @@ public class TimelineFragment extends Fragment {
     int secondsToGo = 0;
 
     int millisToGo = secondsToGo*1000+minutesToGo*1000*60+hoursToGo*1000*60*60;
-
+    private static final String FORMAT = "%02d:%02d:%02d";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_timeline,container,false);
+        viewPager = (ViewPager) rootView.findViewById(R.id.pager);
+        setupViewPager(viewPager);
         return rootView;
     }
 
@@ -63,34 +66,40 @@ public class TimelineFragment extends Fragment {
     }
 
     private void startTimer() {
-        new CountDownTimer(millisToGo,1000) {
+        new CountDownTimer(86400000, 1000) {
 
-            @Override
-            public void onTick(long millis) {
-                int seconds = (int) (millis / 1000) % 60 ;
-                int minutes = (int) ((millis / (1000*60)) % 60);
-                int hours   = (int) ((millis / (1000*60*60)) % 24);
-                String text = String.format("%02d hours, %02d minutes, %02d seconds",hours,minutes,seconds);
-                timer.setText(text);
+            public void onTick(long millisUntilFinished) {
+                timer.setText(""+String.format(FORMAT,
+                        TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
+                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
             }
 
-            @Override
             public void onFinish() {
-
-                //Start post Hackathon activity
-
+                timer.setText("Closed!");
             }
-        };}
+        }.start();
+ }
+
 
     private void init(View view) {
-        viewPager = (VerticalViewPager) view.findViewById(R.id.pager);
         recyclerView = (RecyclerView) view.findViewById(R.id.phases_list);
         timer = (TextView) view.findViewById(R.id.time);
-        setupViewPager(viewPager);
     }
 
     private void setData() {
         Phase phase = new Phase("Hackathon Phase 1", "10:00 - 12:30");
+        phaseList.add(phase);
+
+        phase = new Phase("Hackathon Phase 2", "12:30 - 15:00");
+        phaseList.add(phase);
+
+        phase = new Phase("Hackathon Phase 3", "15:00 - 17:00");
+        phaseList.add(phase);
+
+        phase = new Phase("Hackathon Phase 1", "10:00 - 12:30");
         phaseList.add(phase);
 
         phase = new Phase("Hackathon Phase 2", "12:30 - 15:00");
@@ -104,14 +113,14 @@ public class TimelineFragment extends Fragment {
 
     private void initRecycler() {
         mAdapter = new PhasesAdapter(phaseList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL,false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(new TimelineDisplayFragment(), "IMAGE");
         adapter.addFragment(new TimelineAboutFragment(), "ABOUT");
         viewPager.setAdapter(adapter);

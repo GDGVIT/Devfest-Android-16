@@ -25,7 +25,6 @@ public class TimelineDisplayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_timeline_display,container, false);
-        view.setRotation(-90);
 
         return view;
     }

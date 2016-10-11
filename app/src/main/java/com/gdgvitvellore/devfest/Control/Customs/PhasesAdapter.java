@@ -47,12 +47,10 @@ public class PhasesAdapter extends RecyclerView.Adapter<PhasesAdapter.MyViewHold
         Phase phase = phasesList.get(position);
         holder.name.setText(phase.getName());
         holder.time.setText(phase.getTime());
-
     }
-
 
     @Override
     public int getItemCount() {
-        return 0;
+        return phasesList.size();
     }
 }

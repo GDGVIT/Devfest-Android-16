@@ -17,7 +17,6 @@
         android:fitsSystemWindows="true"
         >
 
-
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
