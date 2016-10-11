@@ -2,7 +2,9 @@ package com.gdgvitvellore.devfest.Entity.FAQ;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +19,7 @@ import com.gdgvitvellore.devfest.Entity.Actors.Faq;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ActivityFAQMain  extends AppCompatActivity implements RecognitionListener {
 
@@ -28,6 +31,8 @@ public class ActivityFAQMain  extends AppCompatActivity implements RecognitionLi
     private TextToSpeech textToSpeech ;
     private SpeechRecognizer speechRecognizer = null ;
     private Intent recognizerIntent;
+
+    private boolean isOn = false ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +46,13 @@ public class ActivityFAQMain  extends AppCompatActivity implements RecognitionLi
 
             @Override
             public void onClick(View view) {
-                Log.i(TAG, "onClick:");
+                if(!isOn || speechRecognizer != null){
+                    speechRecognizer.startListening(recognizerIntent);
+                }
+                else
+                    speechRecognizer.stopListening();
+
+                isOn = !isOn ;
             }
         });
 
@@ -53,7 +64,30 @@ public class ActivityFAQMain  extends AppCompatActivity implements RecognitionLi
         rvExpanded.setAdapter(questionsAdapter);
 
         getArrayData() ;
+        voiceInit() ;
+    }
 
+    private void voiceInit() {
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this) ;
+        speechRecognizer.setRecognitionListener(this);
+        recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE,
+                "en");
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
+                this.getPackageName());
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true) ;
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+        /*recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);*/
+
+        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                if(i != TextToSpeech.ERROR)
+                    textToSpeech.setLanguage(Locale.ENGLISH) ;
+            }
+        });
     }
 
     private void getArrayData() {
@@ -102,12 +136,25 @@ public class ActivityFAQMain  extends AppCompatActivity implements RecognitionLi
 
     @Override
     public void onResults(Bundle bundle) {
+        ArrayList<String> matches = bundle
+                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
+        for (String result : matches)
+            Log.i(TAG, "onPartialResults: " + result);
     }
 
     @Override
     public void onPartialResults(Bundle bundle) {
+        String text ;
 
+        ArrayList<String> matches = bundle
+                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+
+        for (String result : matches) {
+
+            text = result.toLowerCase();
+            Log.i(TAG, "onPartialResults: " + text);
+        }
     }
 
     @Override
