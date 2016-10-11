@@ -14,6 +14,7 @@ public class FAQResult extends RealmObject {
     private int status;
     private String message;
 
+
     private RealmList<Faq> faqs;
 
 
