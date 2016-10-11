@@ -26,4 +26,17 @@
     <string name="passwordHint">Password</string>
     <string name="SignIn">Sign In</string>
     <string name="GuestContinue">Continue as guest</string>
+    <string name="team_members">Team members</string>
+    <string name="hackathon_phase_1">Hackathon Phase 1</string>
+    <string name="time">23:54:21</string>
+
+
+    <string-array name="drawer_titles">
+        <item>Timeline</item>
+        <item>My Team</item>
+        <item>Slot</item>
+        <item>FAQs</item>
+        <item>About</item>
+        <item>Logout</item>
+    </string-array>
 </resources>

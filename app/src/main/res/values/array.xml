@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="drawer_icons">
+        <item>@drawable/ic_android_black_24dp</item>
+        <item>@drawable/ic_android_black_24dp</item>
+        <item>@drawable/ic_android_black_24dp</item>
+        <item>@drawable/ic_android_black_24dp</item>
+        <item>@drawable/ic_android_black_24dp</item>
+        <item>@drawable/ic_android_black_24dp</item>
+    </array>
+</resources>
