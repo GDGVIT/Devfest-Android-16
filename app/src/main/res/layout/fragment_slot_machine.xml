@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#272739"
+    tools:context="com.gdgvitvellore.devfest.Entity.SlotMachine.Fragments.SlotMachine">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="3"
+            android:layout_margin="20dp"
+            android:layout_gravity="center"
+            >
+
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:id="@+id/slot1"
+                android:layout_weight="1"
+                android:src="@drawable/ic_github"
+                />
+            <LinearLayout
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient"></LinearLayout>
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_maps"
+                android:layout_weight="1"
+                android:id="@+id/slot2"
+                />
+
+            <LinearLayout
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient"></LinearLayout>
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:id="@+id/slot3"
+                android:src="@drawable/ic_brightness_4_black_24dp"
+                android:layout_weight="1"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="3"
+            android:layout_margin="20dp"
+            android:layout_gravity="center_horizontal"
+            >
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center"
+        android:id="@+id/timerText"
+        android:layout_marginBottom="15dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:id="@+id/timeRemaining"
+            android:textColor="#e0c9c9c9"
+            />
+
+
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_marginBottom="50dp"
+            android:id="@+id/trigger_holder"
+            android:background="@drawable/roundrect">
+            <ImageView
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_gbutton" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:id="@+id/arrows_layout">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_arrow_drop_down_black_24dp" />
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:alpha="0.5"
+                android:layout_marginTop="-40dp"
+                android:src="@drawable/ic_arrow_drop_down_black_24dp" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:alpha="0.3"
+                android:layout_marginTop="-20dp"
+                android:src="@drawable/ic_arrow_drop_down_black_24dp" />
+        </LinearLayout>
+    </FrameLayout>
+
+</FrameLayout>
