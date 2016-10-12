@@ -137,6 +137,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         mAdapter.notifyDataSetChanged();
     }
 
+
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);

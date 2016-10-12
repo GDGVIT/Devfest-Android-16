@@ -102,6 +102,7 @@ public class Phase extends RealmObject {
         return isRunning;
     }
 
+
     public void setRunning(Boolean running) {
         isRunning = running;
     }
