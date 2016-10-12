@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.gdgvitvellore.devfest.Control.Animations.SlotMachine.ObjectAnimations;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.Random;
@@ -40,10 +41,10 @@ public class SlotMachineFragment extends Fragment {
 
 
     private int imgResources[]={
-            R.drawable.ic_maps,
-            R.drawable.ic_edu,
-            R.drawable.ic_github,
-            R.drawable.ic_android_black_24dp
+            R.drawable.github_api_150,
+            R.drawable.uber_api_150,
+            R.drawable.github_api_150,
+            R.drawable.uber_api_150
     };
     private CountDownTimer timer;
 
@@ -52,13 +53,12 @@ public class SlotMachineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView;
         rootView = inflater.inflate(R.layout.fragment_slot_machine,container,false);
-        setViewInit(rootView);
-        setViewSet();
+        init(rootView);
+        setInit();
         return rootView;
     }
 
-    private void setViewInit(View rootView) {
-
+    private void init(View rootView) {
         trigger = (ImageView)rootView.findViewById(R.id.imageView);
         slot1 = (ImageView) rootView.findViewById(R.id.slot1);
         slot2 = (ImageView) rootView.findViewById(R.id.slot2);
@@ -67,15 +67,12 @@ public class SlotMachineFragment extends Fragment {
         triggerHolder=(LinearLayout)rootView.findViewById(R.id.trigger_holder);
         timeRemaining = (TextView)rootView.findViewById(R.id.timeRemaining);
 
-
-        ObjectAnimator animator2 = ObjectAnimator.ofFloat(arrowLayout,"y",arrowLayout.getY()+150,arrowLayout.getY()+240,arrowLayout.getY()+150);
-        animator2.setDuration(500);
-        animator2.setStartDelay(100);
-        animator2.start();
     }
 
-    private void setViewSet() {
 
+    private void setInit() {
+
+        ObjectAnimations.triggerArrowAnimator(triggerHolder,60).start();
         timeRemaining.setVisibility(View.INVISIBLE);
         trigger.setOnTouchListener(new View.OnTouchListener() {
 

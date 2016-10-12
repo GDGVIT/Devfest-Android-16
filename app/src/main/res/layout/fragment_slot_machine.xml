@@ -25,10 +25,10 @@
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="80dp"
                 android:id="@+id/slot1"
                 android:layout_weight="1"
-                android:src="@drawable/ic_github"
+                android:src="@drawable/github_api_150"
                 />
             <LinearLayout
                 android:layout_width="1dp"
@@ -37,8 +37,8 @@
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_maps"
+                android:layout_height="80dp"
+                android:src="@drawable/github_api_150"
                 android:layout_weight="1"
                 android:id="@+id/slot2"
                 />
@@ -49,9 +49,9 @@
                 android:background="@drawable/gradient"></LinearLayout>
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="80dp"
                 android:id="@+id/slot3"
-                android:src="@drawable/ic_brightness_4_black_24dp"
+                android:src="@drawable/github_api_150"
                 android:layout_weight="1"
                 />
         </LinearLayout>

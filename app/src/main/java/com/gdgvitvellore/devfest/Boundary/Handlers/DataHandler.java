@@ -146,14 +146,22 @@ public class DataHandler {
     public String getUserMail(){
 
         User user = mRealm.where(User.class).findFirst();
-        String mailid = user.getEmail();
-        return mailid;
+        if(user!=null) {
+            String mailid = user.getEmail();
+            return mailid;
+        }else{
+            return null;
+        }
     }
 
     public String getAuthToken(){
         User user = mRealm.where(User.class).findFirst();
-        String auth = user.getAuthToken();
-        return auth;
+        if(user!=null) {
+            String auth = user.getAuthToken();
+            return auth;
+        }else{
+            return null;
+        }
     }
 
     public Timeline getTimeline(){

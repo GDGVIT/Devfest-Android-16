@@ -195,8 +195,6 @@ public class MyTeamFragment extends Fragment {
             return new IngredientViewHolder(ingredientView);
         }
 
-        // onBind ...
-
 
         @Override
         public void onBindParentViewHolder(RecipeViewHolder parentViewHolder, int position, ParentListItem parentListItem) {
