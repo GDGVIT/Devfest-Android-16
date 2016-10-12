@@ -26,9 +26,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
+import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Customs.FAQExpandableAdapter;
 import com.gdgvitvellore.devfest.Control.Customs.QuestionsAdapter;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
+import com.gdgvitvellore.devfest.Entity.Actors.FAQResult;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.io.FileDescriptor;
@@ -37,7 +40,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class FAQFragment extends Fragment implements RecognitionListener, View.OnClickListener {
+public class FAQFragment extends Fragment implements RecognitionListener, View.OnClickListener, ConnectAPI.ServerAuthenticateListener {
 
     private static final int REQUEST_AUDIO_PERMS = 1;
     private static final String TAG = "TAG";
@@ -59,6 +62,8 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
 
     android.app.FragmentManager fragmentManager ;
 
+    private ConnectAPI connectAPI;
+
 
     @Nullable
     @Override
@@ -66,7 +71,14 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
         View rootView=inflater.inflate(R.layout.fragment_faq,container,false);
         init(rootView);
         setInit();
+        fetchData();
         return rootView;
+    }
+
+    private void fetchData() {
+
+        connectAPI.faq(DataHandler.getInstance(getActivity()).getUserMail(),DataHandler.getInstance(getActivity()).getAuthToken());
+
     }
 
     @Override
@@ -81,6 +93,8 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getContext()) ;
 
+        connectAPI = new ConnectAPI(getActivity());
+        connectAPI.setServerAuthenticateListener(this);
     }
 
     private void setInit() {
@@ -369,6 +383,23 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
             }
         }
         return false;
+    }
+
+    @Override
+    public void onRequestInitiated(int code) {
+
+    }
+
+    @Override
+    public void onRequestCompleted(int code, Object result) {
+        if (code == ConnectAPI.FAQ_CODE){
+
+        }
+    }
+
+    @Override
+    public void onRequestError(int code, String message) {
+
     }
 
     public static class ErrorDialog extends DialogFragment {

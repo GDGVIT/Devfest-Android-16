@@ -61,7 +61,6 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     private int millisToGo = secondsToGo * 1000 + minutesToGo * 1000 * 60 + hoursToGo * 1000 * 60 * 60;
 
     private ConnectAPI connectAPI;
-    private DataHandler dataHandler;
 
     private String email, auth;
 
@@ -84,8 +83,10 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     }
 
     private void getCredentials() {
-        email = dataHandler.getUserMail();
-        auth = dataHandler.getAuthToken();
+        email = DataHandler.getInstance(getActivity()).getUserMail();
+        Log.d("EMAIL", email);
+        auth = DataHandler.getInstance(getActivity()).getAuthToken();
+        Log.d("PASSWORD",auth);
     }
 
     private void fetchData() {
@@ -108,6 +109,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     }
 
     private void setInit() {
+        connectAPI.setServerAuthenticateListener(this);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -162,7 +164,6 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     @Override
     public void onRequestInitiated(int code) {
 
-
     }
 
     @Override
@@ -172,8 +173,8 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
             TimelineResult timelineResult = (TimelineResult) result;
             if (timelineResult!=null){
                 if (timelineResult.getStatus() == ErrorDefinitions.CODE_LOGGED_IN){
-                    dataHandler.saveTimeline(timelineResult.getTimeline());
-                    Log.d("Realm result:", dataHandler.getTimeline().toString());
+                    DataHandler.getInstance(getActivity()).saveTimeline(timelineResult.getTimeline());
+                    Log.d("Realm result:", DataHandler.getInstance(getActivity()).getTimeline().toString());
                 }
             }
         }
@@ -182,7 +183,9 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
     @Override
     public void onRequestError(int code, String message) {
-
+        if (code == ConnectAPI.TIMELINE_CODE){
+         fetchData();
+        }
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
