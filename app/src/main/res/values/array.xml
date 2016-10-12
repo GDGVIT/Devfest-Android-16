@@ -2,12 +2,12 @@
 <resources>
 
     <array name="drawer_icons">
+        <item>@drawable/ic_timeline</item>
+        <item>@drawable/ic_myteam</item>
+        <item>@drawable/ic_slot</item>
         <item>@drawable/ic_android_black_24dp</item>
-        <item>@drawable/ic_android_black_24dp</item>
-        <item>@drawable/ic_android_black_24dp</item>
-        <item>@drawable/ic_android_black_24dp</item>
-        <item>@drawable/ic_android_black_24dp</item>
-        <item>@drawable/ic_android_black_24dp</item>
-        <item>@drawable/ic_android_black_24dp</item>
+        <item>@drawable/ic_chatbot</item>
+        <item>@drawable/ic_about</item>
+        <item>@drawable/ic_logout</item>
     </array>
 </resources>

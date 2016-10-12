@@ -10,7 +10,7 @@ import android.content.SharedPreferences;
 
 import com.gdgvitvellore.devfest.Control.Contracts.PrivateContract;
 import com.gdgvitvellore.devfest.Entity.Actors.APIAssigned;
-import com.gdgvitvellore.devfest.Entity.Actors.Faq;
+import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
 import com.gdgvitvellore.devfest.Entity.Actors.LogoutResult;
 import com.gdgvitvellore.devfest.Entity.Actors.Slots;
 import com.gdgvitvellore.devfest.Entity.Actors.Speakers;
@@ -235,10 +235,10 @@ public class DataHandler {
         }
     }
 
-    public void saveFAQ(RealmList<Faq> faqs) {
-        if (faqs != null) {
+    public void saveFAQ(RealmList<FAQ> FAQs) {
+        if (FAQs != null) {
             mRealm.beginTransaction();
-            mRealm.copyToRealm(faqs);
+            mRealm.copyToRealm(FAQs);
             mRealm.commitTransaction();
         }
     }

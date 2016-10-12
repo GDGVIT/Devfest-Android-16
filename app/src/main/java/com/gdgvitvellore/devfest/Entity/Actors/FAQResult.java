@@ -12,7 +12,7 @@ public class FAQResult extends RealmObject {
     private String message;
 
 
-    private RealmList<Faq> faqs;
+    private RealmList<FAQ> faqs;
 
 
     public int getStatus() {
@@ -32,11 +32,11 @@ public class FAQResult extends RealmObject {
     }
 
 
-    public RealmList<Faq> getFaqs() {
+    public RealmList<FAQ> getFaqs() {
         return faqs;
     }
 
-    public void setFaqs(RealmList<Faq> faqs) {
-        this.faqs = faqs;
+    public void setFaqs(RealmList<FAQ> FAQs) {
+        this.faqs = FAQs;
     }
 }
