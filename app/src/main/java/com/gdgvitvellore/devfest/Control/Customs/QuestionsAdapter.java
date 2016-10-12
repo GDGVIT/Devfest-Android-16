@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.gdgvitvellore.devfest.Entity.Actors.Faq;
+import com.bignerdranch.expandablerecyclerview.ViewHolder.ParentViewHolder;
+import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
@@ -17,9 +18,9 @@ import java.util.ArrayList;
 public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.parentViewHolder>{
 
     private static final String TAG = "TAG";
-    private ArrayList<Faq> questionArrayList ;
+    private ArrayList<FAQ> questionArrayList ;
 
-    public QuestionsAdapter(ArrayList<Faq> questionArrayList) {
+    public QuestionsAdapter(ArrayList<FAQ> questionArrayList) {
         this.questionArrayList = questionArrayList;
     }
 
@@ -45,7 +46,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.pare
 
     @Override
     public void onBindViewHolder(parentViewHolder holder, final int position) {
-        final Faq question = questionArrayList.get(position);
+        final FAQ question = questionArrayList.get(position);
         holder.tvQuestionTitle.setText(question.getQuestion());
         holder.ibQuestionAnswer.setOnClickListener(new View.OnClickListener() {
             @Override

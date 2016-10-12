@@ -16,8 +16,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.gdgvitvellore.devfest.Control.Customs.FAQExpandableAdapter;
 import com.gdgvitvellore.devfest.Control.Customs.QuestionsAdapter;
-import com.gdgvitvellore.devfest.Entity.Actors.Faq;
+import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.io.UnsupportedEncodingException;
@@ -27,9 +28,10 @@ import java.util.Locale;
 public class FAQFragment extends Fragment implements RecognitionListener, View.OnClickListener {
 
     private static final String TAG = "TAG";
-    private ArrayList<Faq> questionList = new ArrayList<>();
+    private ArrayList<FAQ> questionList = new ArrayList<>();
     private RecyclerView rvExpanded ;
     private QuestionsAdapter questionsAdapter ;
+    private FAQExpandableAdapter faqExpandableAdapter ;
 
     private TextToSpeech textToSpeech ;
     private SpeechRecognizer speechRecognizer = null ;
@@ -63,11 +65,12 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
 
     private void setInit() {
         voiceFab.setOnClickListener(this);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext()) ;
         rvExpanded.setLayoutManager(layoutManager);
 
+        /**Speech code*/
         speechRecognizer.setRecognitionListener(this);
-
         recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE,
                 "en");
@@ -89,22 +92,24 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
     }
 
     private void setData() {
-        questionsAdapter = new QuestionsAdapter(questionList);
-        rvExpanded.setAdapter(questionsAdapter);
+        /*questionsAdapter = new QuestionsAdapter(questionList);
+        rvExpanded.setAdapter(questionsAdapter);*/
+
+        faqExpandableAdapter = new FAQExpandableAdapter(getContext(), questionList) ;
+        rvExpanded.setAdapter(faqExpandableAdapter);
     }
 
 
     private void getArrayData() {
-        questionList.add(new Faq("Question 1"));
-        questionList.add(new Faq("Question 2"));
-        questionList.add(new Faq("Question 3"));
-        questionList.add(new Faq("Question 4"));
-        questionList.add(new Faq("Question 5"));
-        questionList.add(new Faq("Question 6"));
-        questionList.add(new Faq("Question 7"));
-        questionList.add(new Faq("Question 8"));
-        questionList.add(new Faq("Question 9"));
-        questionList.add(new Faq("Question 10"));
+        questionList.add(new FAQ("Question 1", "Answer 1"));
+        questionList.add(new FAQ("Question 2", "Answer 2"));
+        questionList.add(new FAQ("Question 3", "Answer 3"));
+        questionList.add(new FAQ("Question 4", "Answer 4"));
+        questionList.add(new FAQ("Question 5", "Answer 5"));
+        questionList.add(new FAQ("Question 6", "Answer 6"));
+        questionList.add(new FAQ("Question 7", "Answer 7"));
+        questionList.add(new FAQ("Question 8", "Answer 8"));
+        questionList.add(new FAQ("Question 9", "Answer 9"));
     }
 
 
@@ -177,8 +182,10 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
                 if(!isOn || speechRecognizer != null){
                     speechRecognizer.startListening(recognizerIntent);
                 }
-                else
+                else {
+                    assert speechRecognizer != null;
                     speechRecognizer.stopListening();
+                }
 
                 isOn = !isOn ;
                 break;
