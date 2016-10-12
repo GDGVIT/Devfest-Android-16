@@ -26,6 +26,7 @@ import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import me.relex.circleindicator.CircleIndicator;
 
@@ -68,10 +69,10 @@ public class TimelineFragment extends Fragment {
     }
 
     private void init(View view) {
-        viewPager = (VerticalViewPager) view.findViewById(R.id.pager);
         recyclerView = (RecyclerView) view.findViewById(R.id.phases_list);
         timer = (TextView) view.findViewById(R.id.time);
         pagerIndicator = (CircleIndicator)view.findViewById(R.id.pager_indicator);
+        viewPager=(VerticalViewPager)view.findViewById(R.id.pager);
     }
 
     private void setInit() {
