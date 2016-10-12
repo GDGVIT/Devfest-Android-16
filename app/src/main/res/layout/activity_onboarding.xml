@@ -84,7 +84,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal|bottom"
-            android:src="@drawable/ic_chevron_right_black_24dp"
+            app:srcCompat="@drawable/ic_chevron_right_black_24dp"
             android:id="@+id/fab"
             />
 

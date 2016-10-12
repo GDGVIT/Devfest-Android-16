@@ -38,5 +38,7 @@
     <uses-permission android:name="android.permission.BIND_VOICE_INTERACTION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
 
 </manifest>
