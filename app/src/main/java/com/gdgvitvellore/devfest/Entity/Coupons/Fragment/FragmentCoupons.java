@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Inflater;
 
@@ -21,22 +22,40 @@ import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.List;
 
+import link.fls.swipestack.SwipeStack;
+
+import static com.gdgvitvellore.devfest.gdgdevfest.R.id.swipeStack;
+
 /**
  * Created by Shuvam Ghosh on 10/12/2016.
  */
 
+
+
 public class FragmentCoupons extends Fragment {
+    private SwipeStack swipeStack;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root;
         root = inflater.inflate(R.layout.fragment_coupons,container,false);
-        rootInit();
+        rootInit(root);
         return root;
     }
 
-    private void rootInit() {
+    private void rootInit(View root) {
+
+        List<String> data = new ArrayList<String>();
+        data.add("Apple");
+        data.add("Ball");
+        data.add("Cat");
+        data.add("Dog");
+
+
+
+        swipeStack = (SwipeStack)root.findViewById(R.id.swipeStack);
+        swipeStack.setAdapter(new SwipeStackAdapter(data));
     }
 
 
@@ -70,7 +89,6 @@ public class FragmentCoupons extends Fragment {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_coupons_item, parent, false);
             TextView textViewCard = (TextView) convertView.findViewById(R.id.apiName);
             textViewCard.setText(mData.get(position));
-
             return convertView;
         }
     }
