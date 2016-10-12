@@ -1,5 +1,6 @@
 package com.gdgvitvellore.devfest.Entity.Authentication.Activities;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -76,9 +77,29 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
                     @Override
                     public void onGlobalLayout() {
 
-                        bgSplash.setVisibility(View.VISIBLE);
-                        BackgroundCircularReveal.circularRevealSplash(bgSplash, 0, 0).start();
+                        Animator reveal=BackgroundCircularReveal.circularRevealSplash(bgSplash, 0, 0);
+                        reveal.addListener(new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                bgSplash.setVisibility(View.VISIBLE);
+                            }
 
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animation) {
+
+                            }
+                        });
+                        reveal.start();
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                             bgSplash.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                         } else {

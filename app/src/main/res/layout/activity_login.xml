@@ -85,7 +85,8 @@
                 android:id="@+id/password_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_vertical_margin">
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:textColorHint="@color/text_hint">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/password"

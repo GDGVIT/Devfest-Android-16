@@ -1,4 +1,4 @@
-package com.gdgvitvellore.devfest.Entity.FAQ;
+package com.gdgvitvellore.devfest.Entity.FAQ.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;

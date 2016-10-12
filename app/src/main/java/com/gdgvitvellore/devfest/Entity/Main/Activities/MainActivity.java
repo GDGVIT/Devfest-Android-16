@@ -24,7 +24,7 @@ import com.gdgvitvellore.devfest.Control.Animations.Main.ObjectAnimations;
 import com.gdgvitvellore.devfest.Entity.About.Fragments.AboutFragment;
 import com.gdgvitvellore.devfest.Entity.Actors.DrawerItem;
 import com.gdgvitvellore.devfest.Entity.Coupons.Fragment.CouponsFragment;
-import com.gdgvitvellore.devfest.Entity.FAQ.FAQFragment;
+import com.gdgvitvellore.devfest.Entity.FAQ.Fragments.FAQFragment;
 import com.gdgvitvellore.devfest.Entity.MyTeam.Fragments.MyTeamFragment;
 import com.gdgvitvellore.devfest.Entity.SlotMachine.Fragments.SlotMachineFragment;
 import com.gdgvitvellore.devfest.Entity.Timeline.Fragments.TimelineFragment;
