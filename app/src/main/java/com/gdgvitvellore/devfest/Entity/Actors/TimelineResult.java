@@ -1,7 +1,5 @@
 package com.gdgvitvellore.devfest.Entity.Actors;
 
-import com.gdgvitvellore.devfest.Entity.Actors.Realm.RealmString;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
@@ -12,7 +10,7 @@ import io.realm.RealmObject;
 public class TimelineResult extends RealmObject {
     private int status;
     private String message;
-    private RealmList<Timeline> timeline;
+    private RealmList<Phase> timeline;
 
 
     public int getStatus() {
@@ -31,11 +29,11 @@ public class TimelineResult extends RealmObject {
     }
 
 
-    public RealmList<Timeline> getTimeline() {
+    public RealmList<Phase> getTimeline() {
         return timeline;
     }
 
-    public void setTimeline(RealmList<Timeline> timeline) {
+    public void setTimeline(RealmList<Phase> timeline) {
         this.timeline = timeline;
     }
 
