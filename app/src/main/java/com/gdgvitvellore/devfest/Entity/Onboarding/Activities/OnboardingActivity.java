@@ -104,6 +104,7 @@ public class OnboardingActivity extends AppCompatActivity implements View.OnClic
         switch (v.getId()){
             case R.id.fab:
                 startActivity(new Intent(this, AuthenticationActivity.class));
+                finish();
         }
     }
 }

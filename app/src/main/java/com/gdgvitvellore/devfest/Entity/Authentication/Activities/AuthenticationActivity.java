@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,10 +18,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
+import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Animations.Authentication.BackgroundCircularReveal;
 import com.gdgvitvellore.devfest.Control.Animations.Main.DrawerCircularReveal;
 import com.gdgvitvellore.devfest.Control.Animations.Main.ObjectAnimations;
+import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
+import com.gdgvitvellore.devfest.Control.Contracts.Status;
 import com.gdgvitvellore.devfest.Control.Exceptions.BindingException;
+import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
+import com.gdgvitvellore.devfest.Entity.Actors.LoginResult;
 import com.gdgvitvellore.devfest.Entity.Main.Activities.MainActivity;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
@@ -28,7 +34,8 @@ import com.gdgvitvellore.devfest.gdgdevfest.R;
  * Created by AravindRaj on 11-10-2016.
  */
 
-public class AuthenticationActivity extends AppCompatActivity implements ConnectAPI.ServerAuthenticateListener, View.OnClickListener {
+public class AuthenticationActivity extends AppCompatActivity implements ConnectAPI.ServerAuthenticateListener,
+        View.OnClickListener, ViewUtils {
 
     private TextInputEditText email, password;
     private TextInputLayout emailLayout, passwordLayout;
@@ -135,8 +142,18 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
     public void onRequestCompleted(int code, Object result) {
 
         if (code == ConnectAPI.LOGIN_CODE) {
-            Toast.makeText(this, result.toString(), Toast.LENGTH_LONG).show();
-            startActivity(new Intent(this, MainActivity.class));
+            LoginResult loginResult=(LoginResult)result;
+            if(loginResult!=null){
+                if (loginResult.getStatus()== ErrorDefinitions.CODE_LOGGED_IN){
+                    Intent intent=new Intent(this, MainActivity.class);
+                    intent.putExtra("status", Status.LOGGED_IN);
+                    startActivity(intent);
+                    DataHandler.getInstance(this).saveLoggedIn(true);
+                    finish();
+                }else{
+                    showMessage(ErrorDefinitions.getMessage(loginResult.getStatus()));
+                }
+            }
         }
 
     }
@@ -180,8 +197,10 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
     }
 
     private void guestLogin() {
-        //connectAPI.login("guest","guest");
-        startActivity(new Intent(this, MainActivity.class));
+        Intent intent=new Intent(this, MainActivity.class);
+        intent.putExtra("status", Status.GUEST_USER);
+        startActivity(intent);
+        finish();
     }
 
     private void login() {
@@ -193,5 +212,15 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
             e.printStackTrace();
         }
         //Toast.makeText(this, emailInput.toString()+passInput.toString(),Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Snackbar.make(bgSplash,message,Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorDialog() {
+
     }
 }

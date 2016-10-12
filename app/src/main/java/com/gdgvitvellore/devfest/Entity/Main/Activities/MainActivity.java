@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 import com.gdgvitvellore.devfest.Control.Animations.Main.DrawerCircularReveal;
 import com.gdgvitvellore.devfest.Control.Animations.Main.ObjectAnimations;
+import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
 import com.gdgvitvellore.devfest.Entity.About.Fragments.AboutFragment;
 import com.gdgvitvellore.devfest.Entity.Actors.DrawerItem;
 import com.gdgvitvellore.devfest.Entity.Coupons.Fragment.CouponsFragment;
@@ -34,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,ViewUtils {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -75,6 +77,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         drawerItems = new ArrayList<>();
         toolbarTitles=getResources().getStringArray(R.array.drawer_titles);
+
+        if(getIntent().hasExtra("status")){
+            showMessage(getIntent().getStringExtra("status"));
+        }
     }
 
     private void setInit() {
@@ -198,6 +204,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.drawer_trigger:
                 toggle();
         }
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Snackbar.make(fragmentHolder,message,Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorDialog() {
+
     }
 
 
