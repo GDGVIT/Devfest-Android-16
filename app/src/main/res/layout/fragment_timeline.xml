@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:orientation="vertical"
-
     android:weightSum="10">
 
     <LinearLayout
@@ -44,7 +43,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/horizontal_line_color"></View>
+        android:background="@color/horizontal_line_color"/>
     <!--<TextView-->
     <!--android:layout_width="wrap_content"-->
     <!--android:layout_height="wrap_content"-->
@@ -76,13 +75,15 @@
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+
         <me.relex.circleindicator.CircleIndicator
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
             app:ci_orientation="vertical"
             app:ci_margin="30dp"
-            android:id="@+id/pager_indicator"></me.relex.circleindicator.CircleIndicator>
+            app:ci_height="25dp"
+            android:id="@+id/pager_indicator"/>
 
     </FrameLayout>
 

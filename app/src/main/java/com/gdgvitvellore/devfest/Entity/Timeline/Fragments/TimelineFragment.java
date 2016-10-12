@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -13,12 +14,19 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
+import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
+import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
+import com.gdgvitvellore.devfest.Control.Exceptions.BindingException;
 import com.gdgvitvellore.devfest.Entity.Actors.Phase;
+import com.gdgvitvellore.devfest.Entity.Actors.Timeline;
+import com.gdgvitvellore.devfest.Entity.Actors.TimelineResult;
 import com.gdgvitvellore.devfest.Entity.Customs.EmptyFragment;
 import com.gdgvitvellore.devfest.Entity.Customs.VerticalPageTransformer;
 import com.gdgvitvellore.devfest.Entity.Customs.VerticalViewPager;
@@ -34,7 +42,7 @@ import me.relex.circleindicator.CircleIndicator;
  * Created by Prince Bansal Local on 10/10/2016.
  */
 
-public class TimelineFragment extends Fragment {
+public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthenticateListener {
 
     private static final int NUM_PAGES = 2;
     private VerticalViewPager viewPager;
@@ -52,6 +60,11 @@ public class TimelineFragment extends Fragment {
 
     private int millisToGo = secondsToGo * 1000 + minutesToGo * 1000 * 60 + hoursToGo * 1000 * 60 * 60;
 
+    private ConnectAPI connectAPI;
+    private DataHandler dataHandler;
+
+    private String email, auth;
+
 
     @Nullable
     @Override
@@ -64,8 +77,25 @@ public class TimelineFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init(view);
+        getCredentials();
         setInit();
         setData();
+        fetchData();
+    }
+
+    private void getCredentials() {
+        email = dataHandler.getUserMail();
+        auth = dataHandler.getAuthToken();
+    }
+
+    private void fetchData() {
+        Timeline timeline = DataHandler.getInstance(getActivity()).getTimeline();
+        if (timeline == null){
+            connectAPI.timeline(email, auth);
+        }
+        else{
+
+        }
     }
 
     private void init(View view) {
@@ -73,6 +103,8 @@ public class TimelineFragment extends Fragment {
         timer = (TextView) view.findViewById(R.id.time);
         pagerIndicator = (CircleIndicator)view.findViewById(R.id.pager_indicator);
         viewPager=(VerticalViewPager)view.findViewById(R.id.pager);
+
+        connectAPI = new ConnectAPI(getActivity());
     }
 
     private void setInit() {
@@ -125,6 +157,32 @@ public class TimelineFragment extends Fragment {
 
             }
         };
+    }
+
+    @Override
+    public void onRequestInitiated(int code) {
+
+
+    }
+
+    @Override
+    public void onRequestCompleted(int code, Object result) {
+
+        if (code == ConnectAPI.TIMELINE_CODE){
+            TimelineResult timelineResult = (TimelineResult) result;
+            if (timelineResult!=null){
+                if (timelineResult.getStatus() == ErrorDefinitions.CODE_LOGGED_IN){
+                    dataHandler.saveTimeline(timelineResult.getTimeline());
+                    Log.d("Realm result:", dataHandler.getTimeline().toString());
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public void onRequestError(int code, String message) {
+
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {

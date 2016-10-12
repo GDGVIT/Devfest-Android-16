@@ -12,16 +12,19 @@ import com.gdgvitvellore.devfest.Control.Contracts.PrivateContract;
 import com.gdgvitvellore.devfest.Entity.Actors.APIAssigned;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
 import com.gdgvitvellore.devfest.Entity.Actors.LogoutResult;
+import com.gdgvitvellore.devfest.Entity.Actors.Realm.RealmString;
 import com.gdgvitvellore.devfest.Entity.Actors.Slots;
 import com.gdgvitvellore.devfest.Entity.Actors.Speakers;
 import com.gdgvitvellore.devfest.Entity.Actors.Team;
 import com.gdgvitvellore.devfest.Entity.Actors.Timeline;
+import com.gdgvitvellore.devfest.Entity.Actors.TimelineResult;
 import com.gdgvitvellore.devfest.Entity.Actors.User;
 
 import java.util.HashSet;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
 /**
  * This singleton class will be used to fetch as well as store any data.
@@ -138,6 +141,24 @@ public class DataHandler {
 
         return mPreferences.getInt(key, def);
 
+    }
+
+    public String getUserMail(){
+
+        User user = mRealm.where(User.class).findFirst();
+        String mailid = user.getEmail();
+        return mailid;
+    }
+
+    public String getAuthToken(){
+        User user = mRealm.where(User.class).findFirst();
+        String auth = user.getAuthToken();
+        return auth;
+    }
+
+    public Timeline getTimeline(){
+        Timeline timeline = mRealm.where(Timeline.class).findFirst();
+            return timeline;
     }
 
     /**
