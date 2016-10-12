@@ -17,6 +17,7 @@ import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
 import com.bignerdranch.expandablerecyclerview.ViewHolder.ChildViewHolder;
 import com.bignerdranch.expandablerecyclerview.ViewHolder.ParentViewHolder;
 import com.gdgvitvellore.devfest.Entity.Actors.APIAssigned;
+import com.gdgvitvellore.devfest.Entity.Actors.Member;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
@@ -31,14 +32,15 @@ public class MyTeamFragment extends Fragment {
 
 
     private RecyclerView recyclerView;
-    private ArrayList<APIAssigned> apis;
+    private ArrayList<APIAssigned> apisList;
+    private ArrayList<Member> memberList;
     private LinearLayoutManager layoutManager;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView;
-        rootView = inflater.inflate(R.layout.fragment_myteam, container, false);
+        rootView = inflater.inflate(R.layout.fragment_myteam,container,false);
         init(rootView);
         setInit();
         setData();
@@ -46,75 +48,63 @@ public class MyTeamFragment extends Fragment {
     }
 
     private void init(View rootView) {
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        recyclerView=(RecyclerView)rootView.findViewById(R.id.recycler_view);
 
         layoutManager = new LinearLayoutManager(rootView.getContext());
     }
 
     private void setInit() {
         recyclerView.setLayoutManager(layoutManager);
-
-        apis = new ArrayList<APIAssigned>();
-
+        apisList = new ArrayList<>();
+        memberList = new ArrayList<>();
     }
 
     private void setData() {
         //This is just the sample data
         //TODO API integration needs to be done
-        Ingredient beef = new Ingredient("beef");
-        Ingredient cheese = new Ingredient("cheese");
-        Ingredient salsa = new Ingredient("salsa");
-        Ingredient tortilla = new Ingredient("tortilla");
 
-        Recipe taco = new Recipe(Arrays.asList(beef, cheese, salsa, tortilla));
+        Member member1 = new Member();
+        member1.setName("Prince");
+        Member member2 = new Member();
+        member2.setName("Bansal");
+        memberList.add(member1);
+        memberList.add(member2);
+
+        APIAssigned apiAssigned=new APIAssigned();
+        apiAssigned.setName("Github");
+        APIAssigned apiAssigned2=new APIAssigned();
+        apiAssigned.setName("Mongo");
+        apisList.add(apiAssigned);
+        apisList.add(apiAssigned2);
+
+        Group taco = new Group(memberList);
         taco.setName("My Team");
-        Recipe quesadilla = new Recipe(Arrays.asList(cheese, tortilla));
+        Group quesadilla = new Group(apisList);
         quesadilla.setName("Assigned APIs");
-        List<Recipe> recipes = Arrays.asList(taco, quesadilla);
-        MyAdapter adapter = new MyAdapter(getContext(), recipes);
+        List<Group> groups = Arrays.asList(taco, quesadilla);
+        MyAdapter adapter = new MyAdapter(getContext(), groups);
         recyclerView.setAdapter(adapter);
     }
 
-    private void initRootView(View rootView) {
-
-
-        //These data comes from the slot machine
-
-      /*  APIAssigned api1 = new APIAssigned();
-        api1.setName("Facebook");
-        apis.add(api1);
-
-        APIAssigned api2 = new APIAssigned();
-        api2.setName("Google");
-        apis.add(api2);
-
-        APIAssigned api3 = new APIAssigned();
-        api3.setName("Geethub");
-        apis.add(api3);
-
-        adapter = new RecyclerViewAdapter(apis);
-        adapter = new RecyclerViewAdapter(apis);
-        apiRecView.setAdapter(adapter);*/
-    }
 
     /**
      * These classes are just sample classes
      * TODO Please make new models in Actors or either as inner calss and inflate the data
      */
-    public class Recipe implements ParentListItem {
+    public class Group implements ParentListItem {
 
         // a recipe contains several ingredients
-        private List mIngredients;
+        private List mItems;
         private String name;
 
-        public Recipe(List<Ingredient> ingredients) {
-            mIngredients = ingredients;
+        public Group(List items) {
+            mItems = items;
         }
 
 
         @Override
         public List<?> getChildItemList() {
-            return mIngredients;
+            return mItems;
         }
 
         @Override
@@ -131,51 +121,12 @@ public class MyTeamFragment extends Fragment {
         }
     }
 
-    public class Ingredient {
-        public String name;
 
-        public Ingredient(String beef) {
-            name = beef;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
-    public class RecipeViewHolder extends ParentViewHolder {
-
-        private TextView mRecipeTextView;
-
-        public RecipeViewHolder(View itemView) {
-            super(itemView);
-            mRecipeTextView = (TextView) itemView.findViewById(R.id.about_list_item_content);
-        }
-
-        public void bind(Recipe recipe) {
-            mRecipeTextView.setText(recipe.getName());
-        }
-    }
-
-    public class IngredientViewHolder extends ChildViewHolder {
-
-        private TextView mIngredientTextView;
-
-        public IngredientViewHolder(View itemView) {
-            super(itemView);
-            mIngredientTextView = (TextView) itemView.findViewById(R.id.about_list_item_header);
-        }
-
-        public void bind(Ingredient ingredient) {
-            mIngredientTextView.setText(ingredient.getName());
-        }
-    }
-
-    public class MyAdapter extends ExpandableRecyclerAdapter<RecipeViewHolder, IngredientViewHolder> {
+    public class MyAdapter extends ExpandableRecyclerAdapter<MyAdapter.GroupViewHolder,MyAdapter.ItemViewHolder> {
 
         private LayoutInflater mInflator;
 
-        public MyAdapter(Context context, @NonNull List<Recipe> parentItemList) {
+        public MyAdapter(Context context, @NonNull List<Group> parentItemList) {
             super(parentItemList);
             mInflator = LayoutInflater.from(context);
         }
@@ -184,32 +135,63 @@ public class MyTeamFragment extends Fragment {
 
 
         @Override
-        public RecipeViewHolder onCreateParentViewHolder(ViewGroup parentViewGroup) {
-            View recipeView = mInflator.inflate(R.layout.fragment_myteam_group, parentViewGroup, false);
-            return new RecipeViewHolder(recipeView);
+        public GroupViewHolder onCreateParentViewHolder(ViewGroup parentViewGroup) {
+            View groupView = mInflator.inflate(R.layout.fragment_myteam_group, parentViewGroup, false);
+            return new GroupViewHolder(groupView);
         }
 
         @Override
-        public IngredientViewHolder onCreateChildViewHolder(ViewGroup childViewGroup) {
-            View ingredientView = mInflator.inflate(R.layout.fragment_myteam_group_item, childViewGroup, false);
-            return new IngredientViewHolder(ingredientView);
+        public ItemViewHolder onCreateChildViewHolder(ViewGroup childViewGroup) {
+            View itemView = mInflator.inflate(R.layout.fragment_myteam_group_item, childViewGroup, false);
+            return new ItemViewHolder(itemView);
         }
 
         // onBind ...
 
 
         @Override
-        public void onBindParentViewHolder(RecipeViewHolder parentViewHolder, int position, ParentListItem parentListItem) {
-            Recipe recipe = (Recipe) parentListItem;
-            parentViewHolder.bind(recipe);
+        public void onBindParentViewHolder(GroupViewHolder parentViewHolder, int position, ParentListItem parentListItem) {
+            Group group = (Group) parentListItem;
+            parentViewHolder.bind(group);
         }
 
         @Override
-        public void onBindChildViewHolder(IngredientViewHolder childViewHolder, int position, Object childListItem) {
-            Ingredient ingredient = (Ingredient) childListItem;
-            childViewHolder.bind(ingredient);
+        public void onBindChildViewHolder(ItemViewHolder childViewHolder, int position, Object childListItem) {
+            Group group = (Group) childListItem;
+            childViewHolder.bind(group);
         }
 
+        public class GroupViewHolder extends ParentViewHolder {
+
+            private TextView mGroupTextView;
+
+            public GroupViewHolder(View itemView) {
+                super(itemView);
+                mGroupTextView = (TextView)itemView.findViewById(R.id.about_list_item_content);
+            }
+
+            public void bind(Group group) {
+                mGroupTextView.setText(group.getName());
+            }
+        }
+        public class ItemViewHolder extends ChildViewHolder {
+
+            private TextView mItemTextView;
+
+            public ItemViewHolder(View itemView) {
+                super(itemView);
+                mItemTextView = (TextView)itemView.findViewById(R.id.about_list_item_header);
+            }
+
+            public void bind(Object item) {
+                if (item instanceof APIAssigned)
+                    mItemTextView.setText(((APIAssigned)item).getName());
+                else if(item instanceof Member){
+                    mItemTextView.setText(((Member)item).getName());
+                }
+            }
+        }
 
     }
 }
+
