@@ -82,7 +82,6 @@
             android:layout_gravity="right"
             app:ci_orientation="vertical"
             app:ci_margin="30dp"
-            app:ci_height="25dp"
             android:id="@+id/pager_indicator"></me.relex.circleindicator.CircleIndicator>
 
     </FrameLayout>

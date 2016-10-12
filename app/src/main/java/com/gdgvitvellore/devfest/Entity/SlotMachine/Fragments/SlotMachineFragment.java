@@ -31,10 +31,8 @@ import java.util.Random;
 
 public class SlotMachineFragment extends Fragment {
 
-    private ImageView iv;
-    private ImageView slot1;
-    private ImageView slot2;
-    private ImageView slot3;
+    private ImageView trigger;
+    private ImageView slot1,slot2,slot3;
     private LinearLayout triggerHolder,arrowLayout;
     private TextView timeRemaining;
     private int min=0;
@@ -61,7 +59,7 @@ public class SlotMachineFragment extends Fragment {
 
     private void setViewInit(View rootView) {
 
-        iv = (ImageView)rootView.findViewById(R.id.imageView);
+        trigger = (ImageView)rootView.findViewById(R.id.imageView);
         slot1 = (ImageView) rootView.findViewById(R.id.slot1);
         slot2 = (ImageView) rootView.findViewById(R.id.slot2);
         slot3 = (ImageView)rootView.findViewById(R.id.slot3);
@@ -79,7 +77,7 @@ public class SlotMachineFragment extends Fragment {
     private void setViewSet() {
 
         timeRemaining.setVisibility(View.INVISIBLE);
-        iv.setOnTouchListener(new View.OnTouchListener() {
+        trigger.setOnTouchListener(new View.OnTouchListener() {
 
             PointF DownPT = new PointF();
             PointF StartPT = new PointF();
@@ -96,10 +94,10 @@ public class SlotMachineFragment extends Fragment {
                         Rect rec=new Rect();
                         Rect rec2=new Rect();
                         triggerHolder.getLocalVisibleRect(rec2);
-                        iv.getLocalVisibleRect(rec);
+                        trigger.getLocalVisibleRect(rec);
                         if(StartPT.y+mv.y>=rec2.top&&StartPT.y+mv.y<=rec2.height()-rec.height()){
-                            iv.setY((int) (StartPT.y+mv.y));
-                            StartPT = new PointF(iv.getX(), iv.getY());
+                            trigger.setY((int) (StartPT.y+mv.y));
+                            StartPT = new PointF(trigger.getX(), trigger.getY());
                         }
                         break;
                     case MotionEvent.ACTION_DOWN:
@@ -109,13 +107,13 @@ public class SlotMachineFragment extends Fragment {
                         fadeOut.start();
                         DownPT.x = motionEvent.getX();
                         DownPT.y = motionEvent.getY();
-                        StartPT = new PointF( iv.getX(), iv.getY());
+                        StartPT = new PointF( trigger.getX(), trigger.getY());
                         break;
                     case MotionEvent.ACTION_UP :
 
 
-                        float in=iv.getY();
-                        ObjectAnimator animator = ObjectAnimator.ofFloat(iv,"y",in,35,20,30,20,25,20);
+                        float in= trigger.getY();
+                        ObjectAnimator animator = ObjectAnimator.ofFloat(trigger,"y",in,35,20,30,20,25,20);
                         animator.setDuration(500);
                         animator.start();
                         animateSlots();
@@ -257,7 +255,7 @@ public class SlotMachineFragment extends Fragment {
         }.start();
     }
     private void startTimer() {
-        iv.setEnabled(false);
+        trigger.setEnabled(false);
         if(timer!=null){
             timer.cancel();
         }
@@ -284,7 +282,7 @@ public class SlotMachineFragment extends Fragment {
                         timeRemaining.setVisibility(View.GONE);
                     }
                 },1000);
-                iv.setEnabled(true);
+                trigger.setEnabled(true);
             }
         }.start();
     }
