@@ -23,6 +23,9 @@ import com.gdgvitvellore.devfest.Control.Animations.Main.DrawerCircularReveal;
 import com.gdgvitvellore.devfest.Control.Animations.Main.ObjectAnimations;
 import com.gdgvitvellore.devfest.Entity.About.Fragments.AboutFragment;
 import com.gdgvitvellore.devfest.Entity.Actors.DrawerItem;
+import com.gdgvitvellore.devfest.Entity.Coupons.Fragment.CouponsFragment;
+import com.gdgvitvellore.devfest.Entity.FAQ.FAQFragment;
+import com.gdgvitvellore.devfest.Entity.MyTeam.Fragments.MyTeamFragment;
 import com.gdgvitvellore.devfest.Entity.SlotMachine.Fragments.SlotMachineFragment;
 import com.gdgvitvellore.devfest.Entity.Timeline.Fragments.TimelineFragment;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
@@ -111,11 +114,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Fragment timelineFragment = new TimelineFragment();
                     manager.beginTransaction().replace(R.id.fragment_holder, timelineFragment, TimelineFragment.class.getSimpleName()).commit();
                     break;
+                case 1:
+                    Fragment myTeamFragment = new MyTeamFragment();
+                    manager.beginTransaction().replace(R.id.fragment_holder, myTeamFragment, MyTeamFragment.class.getSimpleName()).commit();
+                    break;
                 case 2:
                     Fragment slotMachineFragment = new SlotMachineFragment();
                     manager.beginTransaction().replace(R.id.fragment_holder, slotMachineFragment, SlotMachineFragment.class.getSimpleName()).commit();
                     break;
+                case 3:
+                    Fragment couponsFragment = new CouponsFragment();
+                    manager.beginTransaction().replace(R.id.fragment_holder, couponsFragment, CouponsFragment.class.getSimpleName()).commit();
+                    break;
                 case 4:
+                    Fragment faqFragment = new FAQFragment();
+                    manager.beginTransaction().replace(R.id.fragment_holder, faqFragment, FAQFragment.class.getSimpleName()).commit();
+                    break;
+                case 5:
                     Fragment aboutFragment = new AboutFragment();
                     manager.beginTransaction().replace(R.id.fragment_holder, aboutFragment, AboutFragment.class.getSimpleName()).commit();
             }

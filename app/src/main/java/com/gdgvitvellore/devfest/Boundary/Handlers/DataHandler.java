@@ -192,9 +192,11 @@ public class DataHandler {
      * @param user This is the user object which contains all info about user
      */
     public void saveUser(User user) {
-        mRealm.beginTransaction();
-        mRealm.copyToRealm(user);
-        mRealm.commitTransaction();
+        if (user != null) {
+            mRealm.beginTransaction();
+            mRealm.copyToRealm(user);
+            mRealm.commitTransaction();
+        }
     }
 
     /**
@@ -204,9 +206,11 @@ public class DataHandler {
      */
 
     public void saveTeam(Team team) {
-        mRealm.beginTransaction();
-        mRealm.copyToRealm(team);
-        mRealm.commitTransaction();
+        if (team != null) {
+            mRealm.beginTransaction();
+            mRealm.copyToRealm(team);
+            mRealm.commitTransaction();
+        }
     }
 
     /**
@@ -215,38 +219,52 @@ public class DataHandler {
      * @param timeline
      */
     public void saveTimeline(RealmList<Timeline> timeline) {
-        mRealm.beginTransaction();
-        mRealm.copyToRealm(timeline);
-        mRealm.commitTransaction();
+        if (timeline != null) {
+            mRealm.beginTransaction();
+            mRealm.copyToRealm(timeline);
+            mRealm.commitTransaction();
+        }
     }
 
     public void saveSpeakers(RealmList<Speakers> speakers) {
-        mRealm.beginTransaction();
-        mRealm.copyToRealm(speakers);
-        mRealm.commitTransaction();
+
+        if (speakers != null) {
+            mRealm.beginTransaction();
+            mRealm.copyToRealm(speakers);
+            mRealm.commitTransaction();
+        }
     }
+
     public void saveFAQ(RealmList<Faq> faqs) {
-        mRealm.beginTransaction();
-        mRealm.copyToRealm(faqs);
-        mRealm.commitTransaction();
+        if (faqs != null) {
+            mRealm.beginTransaction();
+            mRealm.copyToRealm(faqs);
+            mRealm.commitTransaction();
+        }
     }
 
     public void saveApi(RealmList<APIAssigned> apis) {
-        mRealm.beginTransaction();
-        mRealm.copyToRealm(apis);
-        mRealm.commitTransaction();
+        if (apis != null) {
+            mRealm.beginTransaction();
+            mRealm.copyToRealm(apis);
+            mRealm.commitTransaction();
+        }
     }
 
     public void saveSlots(RealmList<Slots> slots) {
-        mRealm.beginTransaction();
-        mRealm.copyToRealm(slots);
-        mRealm.commitTransaction();
+        if (slots != null) {
+            mRealm.beginTransaction();
+            mRealm.copyToRealm(slots);
+            mRealm.commitTransaction();
+        }
     }
 
     public void saveLogout(LogoutResult logoutResults) {
-        mRealm.beginTransaction();
-        mRealm.copyToRealm(logoutResults);
-        mRealm.commitTransaction();
+        if(logoutResults!=null) {
+            mRealm.beginTransaction();
+            mRealm.copyToRealm(logoutResults);
+            mRealm.commitTransaction();
+        }
     }
 
 

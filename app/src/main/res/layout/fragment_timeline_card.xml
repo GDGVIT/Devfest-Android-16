@@ -3,38 +3,40 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="120dp"
-    android:layout_margin="20dp"
     android:layout_height="match_parent"
+    android:layout_margin="20dp"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="5dp"
-    card_view:cardElevation="5dp"
-    card_view:cardBackgroundColor="@color/white">
+    card_view:cardElevation="5dp">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <TextView
+        android:id="@+id/phase_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_margin="10dp"
+        android:text="Hackathon phase 1"
+        android:textColor="@color/colorPrimary" />
 
-        <TextView
-            android:id="@+id/phase_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:text="Hackathon phase 1"
-            android:textColor="@color/colorPrimary" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/horizontal_line_color"/>
+            android:background="@color/horizontal_line_primary" />
 
         <TextView
             android:id="@+id/phase_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/textv_selector"
-            android:padding="8dp"
+            android:background="@drawable/timeline_card_bg_selector"
+            android:padding="7dp"
             android:text="10:30 - 1 AM"
-            android:textColor="@color/black" />
-
+            android:textColor="@color/timeline_card_time_selector"
+            android:textStyle="bold" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

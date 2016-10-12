@@ -6,11 +6,69 @@
     android:layout_height="match_parent"
     android:clipChildren="false">
 
-    <link.fls.swipestack.SwipeStack
-        android:id="@+id/swipeStack"
-        android:layout_width="320dp"
-        android:layout_height="240dp"
-        android:padding="32dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.4"
+            android:background="@color/colorPrimary"></FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.6"
+            android:background="@color/window_bg">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+            
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                app:srcCompat="@drawable/ic_qrcode"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Get the QR Code scanned to avail the coupon"
+                    android:textColor="@color/colorIconsOrTexts"
+                    android:layout_marginTop="20dp"
+                    android:alpha="0.8"/>
+            </LinearLayout>
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.6"
+            android:padding="30dp">
+
+            <link.fls.swipestack.SwipeStack
+                android:id="@+id/swipeStack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginTop="30dp"/>
+        </FrameLayout>
+
+    </LinearLayout>
+
+
 
 
 

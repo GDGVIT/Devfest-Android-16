@@ -1,4 +1,4 @@
-package com.gdgvitvellore.devfest.Entity.About.Fragments;
+package com.gdgvitvellore.devfest.Entity.MyTeam.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,50 +16,47 @@ import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter
 import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
 import com.bignerdranch.expandablerecyclerview.ViewHolder.ChildViewHolder;
 import com.bignerdranch.expandablerecyclerview.ViewHolder.ParentViewHolder;
+import com.gdgvitvellore.devfest.Entity.Actors.APIAssigned;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by Prince Bansal Local on 10/11/2016.
+ * Created by Shuvam Ghosh on 10/11/2016.
  */
 
-public class AboutFragment extends Fragment {
-    private RecyclerView mRecyclerView;
-    private List<String> listDataHeader;
-    private HashMap<String, List<String>> listDataChild;
+public class MyTeamFragment extends Fragment {
+
+
+    private RecyclerView recyclerView;
+    private ArrayList<APIAssigned> apis;
+    private LinearLayoutManager layoutManager;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_about, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView;
+        rootView = inflater.inflate(R.layout.fragment_myteam,container,false);
         init(rootView);
         setInit();
+        setData();
         return rootView;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        setData();
-    }
-
-
-
     private void init(View rootView) {
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        recyclerView=(RecyclerView)rootView.findViewById(R.id.recycler_view);
+
+        layoutManager = new LinearLayoutManager(rootView.getContext());
     }
 
     private void setInit() {
-        //Set data for ExpandableListView in About page
-        listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-    }
+        recyclerView.setLayoutManager(layoutManager);
 
+        apis = new ArrayList<APIAssigned>();
+
+    }
 
     private void setData() {
         //This is just the sample data
@@ -70,22 +67,35 @@ public class AboutFragment extends Fragment {
         Ingredient tortilla = new Ingredient("tortilla");
 
         Recipe taco = new Recipe(Arrays.asList(beef, cheese, salsa, tortilla));
-        taco.setName("Taco");
+        taco.setName("My Team");
         Recipe quesadilla = new Recipe(Arrays.asList(cheese, tortilla));
-        quesadilla.setName("quesadilla");
-        Recipe quesadilla1 = new Recipe(Arrays.asList(cheese, tortilla));
-        quesadilla1.setName("quesadilla1");
-        Recipe quesadilla2 = new Recipe(Arrays.asList(cheese, tortilla));
-        quesadilla2.setName("quesadilla2");
-        Recipe quesadilla3 = new Recipe(Arrays.asList(cheese, tortilla));
-        quesadilla3.setName("quesadilla3");
-        Recipe quesadilla4 = new Recipe(Arrays.asList(cheese, tortilla));
-        quesadilla4.setName("quesadilla4");
-        Recipe quesadilla5 = new Recipe(Arrays.asList(cheese, tortilla));
-        quesadilla5.setName("quesadilla5");
-        List<Recipe> recipes = Arrays.asList(taco, quesadilla,quesadilla1,quesadilla2,quesadilla3,quesadilla4,quesadilla5);
+        quesadilla.setName("Assigned APIs");
+        List<Recipe> recipes = Arrays.asList(taco, quesadilla);
         MyAdapter adapter = new MyAdapter(getContext(), recipes);
-        mRecyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void initRootView(View rootView) {
+
+        
+
+        //These data comes from the slot machine
+
+      /*  APIAssigned api1 = new APIAssigned();
+        api1.setName("Facebook");
+        apis.add(api1);
+
+        APIAssigned api2 = new APIAssigned();
+        api2.setName("Google");
+        apis.add(api2);
+
+        APIAssigned api3 = new APIAssigned();
+        api3.setName("Geethub");
+        apis.add(api3);
+
+        adapter = new RecyclerViewAdapter(apis);
+        adapter = new RecyclerViewAdapter(apis);
+        apiRecView.setAdapter(adapter);*/
     }
 
     /**
@@ -172,13 +182,13 @@ public class AboutFragment extends Fragment {
 
         @Override
         public RecipeViewHolder onCreateParentViewHolder(ViewGroup parentViewGroup) {
-            View recipeView = mInflator.inflate(R.layout.fragment_about_group, parentViewGroup, false);
+            View recipeView = mInflator.inflate(R.layout.fragment_myteam_group, parentViewGroup, false);
             return new RecipeViewHolder(recipeView);
         }
 
         @Override
         public IngredientViewHolder onCreateChildViewHolder(ViewGroup childViewGroup) {
-            View ingredientView = mInflator.inflate(R.layout.fragment_about_group_item, childViewGroup, false);
+            View ingredientView = mInflator.inflate(R.layout.fragment_myteam_group_item, childViewGroup, false);
             return new IngredientViewHolder(ingredientView);
         }
 
@@ -200,5 +210,4 @@ public class AboutFragment extends Fragment {
 
 
     }
-
 }

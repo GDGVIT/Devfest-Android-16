@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,10 +16,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gdgvitvellore.devfest.Entity.Actors.Phase;
+import com.gdgvitvellore.devfest.Entity.Customs.EmptyFragment;
 import com.gdgvitvellore.devfest.Entity.Customs.VerticalPageTransformer;
 import com.gdgvitvellore.devfest.Entity.Customs.VerticalViewPager;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
@@ -26,15 +27,19 @@ import com.gdgvitvellore.devfest.gdgdevfest.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.relex.circleindicator.CircleIndicator;
+
 /**
  * Created by Prince Bansal Local on 10/10/2016.
  */
 
 public class TimelineFragment extends Fragment {
 
+    private static final int NUM_PAGES = 2;
     private VerticalViewPager viewPager;
     private RecyclerView recyclerView;
     private TextView timer;
+    private CircleIndicator pagerIndicator;
 
     private PhasesAdapter mAdapter;
     private List<Phase> phaseList = new ArrayList<>();
@@ -66,6 +71,7 @@ public class TimelineFragment extends Fragment {
         viewPager = (VerticalViewPager) view.findViewById(R.id.pager);
         recyclerView = (RecyclerView) view.findViewById(R.id.phases_list);
         timer = (TextView) view.findViewById(R.id.time);
+        pagerIndicator = (CircleIndicator)view.findViewById(R.id.pager_indicator);
     }
 
     private void setInit() {
@@ -94,10 +100,9 @@ public class TimelineFragment extends Fragment {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        adapter.addFragment(new TimelineDisplayFragment(), "IMAGE");
-        adapter.addFragment(new TimelineAboutFragment(), "ABOUT");
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
+        pagerIndicator.setViewPager(viewPager);
     }
 
     private void startTimer() {
@@ -121,8 +126,7 @@ public class TimelineFragment extends Fragment {
         };
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
+    class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
         public ViewPagerAdapter(FragmentManager manager) {
             super(manager);
@@ -130,17 +134,19 @@ public class TimelineFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            return mFragmentList.get(position);
+            if(position==0){
+                return new TimelineDisplayFragment();
+            }else if(position==1){
+                return new TimelineAboutFragment();
+            }
+            else return new EmptyFragment();
         }
 
         @Override
         public int getCount() {
-            return mFragmentList.size();
+            return NUM_PAGES;
         }
 
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-        }
     }
 
     public class PhasesAdapter extends RecyclerView.Adapter<PhasesAdapter.MyViewHolder> {

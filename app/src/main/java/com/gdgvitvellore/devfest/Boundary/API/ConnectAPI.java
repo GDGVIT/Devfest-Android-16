@@ -19,6 +19,7 @@ import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Contracts.APIContract;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
 import com.gdgvitvellore.devfest.Control.Customs.CustomTypeAdapter;
+import com.gdgvitvellore.devfest.Control.Exceptions.BindingException;
 import com.gdgvitvellore.devfest.Entity.Actors.APIAssignedResult;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQResult;
 import com.gdgvitvellore.devfest.Entity.Actors.LoginResult;
@@ -76,48 +77,52 @@ public class ConnectAPI {
      * @param password Password of the user
      */
 
-    public void login(final String email, final String password) {
+    public void login(final String email, final String password) throws BindingException {
 
-        String url = APIContract.getLoginUrl();
-        mServerAuthenticateListener.onRequestInitiated(LOGIN_CODE);
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i(TAG, "Login:onResponse: " + response);
-                        try {
-                            if(validateResponse(response)) {
-                                LoginResult loginResult = CustomTypeAdapter.typeRealmString().fromJson(response, LoginResult.class);
-                                DataHandler.getInstance(context).saveUser(loginResult.getUser());
-                                DataHandler.getInstance(context).saveTeam(loginResult.getTeam());
-                                mServerAuthenticateListener.onRequestCompleted(LOGIN_CODE, loginResult);
-                            }else{
+        if(mServerAuthenticateListener!=null) {
+            String url = APIContract.getLoginUrl();
+            mServerAuthenticateListener.onRequestInitiated(LOGIN_CODE);
+            StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i(TAG, "Login:onResponse: " + response);
+                            try {
+                                if (validateResponse(response)) {
+                                    LoginResult loginResult = CustomTypeAdapter.typeRealmString().fromJson(response, LoginResult.class);
+                                    DataHandler.getInstance(context).saveUser(loginResult.getUser());
+                                    DataHandler.getInstance(context).saveTeam(loginResult.getTeam());
+                                    mServerAuthenticateListener.onRequestCompleted(LOGIN_CODE, loginResult);
+                                } else {
+                                    mServerAuthenticateListener.onRequestError(LOGIN_CODE, ErrorDefinitions.getMessage(ErrorDefinitions.CODE_WRONG_FORMAT));
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                                 mServerAuthenticateListener.onRequestError(LOGIN_CODE, ErrorDefinitions.getMessage(ErrorDefinitions.CODE_WRONG_FORMAT));
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            mServerAuthenticateListener.onRequestError(LOGIN_CODE, ErrorDefinitions.getMessage(ErrorDefinitions.CODE_WRONG_FORMAT));
+
+
                         }
-
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                Log.v(TAG, "Login:error:"+error.getMessage());
-                mServerAuthenticateListener.onRequestError(LOGIN_CODE, error.getMessage());
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                return APIContract.getLoginParams(email,password);
-            }
-        };
-        // Adding request to request queue
-        RetryPolicy policy = new DefaultRetryPolicy((int) REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        postRequest.setRetryPolicy(policy);
-        AppController.getInstance().addToRequestQueue(postRequest);
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                    Log.v(TAG, "Login:error:" + error.getMessage());
+                    mServerAuthenticateListener.onRequestError(LOGIN_CODE, error.getMessage());
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    return APIContract.getLoginParams(email, password);
+                }
+            };
+            // Adding request to request queue
+            RetryPolicy policy = new DefaultRetryPolicy((int) REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+            postRequest.setRetryPolicy(policy);
+            AppController.getInstance().addToRequestQueue(postRequest);
+        }else{
+            throw new BindingException("ServerAuthenticateListener callback not set to the ConnecAPI instance");
+        }
     }
 
 

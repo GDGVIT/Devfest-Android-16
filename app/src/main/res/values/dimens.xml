@@ -4,6 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="activity_vertical_margin_24dp">24dp</dimen>
     <dimen name="text_padding_right">10dp</dimen>
-    <dimen name="expandable_recycler_padding">30dp</dimen>
+    <dimen name="expandable_recycler_margin">30dp</dimen>
+    <dimen name="expandable_recycler_padding">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="expandable_arrow_size">36dp</dimen>
+    <dimen name="text_size_large">20sp</dimen>
 </resources>

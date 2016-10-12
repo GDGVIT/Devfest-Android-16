@@ -1,44 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="10"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
 
-    android:background="@color/colorPrimary">
+    android:weightSum="10">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:weightSum="2"
         android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingLeft="@dimen/activity_vertical_margin"
         android:paddingRight="@dimen/activity_vertical_margin"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:weightSum="2">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
             android:text="@string/hackathon_phase_1"
             android:textColor="@color/white"
-            android:textSize="14sp"
-            android:gravity="start"
-            android:layout_weight="1"/>
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
             android:text="@string/time"
             android:textColor="@color/white"
-            android:textSize="14sp"
-            android:layout_weight="1"
-            android:gravity="end"/>
+            android:textSize="14sp" />
 
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -49,28 +50,41 @@
     <!--android:text="Timeline Layout. Should be implemented same as about. Please refer fragment_about.xml."-->
     <!--android:padding="20dp"-->
     <!--android:textColor="@color/white"/>-->
-<!--<TextView-->
+    <!--<TextView-->
     <!--android:layout_width="wrap_content"-->
     <!--android:layout_height="wrap_content"-->
     <!--android:text="Also checkout About page from navigation."-->
     <!--android:padding="20dp"-->
     <!--android:textColor="@color/white"/>-->
 
-<!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--android:orientation="vertical"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="match_parent"-->
-<!--android:background="@color/material_dark"-->
-<!--android:weightSum="10">-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="@color/material_dark"-->
+    <!--android:weightSum="10">-->
 
 
-<com.gdgvitvellore.devfest.Entity.Customs.VerticalViewPager
-    android:id="@+id/pager"
-    android:layout_weight="6"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:background="@color/colorPrimary"
-    />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:background="@color/colorPrimary">
+
+        <com.gdgvitvellore.devfest.Entity.Customs.VerticalViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <me.relex.circleindicator.CircleIndicator
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            app:ci_orientation="vertical"
+            app:ci_margin="30dp"
+            app:ci_height="25dp"
+            android:id="@+id/pager_indicator"></me.relex.circleindicator.CircleIndicator>
+
+    </FrameLayout>
 
 
     <LinearLayout
@@ -82,7 +96,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/phases_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

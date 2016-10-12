@@ -44,6 +44,7 @@ dependencies {
     /*UI Libraries*/
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.bignerdranch.android:expandablerecyclerview:2.1.1'
+    compile 'me.relex:circleindicator:1.2.1@aar'
 
     /*SwipeStack Library for coupons*/
     compile 'link.fls:swipestack:0.3.0'
