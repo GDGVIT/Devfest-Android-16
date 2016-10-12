@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -143,8 +144,10 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
 
         if (code == ConnectAPI.LOGIN_CODE) {
             LoginResult loginResult=(LoginResult)result;
+            Log.d("LOGIN RESPONSE",result.toString());
             if(loginResult!=null){
                 if (loginResult.getStatus()== ErrorDefinitions.CODE_LOGGED_IN){
+                    Log.d("LOGIN","SUCCESS");
                     Intent intent=new Intent(this, MainActivity.class);
                     intent.putExtra("status", Status.LOGGED_IN);
                     startActivity(intent);
