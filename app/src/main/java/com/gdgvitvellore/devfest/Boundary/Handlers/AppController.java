@@ -8,6 +8,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+import io.realm.Realm;
+
 public class AppController extends Application {
 
     public static final String TAG = AppController.class.getSimpleName();
@@ -20,6 +22,11 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        initRealm();
+    }
+
+    private void initRealm() {
+        Realm.init(this);
     }
 
     public static synchronized AppController getInstance() {

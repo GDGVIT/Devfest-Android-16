@@ -13,4 +13,12 @@
         android:text="Timeline About"
         android:textSize="16sp" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="This page will contain all the information about the phase selected."
+        android:layout_marginTop="@dimen/activity_vertical_margin_24dp"
+        android:textSize="12sp" />
+
 </LinearLayout>

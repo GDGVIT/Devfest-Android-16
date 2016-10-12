@@ -4,10 +4,10 @@ package com.gdgvitvellore.devfest.Entity.Onboarding.Activities;
  * Created by Shuvam Ghosh on 10/9/2016.
  */
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.os.Handler;
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -16,9 +16,10 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.gdgvitvellore.devfest.Entity.Authentication.Activities.AuthenticationActivity;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
-public class SplashActivity extends AppCompatActivity {
+public class OnboardingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private CardView cardview1;
     private CardView cardview2;
@@ -33,11 +34,12 @@ public class SplashActivity extends AppCompatActivity {
     private ObjectAnimator astroanim;
     private ImageView iv;
     private ImageView astronaut;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        setContentView(R.layout.activity_onboarding);
         init();
     }
 
@@ -49,7 +51,7 @@ public class SplashActivity extends AppCompatActivity {
         iv  = (ImageView)findViewById(R.id.image);
         astronaut = (ImageView)findViewById(R.id.astronaut);
         frameLayout=(FrameLayout)findViewById(R.id.activity_main);
-
+        fab=(FloatingActionButton)findViewById(R.id.fab);
 
         animationcard1=ObjectAnimator.ofFloat(cardview1,"rotation",142,150);
         animationcard2=ObjectAnimator.ofFloat(cardview2,"rotation",165,170);
@@ -67,6 +69,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void setinit() {
+
+        fab.setOnClickListener(this);
 
         animationcard1.setDuration(600);
         animationcard1.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -95,4 +99,12 @@ public class SplashActivity extends AppCompatActivity {
         animatorSet.start();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.fab:
+                startActivity(new Intent(this, AuthenticationActivity.class));
+                finish();
+        }
+    }
 }

@@ -52,7 +52,7 @@
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_marginLeft="15dp"
-                        android:src="@drawable/ic_keyboard_arrow_down_black_24dp" />
+                        android:src="@drawable/ic_keyboard_arrow_down_white_24dp" />
 
 
                 </LinearLayout>
@@ -82,7 +82,7 @@
         android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
         android:orientation="vertical"
         android:clickable="true"
         android:layout_marginTop="?attr/actionBarSize"

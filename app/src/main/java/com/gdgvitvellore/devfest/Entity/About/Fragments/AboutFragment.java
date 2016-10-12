@@ -172,13 +172,13 @@ public class AboutFragment extends Fragment {
 
         @Override
         public RecipeViewHolder onCreateParentViewHolder(ViewGroup parentViewGroup) {
-            View recipeView = mInflator.inflate(R.layout.frament_about_row_content, parentViewGroup, false);
+            View recipeView = mInflator.inflate(R.layout.fragment_about_group, parentViewGroup, false);
             return new RecipeViewHolder(recipeView);
         }
 
         @Override
         public IngredientViewHolder onCreateChildViewHolder(ViewGroup childViewGroup) {
-            View ingredientView = mInflator.inflate(R.layout.fragment_about_list_row_title, childViewGroup, false);
+            View ingredientView = mInflator.inflate(R.layout.fragment_about_group_item, childViewGroup, false);
             return new IngredientViewHolder(ingredientView);
         }
 

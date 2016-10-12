@@ -1,12 +1,12 @@
 package com.gdgvitvellore.devfest.Entity.Main.Activities;
 
 import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,19 +16,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnticipateInterpolator;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gdgvitvellore.devfest.Control.Animations.Main.DrawerCircularReveal;
 import com.gdgvitvellore.devfest.Control.Animations.Main.ObjectAnimations;
+import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
 import com.gdgvitvellore.devfest.Entity.About.Fragments.AboutFragment;
 import com.gdgvitvellore.devfest.Entity.Actors.DrawerItem;
+import com.gdgvitvellore.devfest.Entity.Coupons.Fragment.CouponsFragment;
+import com.gdgvitvellore.devfest.Entity.FAQ.Fragments.FAQFragment;
+import com.gdgvitvellore.devfest.Entity.MyTeam.Fragments.MyTeamFragment;
+import com.gdgvitvellore.devfest.Entity.SlotMachine.Fragments.SlotMachineFragment;
 import com.gdgvitvellore.devfest.Entity.Timeline.Fragments.TimelineFragment;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,ViewUtils {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -77,6 +77,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         drawerItems = new ArrayList<>();
         toolbarTitles=getResources().getStringArray(R.array.drawer_titles);
+
+        if(getIntent().hasExtra("status")){
+            showMessage(getIntent().getStringExtra("status"));
+        }
     }
 
     private void setInit() {
@@ -116,7 +120,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Fragment timelineFragment = new TimelineFragment();
                     manager.beginTransaction().replace(R.id.fragment_holder, timelineFragment, TimelineFragment.class.getSimpleName()).commit();
                     break;
+                case 1:
+                    Fragment myTeamFragment = new MyTeamFragment();
+                    manager.beginTransaction().replace(R.id.fragment_holder, myTeamFragment, MyTeamFragment.class.getSimpleName()).commit();
+                    break;
+                case 2:
+                    Fragment slotMachineFragment = new SlotMachineFragment();
+                    manager.beginTransaction().replace(R.id.fragment_holder, slotMachineFragment, SlotMachineFragment.class.getSimpleName()).commit();
+                    break;
+                case 3:
+                    Fragment couponsFragment = new CouponsFragment();
+                    manager.beginTransaction().replace(R.id.fragment_holder, couponsFragment, CouponsFragment.class.getSimpleName()).commit();
+                    break;
                 case 4:
+                    Fragment faqFragment = new FAQFragment();
+                    manager.beginTransaction().replace(R.id.fragment_holder, faqFragment, FAQFragment.class.getSimpleName()).commit();
+                    break;
+                case 5:
                     Fragment aboutFragment = new AboutFragment();
                     manager.beginTransaction().replace(R.id.fragment_holder, aboutFragment, AboutFragment.class.getSimpleName()).commit();
             }
@@ -184,6 +204,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.drawer_trigger:
                 toggle();
         }
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Snackbar.make(fragmentHolder,message,Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorDialog() {
+
     }
 
 

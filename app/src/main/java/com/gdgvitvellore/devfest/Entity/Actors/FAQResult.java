@@ -1,8 +1,5 @@
 package com.gdgvitvellore.devfest.Entity.Actors;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
@@ -39,7 +36,7 @@ public class FAQResult extends RealmObject {
         return faqs;
     }
 
-    public void setFaqs(RealmList<FAQ> faqs) {
-        this.faqs = faqs;
+    public void setFaqs(RealmList<FAQ> FAQs) {
+        this.faqs = FAQs;
     }
 }

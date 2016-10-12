@@ -8,13 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.bignerdranch.expandablerecyclerview.ViewHolder.ParentViewHolder;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
 
 
-public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.parentViewHolder>{
+public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.ParentViewHolder>{
 
     private static final String TAG = "TAG";
     private ArrayList<FAQ> questionArrayList ;
@@ -23,12 +24,12 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.pare
         this.questionArrayList = questionArrayList;
     }
 
-    class parentViewHolder extends RecyclerView.ViewHolder{
+    class ParentViewHolder extends RecyclerView.ViewHolder{
 
         private TextView tvQuestionTitle ;
         private ImageButton ibQuestionAnswer ;
 
-        parentViewHolder(View itemView) {
+        ParentViewHolder(View itemView) {
             super(itemView);
             tvQuestionTitle = (TextView) itemView.findViewById(R.id.card_list_parent_question_title) ;
             ibQuestionAnswer = (ImageButton) itemView.findViewById(R.id.card_list_parent_question_answer) ;
@@ -36,15 +37,15 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.pare
     }
 
     @Override
-    public parentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ParentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item_faq_general_parent, parent, false);
 
-        return new parentViewHolder(itemView);
+        return new ParentViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(parentViewHolder holder, final int position) {
+    public void onBindViewHolder(ParentViewHolder holder, final int position) {
         final FAQ question = questionArrayList.get(position);
         holder.tvQuestionTitle.setText(question.getQuestion());
         holder.ibQuestionAnswer.setOnClickListener(new View.OnClickListener() {

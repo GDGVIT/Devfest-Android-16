@@ -8,8 +8,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.gdgvitvellore.devfest.Entity.FAQ.ActivityFAQMain"
-    tools:showIn="@layout/activity_faq_mrmojo">
+    tools:context="com.gdgvitvellore.devfest.Entity.FAQ.Fragments.FAQFragment"
+    tools:showIn="@layout/fragment_faq">
 
 
     <LinearLayout
@@ -50,4 +50,4 @@
     </LinearLayout>
 
 
-</android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.NestedScrollView>

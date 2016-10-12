@@ -4,13 +4,13 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.Fragment;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -29,7 +29,7 @@ import java.util.Random;
  * Created by Shuvam Ghosh on 10/11/2016.
  */
 
-public class SlotMachine extends Fragment {
+public class SlotMachineFragment extends Fragment {
 
     private ImageView iv;
     private ImageView slot1;

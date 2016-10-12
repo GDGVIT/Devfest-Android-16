@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="com.gdgvitvellore.devfest.Entity.FAQ.ActivityFAQMain">
+    tools:context="com.gdgvitvellore.devfest.Entity.FAQ.Fragments.FAQFragment">
 
     <android.support.design.widget.AppBarLayout
         android:focusable="true"
@@ -13,12 +12,11 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="280dp"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
-            android:background="@color/colorPrimaryDark"
+            android:background="@color/window_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
@@ -37,41 +35,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ImageView
-                        android:paddingStart="10dp"
-                        android:id="@+id/activity_scrolling_title_logo"
-                        app:srcCompat="@drawable/ic_gdg_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
 
-                    <TextView
-                        android:id="@+id/activity_scrolling_title_text"
-                        android:text="FAQ"
-                        android:textStyle="bold"
-                        android:layout_marginTop="17dp"
-                        android:alpha="100"
-                        android:textSize="30sp"
-                        android:layout_toRightOf="@id/activity_scrolling_title_logo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:id="@+id/activity_scrolling_title_line"
-                        android:background="@android:color/white"
-                        android:alpha="0.7"
-                        android:layout_marginTop="10dp"
-                        android:layout_below="@id/activity_scrolling_title_logo"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp" />
 
                     <TextView
                         android:layout_marginTop="10dp"
-                        android:layout_below="@id/activity_scrolling_title_line"
                         android:text="Got any question? Ask the chatbot Mr Mojo."
                         android:textColor="@android:color/white"
                         android:layout_width="match_parent"
                         android:textAlignment="center"
+                        android:layout_centerInParent="true"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:layout_height="wrap_content" />

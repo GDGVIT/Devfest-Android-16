@@ -29,12 +29,14 @@
     <string name="team_members">Team members</string>
     <string name="hackathon_phase_1">Hackathon Phase 1</string>
     <string name="time">23:54:21</string>
+    <string name="permission_request">You need audio permissions to ask questions from Mr Mojo</string>
 
 
     <string-array name="drawer_titles">
         <item>Timeline</item>
         <item>My Team</item>
         <item>Slot</item>
+        <item>Coupons</item>
         <item>FAQs</item>
         <item>About</item>
         <item>Logout</item>

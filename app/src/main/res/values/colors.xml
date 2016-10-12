@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0497bc</color>
+    <color name="colorPrimary">#00BCD4</color>
     <!--<color name="colorPrimaryDark">#d43840</color>-->
-    <color name="colorPrimaryDark">#272739</color>
-    <color name="colorAccent">#26a69a</color>
+    <color name="colorPrimaryDark">#0097A7</color>
+    <color name="colorAccent">#607D8B</color>
     <color name="cardview1colour">#DB4437</color>
     <color name="cardview2colour">#4285F4</color>
     <color name="cardview3colour">#0F9D58</color>
@@ -15,9 +15,15 @@
     <color name="window_bg">#272739</color>
     <color name="transparent">#00ffffff</color>
     <color name="text_hint">#d3d3d3</color>
+    <color name="horizontal_line_color">#23FFFFFF</color>
+    <color name="black">#000000</color>
 
     <color name="colorBlueAltFAQ">#1aa5b6</color>
     <color name="colorBlueFAQ">#3167d4</color>
     <color name="colorBackground">#28282f</color>
+    <color name="horizontal_line_primary">#230497bc</color>
+    <color name="colorIconsOrTexts">#FFFFFF</color>
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
 </resources>
 

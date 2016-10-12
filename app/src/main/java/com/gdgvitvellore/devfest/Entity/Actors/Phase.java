@@ -7,6 +7,7 @@ package com.gdgvitvellore.devfest.Entity.Actors;
 public class Phase {
 
     private String name, time;
+    private boolean isRunning=false;
 
     public Phase(){
 
@@ -33,4 +34,11 @@ public class Phase {
         this.time = time;
     }
 
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
 }

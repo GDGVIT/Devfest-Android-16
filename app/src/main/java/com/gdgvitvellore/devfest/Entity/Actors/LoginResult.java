@@ -4,6 +4,8 @@ package com.gdgvitvellore.devfest.Entity.Actors;
  * Created by Prince Bansal Local on 10/8/2016.
  */
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 
 /**
@@ -12,6 +14,8 @@ import io.realm.RealmObject;
 
 public class LoginResult extends RealmObject {
     private int status;
+    //TODO Ask backend developer to correct the typo
+    @SerializedName("messasge")
     private String message;
     private User user;
     private Team team;
