@@ -38,7 +38,7 @@ public class MyTeamFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView;
-        rootView = inflater.inflate(R.layout.fragment_myteam,container,false);
+        rootView = inflater.inflate(R.layout.fragment_myteam, container, false);
         init(rootView);
         setInit();
         setData();
@@ -46,7 +46,7 @@ public class MyTeamFragment extends Fragment {
     }
 
     private void init(View rootView) {
-        recyclerView=(RecyclerView)rootView.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
         layoutManager = new LinearLayoutManager(rootView.getContext());
     }
@@ -77,7 +77,6 @@ public class MyTeamFragment extends Fragment {
 
     private void initRootView(View rootView) {
 
-        
 
         //These data comes from the slot machine
 
@@ -131,43 +130,47 @@ public class MyTeamFragment extends Fragment {
             this.name = name;
         }
     }
-    public class Ingredient{
+
+    public class Ingredient {
         public String name;
 
         public Ingredient(String beef) {
-            name=beef;
+            name = beef;
         }
 
-        public String getName(){
+        public String getName() {
             return name;
         }
     }
+
     public class RecipeViewHolder extends ParentViewHolder {
 
         private TextView mRecipeTextView;
 
         public RecipeViewHolder(View itemView) {
             super(itemView);
-            mRecipeTextView = (TextView)itemView.findViewById(R.id.about_list_item_content);
+            mRecipeTextView = (TextView) itemView.findViewById(R.id.about_list_item_content);
         }
 
         public void bind(Recipe recipe) {
             mRecipeTextView.setText(recipe.getName());
         }
     }
+
     public class IngredientViewHolder extends ChildViewHolder {
 
         private TextView mIngredientTextView;
 
         public IngredientViewHolder(View itemView) {
             super(itemView);
-            mIngredientTextView = (TextView)itemView.findViewById(R.id.about_list_item_header);
+            mIngredientTextView = (TextView) itemView.findViewById(R.id.about_list_item_header);
         }
 
         public void bind(Ingredient ingredient) {
             mIngredientTextView.setText(ingredient.getName());
         }
     }
+
     public class MyAdapter extends ExpandableRecyclerAdapter<RecipeViewHolder, IngredientViewHolder> {
 
         private LayoutInflater mInflator;
@@ -206,7 +209,6 @@ public class MyTeamFragment extends Fragment {
             Ingredient ingredient = (Ingredient) childListItem;
             childViewHolder.bind(ingredient);
         }
-
 
 
     }

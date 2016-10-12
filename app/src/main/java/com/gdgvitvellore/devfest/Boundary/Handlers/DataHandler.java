@@ -280,6 +280,7 @@ public class DataHandler {
             mRealm.beginTransaction();
             mRealm.copyToRealm(slots);
             mRealm.commitTransaction();
+
         }
     }
 
