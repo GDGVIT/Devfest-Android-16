@@ -146,7 +146,7 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
             LoginResult loginResult=(LoginResult)result;
             Log.d("LOGIN RESPONSE",result.toString());
             if(loginResult!=null){
-                if (loginResult.getStatus()== ErrorDefinitions.CODE_LOGGED_IN){
+                if (loginResult.getStatus()== ErrorDefinitions.CODE_SUCCESS){
                     Log.d("LOGIN","SUCCESS");
                     Intent intent=new Intent(this, MainActivity.class);
                     intent.putExtra("status", Status.LOGGED_IN);
@@ -158,7 +158,6 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
                 }
             }
         }
-
     }
 
     @Override

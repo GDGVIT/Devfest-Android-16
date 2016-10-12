@@ -5,10 +5,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,9 +21,7 @@ import android.widget.TextView;
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
-import com.gdgvitvellore.devfest.Control.Exceptions.BindingException;
 import com.gdgvitvellore.devfest.Entity.Actors.Phase;
-import com.gdgvitvellore.devfest.Entity.Actors.Timeline;
 import com.gdgvitvellore.devfest.Entity.Actors.TimelineResult;
 import com.gdgvitvellore.devfest.Entity.Customs.EmptyFragment;
 import com.gdgvitvellore.devfest.Entity.Customs.VerticalPageTransformer;
@@ -34,7 +30,6 @@ import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import me.relex.circleindicator.CircleIndicator;
 
@@ -79,7 +74,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         getCredentials();
         setInit();
         setData();
-        fetchData();
+        //fetchData();
     }
 
     private void getCredentials() {
@@ -90,7 +85,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     }
 
     private void fetchData() {
-        Timeline timeline = DataHandler.getInstance(getActivity()).getTimeline();
+//        Timeline timeline = DataHandler.getInstance(getActivity()).getTimeline();
         if (timeline == null){
             connectAPI.timeline(email, auth);
         }
@@ -120,6 +115,14 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     private void setData() {
         setupViewPager(viewPager);
 
+
+////        Phase timeline = DataHandler.getInstance(getActivity()).getTimeline();
+//        if (timeline == null){
+//            connectAPI.timeline(email, auth);
+//        }
+//        else{
+//
+//        }
         Phase phase = new Phase("Hackathon Phase 1", "10:00 - 12:30");
         phaseList.add(phase);
 
@@ -148,7 +151,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
                 int seconds = (int) (millis / 1000) % 60;
                 int minutes = (int) ((millis / (1000 * 60)) % 60);
                 int hours = (int) ((millis / (1000 * 60 * 60)) % 24);
-                String text = String.format("%02d hours, %02d minutes, %02d seconds", hours, minutes, seconds);
+                String text = String.format("%02d H, %02d M, %02d S", hours, minutes, seconds);
                 timer.setText(text);
             }
 
@@ -174,7 +177,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
             if (timelineResult!=null){
                 if (timelineResult.getStatus() == ErrorDefinitions.CODE_LOGGED_IN){
                     DataHandler.getInstance(getActivity()).saveTimeline(timelineResult.getTimeline());
-                    Log.d("Realm result:", DataHandler.getInstance(getActivity()).getTimeline().toString());
+                    Log.d("Realm result:", DataHandler.getInstance(getActivity()).getPhases().toString());
                 }
             }
         }
@@ -232,8 +235,8 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         public void onBindViewHolder(MyViewHolder holder, int position) {
 
             Phase phase = phasesList.get(position);
-            holder.name.setText(phase.getName());
-            holder.time.setText(phase.getTime());
+            holder.name.setText(phase.getTitle());
+            holder.time.setText(phase.getStartTime()+"-"+phase.getEndTime());
             if(position==0){
                 holder.time.setActivated(true);
             }

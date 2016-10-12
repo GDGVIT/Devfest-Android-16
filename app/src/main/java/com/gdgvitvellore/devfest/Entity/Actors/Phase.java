@@ -1,44 +1,108 @@
 package com.gdgvitvellore.devfest.Entity.Actors;
 
-/**
- * Created by AravindRaj on 11-10-2016.
- */
 
-public class Phase {
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-    private String name, time;
-    private boolean isRunning=false;
+import io.realm.RealmObject;
 
-    public Phase(){
+public class Phase extends RealmObject {
 
+    @SerializedName("title")
+    @Expose
+    private String title;
+    @SerializedName("start_time")
+    @Expose
+    private String startTime;
+    @SerializedName("end_time")
+    @Expose
+    private String endTime;
+    @SerializedName("description")
+    @Expose
+    private String description;
+    @SerializedName("image_url")
+    @Expose
+    private String imageUrl;
+    @SerializedName("isRunning")
+    @Expose
+    private Boolean isRunning;
+
+    /**
+     * @return The title
+     */
+    public String getTitle() {
+        return title;
     }
 
-    public Phase(String name, String time){
-        this.name = name;
-        this.time = time;
+    /**
+     * @param title The title
+     */
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getName() {
-        return name;
+    /**
+     * @return The startTime
+     */
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    /**
+     * @param startTime The start_time
+     */
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
-    public String getTime() {
-        return time;
+    /**
+     * @return The endTime
+     */
+    public String getEndTime() {
+        return endTime;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    /**
+     * @param endTime The end_time
+     */
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
-    public boolean isRunning() {
+    /**
+     * @return The description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description The description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return The imageUrl
+     */
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    /**
+     * @param imageUrl The image_url
+     */
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+
+    public Boolean getRunning() {
         return isRunning;
     }
 
-    public void setRunning(boolean running) {
+    public void setRunning(Boolean running) {
         isRunning = running;
     }
 }

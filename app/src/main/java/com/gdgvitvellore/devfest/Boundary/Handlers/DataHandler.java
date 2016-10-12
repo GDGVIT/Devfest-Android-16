@@ -12,15 +12,15 @@ import com.gdgvitvellore.devfest.Control.Contracts.PrivateContract;
 import com.gdgvitvellore.devfest.Entity.Actors.APIAssigned;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
 import com.gdgvitvellore.devfest.Entity.Actors.LogoutResult;
-import com.gdgvitvellore.devfest.Entity.Actors.Realm.RealmString;
+import com.gdgvitvellore.devfest.Entity.Actors.Phase;
 import com.gdgvitvellore.devfest.Entity.Actors.Slots;
 import com.gdgvitvellore.devfest.Entity.Actors.Speakers;
 import com.gdgvitvellore.devfest.Entity.Actors.Team;
-import com.gdgvitvellore.devfest.Entity.Actors.Timeline;
-import com.gdgvitvellore.devfest.Entity.Actors.TimelineResult;
 import com.gdgvitvellore.devfest.Entity.Actors.User;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -156,9 +156,12 @@ public class DataHandler {
         return auth;
     }
 
-    public Timeline getTimeline(){
-        Timeline timeline = mRealm.where(Timeline.class).findFirst();
-            return timeline;
+    public List<Phase> getPhases(){
+        return Arrays.asList((Phase[]) mRealm.where(Phase.class).findAll().toArray());
+    }
+
+    public List<FAQ> getFAQ(){
+        return Arrays.asList((FAQ[]) mRealm.where(FAQ.class).findAll().toArray());
     }
 
     /**
@@ -235,14 +238,14 @@ public class DataHandler {
     }
 
     /**
-     * Use this method to store timeline {@link com.gdgvitvellore.devfest.Entity.Actors.Timeline}
+     * Use this method to store timeline {@link Phase}
      *
-     * @param timeline
+     * @param phases
      */
-    public void saveTimeline(RealmList<Timeline> timeline) {
-        if (timeline != null) {
+    public void saveTimeline(RealmList<Phase> phases) {
+        if (phases != null) {
             mRealm.beginTransaction();
-            mRealm.copyToRealm(timeline);
+            mRealm.copyToRealm(phases);
             mRealm.commitTransaction();
         }
     }
