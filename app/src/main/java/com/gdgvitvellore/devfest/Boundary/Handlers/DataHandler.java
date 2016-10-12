@@ -24,7 +24,6 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmResults;
 
 /**
  * This singleton class will be used to fetch as well as store any data.
