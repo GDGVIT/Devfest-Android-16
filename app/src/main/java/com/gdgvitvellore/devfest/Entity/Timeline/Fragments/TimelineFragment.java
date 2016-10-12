@@ -85,13 +85,13 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     }
 
     private void fetchData() {
-//        Timeline timeline = DataHandler.getInstance(getActivity()).getTimeline();
+        /*Timeline timeline = DataHandler.getInstance(getActivity()).getTimeline();
         if (timeline == null){
             connectAPI.timeline(email, auth);
         }
         else{
 
-        }
+        }*/
     }
 
     private void init(View view) {
@@ -123,13 +123,24 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 //        else{
 //
 //        }
-        Phase phase = new Phase("Hackathon Phase 1", "10:00 - 12:30");
+        Phase phase = new Phase();
+        phase.setTitle("Phase 1");
+        phase.setStartTime("10:00");
+        phase.setEndTime("11:00");
         phaseList.add(phase);
 
-        phase = new Phase("Hackathon Phase 2", "12:30 - 15:00");
+        phase = new Phase();
+
+        phase.setTitle("Phase 12");
+        phase.setStartTime("10:00");
+        phase.setEndTime("11:00");
         phaseList.add(phase);
 
-        phase = new Phase("Hackathon Phase 3", "15:00 - 17:00");
+        phase = new Phase();
+
+        phase.setTitle("Phase 3");
+        phase.setStartTime("10:00");
+        phase.setEndTime("11:00");
         phaseList.add(phase);
         mAdapter = new PhasesAdapter(phaseList);
 

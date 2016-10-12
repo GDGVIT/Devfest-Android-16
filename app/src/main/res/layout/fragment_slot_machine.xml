@@ -7,16 +7,20 @@
     android:background="#272739"
     tools:context="com.gdgvitvellore.devfest.Entity.SlotMachine.Fragments.SlotMachineFragment">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_marginTop="50dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
+            android:background="@drawable/bg_round_circle"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:weightSum="3"
             android:layout_margin="20dp"
             android:layout_gravity="center"
@@ -56,37 +60,24 @@
                 />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:weightSum="3"
-            android:layout_margin="20dp"
-            android:layout_gravity="center_horizontal"
-            >
-        </LinearLayout>
-
-    </FrameLayout>
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|center"
+        android:layout_gravity="center_horizontal"
         android:id="@+id/timerText"
         android:layout_marginBottom="15dp"
         >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.bydavy.morpher.DigitalClockView
+            android:id="@+id/digitalClock"
+            android:padding="10dp"
+            android:layout_gravity="center"
             android:text="00:00"
-            android:fontFamily="sans-serif-condensed"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:id="@+id/timeRemaining"
+            android:visibility="invisible"
             android:textColor="#e0c9c9c9"
-            />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
 
     </FrameLayout>
@@ -137,6 +128,9 @@
                 android:layout_marginTop="-20dp"
                 android:src="@drawable/ic_arrow_drop_down_black_24dp" />
         </LinearLayout>
+
     </FrameLayout>
+
+    </LinearLayout>
 
 </FrameLayout>
