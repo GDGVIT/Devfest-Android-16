@@ -146,8 +146,6 @@ public class MyTeamFragment extends Fragment {
             return new ItemViewHolder(itemView);
         }
 
-        // onBind ...
-
 
         @Override
         public void onBindParentViewHolder(GroupViewHolder parentViewHolder, int position, ParentListItem parentListItem) {

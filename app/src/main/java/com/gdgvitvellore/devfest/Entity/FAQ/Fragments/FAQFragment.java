@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
+import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
 import com.gdgvitvellore.devfest.Control.Customs.FAQExpandableAdapter;
 import com.gdgvitvellore.devfest.Control.Customs.QuestionsAdapter;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
@@ -393,7 +394,19 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
     @Override
     public void onRequestCompleted(int code, Object result) {
         if (code == ConnectAPI.FAQ_CODE){
+            FAQResult faqresult = (FAQResult) result;
+            Log.d("FAQ:", result.toString());
+            if (faqresult != null){
 
+                if (faqresult.getStatus() == ErrorDefinitions.CODE_SUCCESS){
+                    DataHandler.getInstance(getActivity()).saveFAQ(faqresult.getFaqs());
+                    Log.d("FAQ from Realm: ", DataHandler.getInstance(getActivity()).getFAQ().toString());
+                }
+                else {
+//                    showMessage(ErrorDefinitions.getMessage(faqresult.getStatus()));
+                }
+
+            }
         }
     }
 
@@ -455,5 +468,4 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
         }
 
     }
-
 }
