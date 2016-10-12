@@ -8,7 +8,7 @@ package com.gdgvitvellore.devfest.Control.Contracts;
 public class ErrorDefinitions {
 
     //General codes
-    public static final int CODE_SUCCESS = 0;
+    public static final int CODE_SUCCESS = 200;
     public static final int CODE_TIMEDOUT = 11;
     public static final int CODE_WRONG_FORMAT = 13;
 
