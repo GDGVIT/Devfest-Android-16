@@ -66,6 +66,7 @@
                     android:layout_height="match_parent">
 
                     <EditText
+                        android:id="@+id/fragment_faq_et_question"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
                         android:padding="20dp"

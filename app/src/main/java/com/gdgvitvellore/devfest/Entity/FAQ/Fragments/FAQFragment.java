@@ -21,19 +21,26 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
 import com.gdgvitvellore.devfest.Control.Customs.FAQExpandableAdapter;
-import com.gdgvitvellore.devfest.Control.Customs.QuestionsAdapter;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQResult;
+import com.gdgvitvellore.devfest.Entity.Events.ChatBotApiResponse;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -41,13 +48,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class FAQFragment extends Fragment implements RecognitionListener, View.OnClickListener, ConnectAPI.ServerAuthenticateListener {
+public class FAQFragment extends Fragment implements
+        RecognitionListener, View.OnClickListener, ConnectAPI.ServerAuthenticateListener{
 
     private static final int REQUEST_AUDIO_PERMS = 1;
     private static final String TAG = "TAG";
     private ArrayList<FAQ> questionList = new ArrayList<>();
     private RecyclerView rvExpanded ;
-    private QuestionsAdapter questionsAdapter ;
     private FAQExpandableAdapter faqExpandableAdapter ;
 
     private TextToSpeech textToSpeech ;
@@ -57,6 +64,8 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
     private boolean isOn = false ;
     private FloatingActionButton voiceFab;
 
+    private EditText etQuestion ;
+
     public String[] AUDIO_PERMS = {
             Manifest.permission.RECORD_AUDIO,
     } ;
@@ -64,6 +73,7 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
     android.app.FragmentManager fragmentManager ;
 
     private ConnectAPI connectAPI;
+    private int stateId = 101 ;
 
 
     @Nullable
@@ -85,7 +95,10 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
     @Override
     public void onStart() {
         super.onStart();
+
+        EventBus.getDefault().register(this);
         setData();
+
     }
 
     private void init(View rootView) {
@@ -94,7 +107,32 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getContext()) ;
 
-        connectAPI = new ConnectAPI(getActivity());
+        etQuestion = (EditText) rootView.findViewById(R.id.fragment_faq_et_question) ;
+        etQuestion.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 0) {
+                    stateId = 201 ;
+                    //change button
+                }else {
+                    stateId = 101 ;
+                    //set it back to microphone
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
+                connectAPI = new ConnectAPI(getActivity());
         connectAPI.setServerAuthenticateListener(this);
     }
 
@@ -237,15 +275,13 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
 
 
     private void getArrayData() {
-        questionList.add(new FAQ("Question 1", "Answer 1"));
-        questionList.add(new FAQ("Question 2", "Answer 2"));
-        questionList.add(new FAQ("Question 3", "Answer 3"));
-        questionList.add(new FAQ("Question 4", "Answer 4"));
-        questionList.add(new FAQ("Question 5", "Answer 5"));
-        questionList.add(new FAQ("Question 6", "Answer 6"));
-        questionList.add(new FAQ("Question 7", "Answer 7"));
-        questionList.add(new FAQ("Question 8", "Answer 8"));
-        questionList.add(new FAQ("Question 9", "Answer 9"));
+        questionList.add(new FAQ("What is a hackathon?", "A hackathon is an intense session that brings together computer programmers, designers, and specialists to build a product within a stipulated period of time."));
+        questionList.add(new FAQ("Who should attend?", "Anybody who has a knack for solving problems, likes to code, design and develop unique ideas and models are welcome to participate at the hackathon."));
+        questionList.add(new FAQ("What is the maximum team size?", "A maximum of 3 members per team will be taken on a first come first serve basis. A total of 60 teams will be admitted to the hackathon."));
+        questionList.add(new FAQ("What is the judging criteria?", "The complete end product that has been developed over the period of the hackathon is judged to see whether any new innovative idea has been brought to the table. The design and implementation of the code are also taken into account. The presentation of the product is also an important factor."));
+        questionList.add(new FAQ("What should I bring?", "All the participants are required to bring their laptops and any material that the team requires to use during the hackathon. No material for the hack will be provided."));
+        questionList.add(new FAQ("How do I form a team?", "If you do not already have a team you can come to the event and we will assign you to a team to participate for the hackathon."));
+        questionList.add(new FAQ("Will there be provision for food?", "Yes, dinner that includes pizzas from dominos will be provided free of cost. The breakfast and lunch on 16th will not be provided till further notice."));
     }
 
 
@@ -289,7 +325,62 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
                 .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
         for (String result : matches)
-            Log.i(TAG, "onPartialResults: " + result);
+            Log.i(TAG, "A FINAL RESULTS: " + result);
+        /*TODO: Select the best text and make network call*/
+
+        etQuestion.setText(matches.get(0));
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void displayResponse(ChatBotApiResponse chatBotApiResponse){
+
+        if (chatBotApiResponse.getResponseCode() == 200){
+            Log.i(TAG, "displayResponse: " + chatBotApiResponse.getResponseAnswer());
+
+            AlertDialog dialogSuccess = new AlertDialog.Builder(getActivity())
+                    .create();
+            dialogSuccess.setCancelable(false);
+            dialogSuccess.setTitle(etQuestion.getText().toString());
+            dialogSuccess.setMessage(chatBotApiResponse.getResponseAnswer());
+            dialogSuccess.setButton("Got it!", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            dialogSuccess.show();
+
+        }else {
+            AlertDialog dialogFailure = new AlertDialog.Builder(getActivity())
+                    .create();
+            dialogFailure.setCancelable(false);
+            dialogFailure.setTitle("Error");
+            dialogFailure.setMessage("Sorry we couldn't really get the answer for you.");
+            dialogFailure.setButton("Try Again!", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            dialogFailure.show();
+
+        }
+
+    }
+
+
+    @Override
+    public void onPause() {
+        speechRecognizer.destroy();
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
@@ -315,21 +406,27 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.activity_faq_fab_voice:
-                if(!hasPermissionsGranted(AUDIO_PERMS)){
-                    requestAudioPermissions();
-                }else {
-                    if(!isOn || speechRecognizer != null){
-                        Log.i(TAG, "onClick: IS ON NOW");
-                        speechRecognizer.startListening(recognizerIntent);
-                    }
-                    else {
-                        Log.i(TAG, "onClick: IS OFF NOW");
 
-                        assert speechRecognizer != null;
-                        speechRecognizer.stopListening();
-                    }
+                if (stateId == 101){
+                    if(!hasPermissionsGranted(AUDIO_PERMS)){
+                        requestAudioPermissions();
+                    }else {
+                        if(!isOn || speechRecognizer != null){
+                            Log.i(TAG, "onClick: IS ON NOW");
+                            speechRecognizer.startListening(recognizerIntent);
+                        }
+                        else {
+                            Log.i(TAG, "onClick: IS OFF NOW");
 
-                    isOn = !isOn ;
+                            assert speechRecognizer != null;
+                            speechRecognizer.stopListening();
+                        }
+
+                        isOn = !isOn ;
+                    }
+                }else if (stateId = 201){
+                    ConnectAPI connectAPI = new ConnectAPI(this.getActivity()) ;
+                    connectAPI.chatBot(getActivity().getUserMail(), etQuestion.getText().toString()) ;
                 }
                 break;
 
