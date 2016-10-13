@@ -16,6 +16,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.gdgvitvellore.devfest.Boundary.Handlers.AppController;
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
+import com.gdgvitvellore.devfest.Control.Constants;
 import com.gdgvitvellore.devfest.Control.Contracts.APIContract;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
 import com.gdgvitvellore.devfest.Control.Customs.CustomTypeAdapter;
@@ -27,10 +28,13 @@ import com.gdgvitvellore.devfest.Entity.Actors.LogoutResult;
 import com.gdgvitvellore.devfest.Entity.Actors.SlotsResult;
 import com.gdgvitvellore.devfest.Entity.Actors.SpeakersResult;
 import com.gdgvitvellore.devfest.Entity.Actors.TimelineResult;
+import com.gdgvitvellore.devfest.Entity.Events.ChatBotApiResponse;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -224,6 +228,40 @@ public class ConnectAPI {
     }
 
 
+    public void chatBot(final String queryText){
+
+        String urlChat = Constants.chatURl + "/faq" + "?email=random@gmail.com&question=" + queryText ;
+
+        StringRequest chatRequest = new StringRequest(Request.Method.GET, urlChat,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        Log.i(TAG, "onResponse: " + response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response) ;
+                            if (jsonObject.get("status_code") == 200 ){
+                                EventBus.getDefault().post(new ChatBotApiResponse(200, jsonObject.getString("answer")));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.e(TAG, "onResponse: " + e.getMessage());
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "onErrorResponse: " + error.getMessage());
+                EventBus.getDefault().post(new ChatBotApiResponse(400, error.getMessage()));
+            }
+        });
+
+        RetryPolicy policy = new DefaultRetryPolicy((int) REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        chatRequest.setRetryPolicy(policy);
+        AppController.getInstance().addToRequestQueue(chatRequest);
+
+    }
 
 
 

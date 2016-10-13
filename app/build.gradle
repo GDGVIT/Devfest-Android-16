@@ -3,7 +3,7 @@ apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    buildToolsVersion "24.0.0"
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
         applicationId "com.gdgvitvellore.devfest.gdgdevfest"
@@ -46,9 +46,6 @@ dependencies {
     /*Networking and Parsing Libs*/
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.google.code.gson:gson:2.7'
-    compile 'io.reactivex:rxjava:1.1.6'
-    compile 'io.reactivex:rxandroid:1.2.1'
-
 
     /*UI Libraries*/
     compile 'de.hdodenhof:circleimageview:2.1.0'
@@ -59,6 +56,8 @@ dependencies {
     compile 'link.fls:swipestack:0.3.0'
     compile 'com.google.zxing:core:3.2.1'
     compile 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
+
+    compile 'org.greenrobot:eventbus:3.0.0'
 
 
 }
