@@ -228,9 +228,9 @@ public class ConnectAPI {
     }
 
 
-    public void chatBot(final String queryText){
+    public void chatBot(String emailId, final String queryText){
 
-        String urlChat = Constants.chatURl + "/faq" + "?email=random@gmail.com&question=" + queryText ;
+        String urlChat = Constants.chatURl + "/faq" + "?email=" + emailId + "&question=" + queryText ;
 
         StringRequest chatRequest = new StringRequest(Request.Method.GET, urlChat,
                 new Response.Listener<String>() {

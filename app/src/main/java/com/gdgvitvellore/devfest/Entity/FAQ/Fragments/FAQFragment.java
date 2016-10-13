@@ -21,10 +21,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
@@ -45,7 +48,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class FAQFragment extends Fragment implements RecognitionListener, View.OnClickListener, ConnectAPI.ServerAuthenticateListener {
+public class FAQFragment extends Fragment implements
+        RecognitionListener, View.OnClickListener, ConnectAPI.ServerAuthenticateListener{
 
     private static final int REQUEST_AUDIO_PERMS = 1;
     private static final String TAG = "TAG";
@@ -60,6 +64,8 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
     private boolean isOn = false ;
     private FloatingActionButton voiceFab;
 
+    private EditText etQuestion ;
+
     public String[] AUDIO_PERMS = {
             Manifest.permission.RECORD_AUDIO,
     } ;
@@ -67,6 +73,7 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
     android.app.FragmentManager fragmentManager ;
 
     private ConnectAPI connectAPI;
+    private int stateId = 101 ;
 
 
     @Nullable
@@ -100,7 +107,32 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getContext()) ;
 
-        connectAPI = new ConnectAPI(getActivity());
+        etQuestion = (EditText) rootView.findViewById(R.id.fragment_faq_et_question) ;
+        etQuestion.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 0) {
+                    stateId = 201 ;
+                    //change button
+                }else {
+                    stateId = 101 ;
+                    //set it back to microphone
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
+                connectAPI = new ConnectAPI(getActivity());
         connectAPI.setServerAuthenticateListener(this);
     }
 
@@ -296,8 +328,7 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
             Log.i(TAG, "A FINAL RESULTS: " + result);
         /*TODO: Select the best text and make network call*/
 
-        ConnectAPI connectAPI = new ConnectAPI(this.getActivity()) ;
-        connectAPI.chatBot(matches.get(0));
+        etQuestion.setText(matches.get(0));
 
     }
 
@@ -352,21 +383,27 @@ public class FAQFragment extends Fragment implements RecognitionListener, View.O
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.activity_faq_fab_voice:
-                if(!hasPermissionsGranted(AUDIO_PERMS)){
-                    requestAudioPermissions();
-                }else {
-                    if(!isOn || speechRecognizer != null){
-                        Log.i(TAG, "onClick: IS ON NOW");
-                        speechRecognizer.startListening(recognizerIntent);
-                    }
-                    else {
-                        Log.i(TAG, "onClick: IS OFF NOW");
 
-                        assert speechRecognizer != null;
-                        speechRecognizer.stopListening();
-                    }
+                if (stateId == 101){
+                    if(!hasPermissionsGranted(AUDIO_PERMS)){
+                        requestAudioPermissions();
+                    }else {
+                        if(!isOn || speechRecognizer != null){
+                            Log.i(TAG, "onClick: IS ON NOW");
+                            speechRecognizer.startListening(recognizerIntent);
+                        }
+                        else {
+                            Log.i(TAG, "onClick: IS OFF NOW");
 
-                    isOn = !isOn ;
+                            assert speechRecognizer != null;
+                            speechRecognizer.stopListening();
+                        }
+
+                        isOn = !isOn ;
+                    }
+                }else if (stateId = 201){
+                    ConnectAPI connectAPI = new ConnectAPI(this.getActivity()) ;
+                    connectAPI.chatBot(getActivity().getUserMail(), etQuestion.getText().toString()) ;
                 }
                 break;
 
