@@ -338,9 +338,32 @@ public class FAQFragment extends Fragment implements
         if (chatBotApiResponse.getResponseCode() == 200){
             Log.i(TAG, "displayResponse: " + chatBotApiResponse.getResponseAnswer());
 
-        }else {
-            //Error
+            AlertDialog dialogSuccess = new AlertDialog.Builder(getActivity())
+                    .create();
+            dialogSuccess.setCancelable(false);
+            dialogSuccess.setTitle(etQuestion.getText().toString());
+            dialogSuccess.setMessage(chatBotApiResponse.getResponseAnswer());
+            dialogSuccess.setButton("Got it!", new DialogInterface.OnClickListener() {
 
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            dialogSuccess.show();
+
+        }else {
+            AlertDialog dialogFailure = new AlertDialog.Builder(getActivity())
+                    .create();
+            dialogFailure.setCancelable(false);
+            dialogFailure.setTitle("Error");
+            dialogFailure.setMessage("Sorry we couldn't really get the answer for you.");
+            dialogFailure.setButton("Try Again!", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            dialogFailure.show();
 
         }
 
