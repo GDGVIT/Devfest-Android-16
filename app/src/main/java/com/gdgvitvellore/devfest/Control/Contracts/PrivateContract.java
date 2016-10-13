@@ -7,4 +7,6 @@ package com.gdgvitvellore.devfest.Control.Contracts;
 public class PrivateContract {
 
     public static String PREFERENCES_FILE="devfest_pref";
+
+    public static long SLOT_WAIT_TIME=1800000;
 }

@@ -3,13 +3,11 @@ package com.gdgvitvellore.devfest.Entity.SlotMachine.Fragments;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,14 +15,13 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.bydavy.morpher.DigitalClockView;
 import com.bydavy.morpher.font.DFont;
 import com.gdgvitvellore.devfest.Control.Animations.SlotMachine.ObjectAnimations;
+import com.gdgvitvellore.devfest.Control.Contracts.PrivateContract;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.Random;
@@ -33,8 +30,9 @@ import java.util.Random;
  * Created by Shuvam Ghosh on 10/11/2016.
  */
 
-public class SlotMachineFragment extends Fragment {
+public class SlotMachineFragment extends Fragment implements View.OnTouchListener {
 
+    private static final String TAG = SlotMachineFragment.class.getSimpleName();
     private ImageView trigger;
     private ImageView slot1, slot2, slot3;
     private LinearLayout triggerHolder, arrowLayout;
@@ -42,12 +40,24 @@ public class SlotMachineFragment extends Fragment {
     private int min = 0;
     private int sec = 0;
 
+    PointF downPT = new PointF();
+    PointF startPT = new PointF();
 
     private int imgResources[] = {
-            R.drawable.github_api_150,
-            R.drawable.uber_api_150,
-            R.drawable.github_api_150,
-            R.drawable.uber_api_150
+            R.drawable.api1,
+            R.drawable.api2,
+            R.drawable.api3,
+            R.drawable.api4,
+            R.drawable.api5,
+            R.drawable.api6,
+            R.drawable.api7,
+            R.drawable.api8,
+            R.drawable.api9,
+            R.drawable.api10,
+            R.drawable.api11,
+            R.drawable.api12,
+            R.drawable.api13,
+            R.drawable.api14,
     };
     private CountDownTimer timer;
 
@@ -82,200 +92,76 @@ public class SlotMachineFragment extends Fragment {
 
         digitalClockView.setVisibility(View.INVISIBLE);
 
-        trigger.setOnTouchListener(new View.OnTouchListener() {
-
-            PointF DownPT = new PointF();
-            PointF StartPT = new PointF();
-
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                int eid = motionEvent.getAction();
-                switch (eid) {
-                    case MotionEvent.ACTION_MOVE:
-                        PointF mv = new PointF(motionEvent.getX() - DownPT.x, motionEvent.getY() - DownPT.y);
-                        Log.i("st+mv", "onTouch: " + StartPT.y + "*" + mv.y + "*" + (StartPT.y + mv.y));
-                        Rect rec = new Rect();
-                        Rect rec2 = new Rect();
-                        triggerHolder.getLocalVisibleRect(rec2);
-                        trigger.getLocalVisibleRect(rec);
-                        if (StartPT.y + mv.y >= rec2.top && StartPT.y + mv.y <= rec2.height() - rec.height()) {
-                            trigger.setY((int) (StartPT.y + mv.y));
-                            StartPT = new PointF(trigger.getX(), trigger.getY());
-                        }
-                        break;
-                    case MotionEvent.ACTION_DOWN:
-
-                        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(arrowLayout, "alpha", 1f, 0f);
-                        fadeOut.setDuration(400);
-                        fadeOut.start();
-                        DownPT.x = motionEvent.getX();
-                        DownPT.y = motionEvent.getY();
-                        StartPT = new PointF(trigger.getX(), trigger.getY());
-                        break;
-                    case MotionEvent.ACTION_UP:
-
-
-                        float in = trigger.getY();
-                        ObjectAnimator animator = ObjectAnimator.ofFloat(trigger, "y", in, 35, 20, 30, 20, 25, 20);
-                        animator.setDuration(500);
-                        animator.start();
-                        animateSlots();
-                        animator.addListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animator) {
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animator) {
-                                ObjectAnimator fadeIn = ObjectAnimator.ofFloat(arrowLayout, "alpha", 0f, 1f);
-                                fadeIn.setDuration(500);
-                                fadeIn.start();
-                                arrowLayout.setVisibility(View.VISIBLE);
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animator) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animator) {
-
-                            }
-                        });
-
-                        break;
-                    default:
-                        break;
-                }
-
-                return true;
-            }
-        });
+        trigger.setOnTouchListener(this);
     }
 
     private void animateSlots() {
 
 
-        ObjectAnimator animator1 = ObjectAnimator.ofFloat(slot1, "translationY", 0, -80, 80, 0);
-        ObjectAnimator alpha1 = ObjectAnimator.ofFloat(slot1, "alpha", 1, 0, 0, 1);
-
-        ObjectAnimator animator2 = ObjectAnimator.ofFloat(slot2, "translationY", 0, -80, 80, 0);
-        ObjectAnimator alpha2 = ObjectAnimator.ofFloat(slot2, "alpha", 1, 0, 0, 1);
-
-        ObjectAnimator animator3 = ObjectAnimator.ofFloat(slot3, "translationY", 0, -80, 80, 0);
-        ObjectAnimator alpha3 = ObjectAnimator.ofFloat(slot3, "alpha", 1, 0, 0, 1);
-
-
-        animator1.setDuration(100);
-        alpha1.setDuration(100);
-
-        animator2.setDuration(100);
-        alpha2.setDuration(100);
-
-        animator3.setDuration(100);
-        alpha3.setDuration(100);
-
-        animator1.setInterpolator(new LinearInterpolator());
-        alpha1.setInterpolator(new LinearInterpolator());
-        animator1.setRepeatCount(60);
-        animator2.setRepeatCount(80);
-        animator3.setRepeatCount(100);
-
-
-        animator1.setRepeatMode(ValueAnimator.RESTART);
-        animator2.setRepeatMode(ValueAnimator.RESTART);
-        animator3.setRepeatMode(ValueAnimator.RESTART);
-
-
-        alpha1.setRepeatCount(60);
-        alpha2.setRepeatCount(80);
-        alpha3.setRepeatCount(100);
-
-
-        alpha1.setRepeatMode(ValueAnimator.RESTART);
-        alpha2.setRepeatMode(ValueAnimator.RESTART);
-        alpha3.setRepeatMode(ValueAnimator.RESTART);
-
-
         AnimatorSet set = new AnimatorSet();
-        set.playTogether(animator1, alpha1, animator2, alpha2, animator3, alpha3);
+        set.playTogether(ObjectAnimations.slotTranslateAnimation(slot1, 60),
+                ObjectAnimations.slotTranslateAnimation(slot2, 80),
+                ObjectAnimations.slotTranslateAnimation(slot3, 100),
+                ObjectAnimations.slotTranslateAnimation(slot1, 60),
+                ObjectAnimations.slotTranslateAnimation(slot2, 80),
+                ObjectAnimations.slotTranslateAnimation(slot3, 100));
         set.start();
-        CountDownTimer timer = new CountDownTimer(6000, 100) {
-            int i = 1;
+
+        final int p = new Random().nextInt(imgResources.length-1);
+        final int q = new Random().nextInt(imgResources.length-1);
+        final int r = new Random().nextInt(imgResources.length-1);
+        Log.i(TAG, "animateSlots: I:j:k:"+p+":"+q+":"+r);
+        CountDownTimer swapTimer = new CountDownTimer(10000, 100) {
+
+            int i=p;
+            int j=q;
+            int k=r;
+
 
             @Override
             public void onTick(long l) {
-                slot1.setImageResource(imgResources[i]);
-                if (i >= 3) {
-                    i = 0;
-                } else {
-                    i++;
+
+                if(l>6000&&l<=10000){
+                    slot1.setImageResource(imgResources[i]);
+                    slot2.setImageResource(imgResources[j]);
+                    slot3.setImageResource(imgResources[k]);
+                    i=i>=imgResources.length-1?0:i+1;
+                    j=j>=imgResources.length-1?0:j+1;
+                    k=k>=imgResources.length-1?0:k+1;
+
+                }else if(l<=6000&&l>2000){
+                    j=j>=imgResources.length-1?0:j+1;
+                    k=k>=imgResources.length-1?0:k+1;
+                    slot2.setImageResource(imgResources[j]);
+                    slot3.setImageResource(imgResources[k]);
+
+                }else{
+                    k=k>=imgResources.length-1?0:k+1;
+                    slot3.setImageResource(imgResources[k]);
                 }
             }
 
             @Override
             public void onFinish() {
-
-            }
-        }.start();
-
-        CountDownTimer timer1 = new CountDownTimer(8000, 100) {
-            int j = 2;
-
-            @Override
-            public void onTick(long l) {
-                int i = new Random().nextInt(4);
-                int j = new Random().nextInt(4);
-                int k = new Random().nextInt(4);
-                slot2.setImageResource(imgResources[j]);
-                if (j >= 3) {
-                    j = 0;
-                } else {
-                    j++;
-                }
-            }
-
-            @Override
-            public void onFinish() {
-            }
-        }.start();
-
-        CountDownTimer timer2 = new CountDownTimer(10000, 100) {
-            int k = 3;
-
-            @Override
-            public void onTick(long l) {
-
-                slot3.setImageResource(imgResources[k]);
-                if (k >= 3) {
-                    k = 0;
-                } else {
-                    k++;
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                startTimer();
+                startWaitTimer();
+                Log.i(TAG, "onFinish: "+i+":"+j+":"+k);
             }
         }.start();
     }
 
-    private void startTimer() {
+    private void startWaitTimer() {
         trigger.setEnabled(false);
         if (timer != null) {
             timer.cancel();
         }
         min = 0;
         sec = 0;
-        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(digitalClockView, "alpha", 0f, 1f);
-        fadeIn.setDuration(500);
-        fadeIn.start();
+
+        ObjectAnimations.fadeInAnimation(digitalClockView).start();
+
         digitalClockView.setVisibility(View.VISIBLE);
-        timer = new CountDownTimer(60000, 1000) {
+
+        timer = new CountDownTimer(PrivateContract.SLOT_WAIT_TIME, 1000) {
             @Override
             public void onTick(long l) {
 
@@ -290,11 +176,75 @@ public class SlotMachineFragment extends Fragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        digitalClockView.setVisibility(View.INVISIBLE);
+                        ObjectAnimations.fadeOutAnimation(digitalClockView).start();
                     }
                 }, 1000);
                 trigger.setEnabled(true);
             }
         }.start();
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+
+        int eid = event.getAction();
+        switch (eid) {
+            case MotionEvent.ACTION_MOVE:
+                PointF mv = new PointF(event.getX() - downPT.x, event.getY() - downPT.y);
+                Rect rec = new Rect();
+                Rect rec2 = new Rect();
+                triggerHolder.getLocalVisibleRect(rec2);
+                trigger.getLocalVisibleRect(rec);
+                if (startPT.y + mv.y >= rec2.top && startPT.y + mv.y <= rec2.height() - rec.height()) {
+                    trigger.setY((int) (startPT.y + mv.y));
+                    startPT = new PointF(trigger.getX(), trigger.getY());
+                }
+                break;
+            case MotionEvent.ACTION_DOWN:
+
+                ObjectAnimations.fadeOutAnimation(arrowLayout).start();
+                downPT.x = event.getX();
+                downPT.y = event.getY();
+                startPT = new PointF(trigger.getX(), trigger.getY());
+                break;
+            case MotionEvent.ACTION_UP:
+
+
+                float in = trigger.getY();
+                ObjectAnimator animator = ObjectAnimator.ofFloat(trigger, "y", in, 35, 20, 30, 20, 25, 20);
+                animator.setDuration(500);
+                animator.start();
+                animateSlots();
+                animator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(arrowLayout, "alpha", 0f, 1f);
+                        fadeIn.setDuration(500);
+                        fadeIn.start();
+                        arrowLayout.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                });
+
+                break;
+            default:
+                break;
+        }
+
+        return true;
     }
 }
