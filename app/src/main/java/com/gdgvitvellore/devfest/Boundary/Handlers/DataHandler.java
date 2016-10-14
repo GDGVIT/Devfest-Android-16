@@ -465,4 +465,12 @@ public class DataHandler {
         Slot slot = mRealm.where(Slot.class).findFirst();
         return slot;
     }
+
+    public void logOut(){
+
+        mRealm.beginTransaction();
+        mRealm.where(User.class).findAll().deleteAllFromRealm();
+        mRealm.beginTransaction();
+
+    }
 }
