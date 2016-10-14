@@ -432,6 +432,12 @@ public class DataHandler {
         return null;
     }
 
+    public void logout(){
+        mRealm.beginTransaction();
+        mRealm.deleteAll();
+        mRealm.commitTransaction();
+    }
+
     private Slot getSlot(){
         Slot slot = mRealm.where(Slot.class).findFirst();
         return slot;

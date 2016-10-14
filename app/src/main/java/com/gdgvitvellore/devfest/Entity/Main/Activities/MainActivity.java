@@ -22,11 +22,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Animations.Main.DrawerCircularReveal;
 import com.gdgvitvellore.devfest.Control.Animations.Main.ObjectAnimations;
 import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
 import com.gdgvitvellore.devfest.Entity.About.Fragments.AboutFragment;
 import com.gdgvitvellore.devfest.Entity.Actors.DrawerItem;
+import com.gdgvitvellore.devfest.Entity.Authentication.Activities.AuthenticationActivity;
 import com.gdgvitvellore.devfest.Entity.Coupons.Fragment.CouponsFragment;
 import com.gdgvitvellore.devfest.Entity.FAQ.Fragments.FAQFragment;
 import com.gdgvitvellore.devfest.Entity.MyTeam.Fragments.MyTeamFragment;
@@ -153,6 +155,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case 5:
                     Fragment aboutFragment = new AboutFragment();
                     manager.beginTransaction().replace(R.id.fragment_holder, aboutFragment, AboutFragment.class.getSimpleName()).commit();
+                    break;
+                case 6:
+                    DataHandler.getInstance(this).logout();
+                    DataHandler.getInstance(this).saveLoggedIn(false);
+                    startActivity(new Intent(MainActivity.this, AuthenticationActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    break;
             }
         }
     }
