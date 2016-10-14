@@ -179,6 +179,39 @@ public class ConnectAPI {
     }
 
 
+    public void qrCodeScan(final String email, final String authToken, final String codeData){
+
+        String urlQrAdmin = " " ;
+
+        StringRequest qrAdminRequest = new StringRequest(Request.Method.POST, urlQrAdmin,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i(TAG, "onResponse: " + response);
+                        /*backToUI*/
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "onErrorResponse: " + error.getMessage());
+                /*Back to UI*/
+            }
+        }){
+            @Override
+            protected Map<String, String> getPostParams() throws AuthFailureError {
+                HashMap<String, String> mapBody = new HashMap<>() ;
+                mapBody.put("email", email) ;
+                mapBody.put("authToken", authToken) ;
+                mapBody.put("data", codeData) ;
+                return mapBody ;
+            }
+        } ;
+
+        AppController.getInstance().addToRequestQueue(qrAdminRequest);
+
+    }
+
+
     public void speakers(final String email, final String auth_token) {
 
         String url = APIContract.getSpeakersUrl();

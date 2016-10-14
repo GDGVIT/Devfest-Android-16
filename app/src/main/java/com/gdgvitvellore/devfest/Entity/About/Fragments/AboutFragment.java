@@ -25,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
+import com.gdgvitvellore.devfest.Control.DataGenerator.AboutDataGenerator;
 import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
 import com.gdgvitvellore.devfest.Entity.Actors.API;
 import com.gdgvitvellore.devfest.Entity.Actors.Member;
@@ -92,11 +93,11 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         speakersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
-    private void setData() {t 
+    private void setData() {
         setSpeakers();
-        MyAdapter adapter = new MyAdapter(getContext(), recipes);
-        mRecyclerView.setAdapter(adapter);
+        setAboutData();
     }
+
     private void setSpeakers() {
         speakersList=DataHandler.getInstance(getContext()).getSpeakers();
         if(speakersList!=null){
@@ -105,6 +106,11 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         }else{
             connectAPI.speakers(user.getEmail(),user.getAuthToken());
         }
+    }
+
+    private void setAboutData() {
+
+        groupList.add(AboutDataGenerator.getPatrons());
     }
 
 
@@ -188,6 +194,7 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
     }
 
 
+
     public class MyAdapter extends ExpandableRecyclerAdapter<MyAdapter.GroupViewHolder,MyAdapter.ItemViewHolder> {
 
         private LayoutInflater mInflator;
@@ -199,13 +206,13 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
 
         @Override
         public MyAdapter.GroupViewHolder onCreateParentViewHolder(ViewGroup parentViewGroup) {
-            View groupView = mInflator.inflate(R.layout.fragment_myteam_group, parentViewGroup, false);
+            View groupView = mInflator.inflate(R.layout.fragment_about_group, parentViewGroup, false);
             return new MyAdapter.GroupViewHolder(groupView);
         }
 
         @Override
         public MyAdapter.ItemViewHolder onCreateChildViewHolder(ViewGroup childViewGroup) {
-            View itemView = mInflator.inflate(R.layout.fragment_myteam_group_item, childViewGroup, false);
+            View itemView = mInflator.inflate(R.layout.fragment_about_group_item, childViewGroup, false);
             return new MyAdapter.ItemViewHolder(itemView);
         }
 
@@ -237,10 +244,11 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         public class ItemViewHolder extends ChildViewHolder {
 
             private TextView mItemTextView;
+            private ImageView mImageView;
 
             public ItemViewHolder(View itemView) {
                 super(itemView);
-                mItemTextView = (TextView)itemView.findViewById(R.id.about_list_item_header);
+                mImageView = (ImageView) itemView.findViewById(R.id.photo);
             }
 
             public void bind(Object item) {
