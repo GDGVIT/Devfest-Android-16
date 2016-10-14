@@ -3,6 +3,7 @@ package com.gdgvitvellore.devfest.Control.DataGenerator;
 import com.gdgvitvellore.devfest.Entity.About.Fragments.AboutFragment;
 import com.gdgvitvellore.devfest.Entity.About.Fragments.AboutFragment.Group;
 import com.gdgvitvellore.devfest.Entity.Actors.Child;
+import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,7 @@ public class AboutDataGenerator {
         childList.add(child6);
         childList.add(child7);
         Group group= aboutFragment.new Group(childList);
+        group.setName("Out Patrons");
         return group;
     }
 
@@ -87,13 +89,67 @@ public class AboutDataGenerator {
         childList.add(child4);
         childList.add(child5);
         Group group= aboutFragment.new Group(childList);
+        group.setName("Our Sponsors");
         return group;
     }
 
     public static Group getContacts(AboutFragment aboutFragment){
 
         List<Child> childList=new ArrayList<>();
+<<<<<<< HEAD
+=======
+        Child child1=new Child();
+        child1.setName("Facebook");
+        child1.setImageType(Child.IMAGE_RESOURCE);
+        //child1.setImageResource(R.drawable.ic_facebook);
+        child1.setImageResource(R.drawable.ic_gdg);
+        child1.setDesignation("http://facebook.com/gdgvitvellore");
+
+        Child child2=new Child();
+        child2.setName("Website");
+        child2.setImageType(Child.IMAGE_RESOURCE);
+        //child2.setImageResource(R.drawable.ic_website);
+        child2.setImageResource(R.drawable.ic_gdg);
+        child2.setDesignation("http://gdgvitvellore.com/");
+
+        Child child3=new Child();
+        child3.setName("Google+");
+        child3.setImageType(Child.IMAGE_RESOURCE);
+        //child3.setImageResource(R.drawable.ic_gplus);
+        child3.setImageResource(R.drawable.ic_gdg);
+        child3.setDesignation("https://plus.google.com/+gdgvitvellore");
+
+        Child child4=new Child();
+        child4.setName("Mail");
+        child4.setImageType(Child.IMAGE_RESOURCE);
+        //child4.setImageResource(R.drawable.ic_mail);
+        child4.setImageResource(R.drawable.ic_gdg);
+        child4.setDesignation("gdgvitvellore@gmail.com");
+
+        Child child5=new Child();
+        child5.setName("CALL");
+        child5.setImageType(Child.IMAGE_RESOURCE);
+        //child5.setImageResource(R.drawable.ic_call);
+        child5.setImageResource(R.drawable.ic_gdg);
+        child5.setDesignation("+917708150636");
+
+        Child child6=new Child();
+        child6.setName("FIND US");
+        child6.setImageType(Child.IMAGE_RESOURCE);
+        //child6.setImageResource(R.drawable.ic_location);
+        child6.setImageResource(R.drawable.ic_gdg);
+        child6.setDesignation("http://facebook.com/gdgvitvellore");
+
+        childList.add(child1);
+        childList.add(child2);
+        childList.add(child3);
+        childList.add(child4);
+        childList.add(child5);
+        childList.add(child6);
+
+>>>>>>> da08a59a4a7c832724a1458f683159a4145c2fc4
         Group group= aboutFragment.new Group(childList);
+        group.setName("Contact Us");
         return group;
     }
 

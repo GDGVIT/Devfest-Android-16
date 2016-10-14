@@ -5,9 +5,15 @@ package com.gdgvitvellore.devfest.Entity.Actors;
  */
 
 public class Child{
-    public String imageUrl;
-    public String name;
-    public String designation;
+
+    public final static int IMAGE_URL=0;
+    public final static int IMAGE_RESOURCE=1;
+
+    private String imageUrl;
+    private String name;
+    private String designation;
+    private int imageType=IMAGE_URL;
+    private int imageResource;
 
     public String getImageUrl() {
         return imageUrl;
@@ -31,6 +37,23 @@ public class Child{
 
     public void setDesignation(String designation) {
         this.designation = designation;
+    }
+
+
+    public int getImageType() {
+        return imageType;
+    }
+
+    public void setImageType(int imageType) {
+        this.imageType = imageType;
+    }
+
+    public void setImageResource(int imageResource) {
+        this.imageResource = imageResource;
+    }
+
+    public int getImageResource() {
+        return imageResource;
     }
 }
 
