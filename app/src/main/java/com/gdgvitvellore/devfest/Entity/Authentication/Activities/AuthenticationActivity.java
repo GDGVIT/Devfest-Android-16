@@ -173,6 +173,8 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
             //if password is incorrect
             passwordLayout.setError("Enter valid Password");
             requestFocus(password);
+            signin.setText("Sign in");
+            signin.setClickable(true);
         }
 
     }
@@ -211,6 +213,7 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
     private void login() {
 
         getCredentials();
+        disable();
         try {
             connectAPI.login(emailInput,passInput);
         } catch (BindingException e) {
@@ -219,9 +222,16 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
         //Toast.makeText(this, emailInput.toString()+passInput.toString(),Toast.LENGTH_LONG).show();
     }
 
+    private void disable() {
+        signin.setClickable(false);
+        signin.setText("Signing in...");
+    }
+
     @Override
     public void showMessage(String message) {
         Snackbar.make(bgSplash,message,Snackbar.LENGTH_SHORT).show();
+        signin.setText("Sign in");
+        signin.setClickable(true);
     }
 
     @Override

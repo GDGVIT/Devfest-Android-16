@@ -6,7 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 /**
@@ -14,6 +16,9 @@ import com.gdgvitvellore.devfest.gdgdevfest.R;
  */
 
 public class TimelineDisplayFragment extends Fragment {
+
+
+    private ImageView displayImage;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -25,7 +30,12 @@ public class TimelineDisplayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_timeline_display,container, false);
-
+        displayImage = (ImageView) view.findViewById(R.id.timeline_display);
         return view;
     }
+
+    public void setImage(String url){
+        Glide.with(getContext()).load(url).asBitmap().into(displayImage);
+    }
+
 }

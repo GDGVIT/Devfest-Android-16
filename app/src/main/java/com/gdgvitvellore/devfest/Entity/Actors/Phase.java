@@ -1,8 +1,17 @@
 package com.gdgvitvellore.devfest.Entity.Actors;
 
 
+import android.os.SystemClock;
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import io.realm.RealmObject;
 
@@ -25,7 +34,9 @@ public class Phase extends RealmObject {
     private String imageUrl;
     @SerializedName("isRunning")
     @Expose
-    private Boolean isRunning;
+    private boolean isRunning;
+
+    private int hour, min, sec;
 
     /**
      * @return The title
@@ -98,12 +109,12 @@ public class Phase extends RealmObject {
     }
 
 
-    public Boolean getRunning() {
+    public boolean isRunning()
+    {
         return isRunning;
     }
 
-
-    public void setRunning(Boolean running) {
+    public void setRunning(boolean running) {
         isRunning = running;
     }
 }
