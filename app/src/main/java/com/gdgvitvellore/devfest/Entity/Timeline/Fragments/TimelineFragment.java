@@ -97,11 +97,11 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         Log.d("PASSWORD", auth);
     }
 
+
     private void init(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.phases_list);
         timer = (TextView) view.findViewById(R.id.time);
         title = (TextView) view.findViewById(R.id.title);
-        pagerIndicator = (CircleIndicator) view.findViewById(R.id.pager_indicator);
         viewPager = (VerticalViewPager) view.findViewById(R.id.pager);
         progressDialog = new ProgressDialog(getContext());
         root = (LinearLayout) view.findViewById(R.id.root);
