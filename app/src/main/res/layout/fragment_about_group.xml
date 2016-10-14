@@ -25,7 +25,8 @@
         <ImageView
             android:layout_width="@dimen/expandable_arrow_size"
             android:layout_height="@dimen/expandable_arrow_size"
-            android:src="@drawable/ic_arrow_expandable_24dp"
+            android:id="@+id/down_arrow"
+            card_view:srcCompat="@drawable/ic_arrow_expandable_24dp"
             android:layout_weight="0.2"/>
 
     </LinearLayout>

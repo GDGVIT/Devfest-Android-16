@@ -36,7 +36,7 @@ import com.gdgvitvellore.devfest.gdgdevfest.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.relex.circleindicator.CircleIndicator;
+
 
 /**
  * Created by Prince Bansal Local on 10/10/2016.
@@ -50,7 +50,6 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     private VerticalViewPager viewPager;
     private RecyclerView recyclerView;
     private TextView timer;
-    private CircleIndicator pagerIndicator;
     private ProgressDialog progressDialog;
     private LinearLayout root;
 
@@ -100,7 +99,8 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         viewPager = (VerticalViewPager) view.findViewById(R.id.pager);
         progressDialog = new ProgressDialog(getContext());
         root=(LinearLayout)view.findViewById(R.id.root);
-
+        indicator1 = (ImageView)view.findViewById(R.id.indicator1);
+        indicator2 = (ImageView)view.findViewById(R.id.indicator2);
         connectAPI = new ConnectAPI(getActivity());
     }
 
