@@ -93,7 +93,7 @@ public class FAQFragment extends Fragment implements
         voiceFab = (FloatingActionButton) rootView.findViewById(R.id.activity_faq_fab_voice);
         rvExpanded = (RecyclerView) rootView.findViewById(R.id.content_scrolling_recyclerView);
         progressDialog = new ProgressDialog(getContext());
-        root = (CoordinatorLayout) rootView.findViewById(R.id.root);
+        root = (CoordinatorLayout) rootView.findViewById(R.id.fragment_faq_root);
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getContext());
 

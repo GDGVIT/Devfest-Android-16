@@ -33,7 +33,6 @@ import com.gdgvitvellore.devfest.Entity.Actors.TimelineResult;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 

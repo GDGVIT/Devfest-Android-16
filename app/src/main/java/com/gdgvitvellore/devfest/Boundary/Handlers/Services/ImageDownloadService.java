@@ -44,9 +44,10 @@ public class ImageDownloadService extends IntentService {
         String[] links = intent.getStringArrayExtra("links");
         ResultReceiver receiver = (ResultReceiver) intent.getParcelableExtra("receiver");
         for (int i = 0; i < links.length; i++) {
-            //   try {
-            //String urlString= URLEncoder.encode(links[i],"utf-8");
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, links[i],
+             try {
+            String urlString= URLEncoder.encode(links[i],"utf-8");
+
+                 /*StringRequest stringRequest = new StringRequest(Request.Method.GET, links[i],
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -58,8 +59,11 @@ public class ImageDownloadService extends IntentService {
 
                 }
             });
-            AppController.getInstance().addToRequestQueue(stringRequest);
-                /*URL url = new URL("http://gdgvitvellore.com/images/logo-big.png");
+            AppController.getInstance().addToRequestQueue(stringRequest);*/
+
+
+                URL url = new URL(links[i]);
+
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setDoOutput(true);
@@ -82,11 +86,10 @@ public class ImageDownloadService extends IntentService {
                 resultData.putByteArray("result", byteArrayOutputStream.toByteArray());
 
                 receiver.send(UPDATE_PROGRESS, resultData);
-*/
 
-            /*} catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
-            }*/
+            }
         }
     }
 
