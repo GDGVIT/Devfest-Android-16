@@ -9,5 +9,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="expandable_arrow_size">36dp</dimen>
     <dimen name="text_size_large">20sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
     <dimen name="card_vertical_margin">10dp</dimen>
 </resources>

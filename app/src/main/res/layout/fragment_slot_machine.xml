@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="25dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,12 +61,54 @@
                 />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3"
+            android:id="@+id/api_names_holder"
+            android:layout_marginLeft="20dp"
+            android:visibility="gone"
+            android:layout_marginRight="20dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:id="@+id/api_name_1"
+                android:text="Github"
+                android:fontFamily="casual"
+                android:textSize="@dimen/text_size_medium"
+                android:textColor="@color/colorIconsOrTexts"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:id="@+id/api_name_2"
+                android:text="Google Plus"
+                android:fontFamily="casual"
+                android:textSize="@dimen/text_size_medium"
+                android:textColor="@color/colorIconsOrTexts"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:id="@+id/api_name_3"
+                android:text="Facebook"
+                android:fontFamily="casual"
+                android:textSize="@dimen/text_size_medium"
+                android:textColor="@color/colorIconsOrTexts"/>
+        </LinearLayout>
+
+
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:id="@+id/timerText"
+        android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
         >
 
@@ -100,7 +143,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/imageView"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/ic_gbutton" />
+                app:srcCompat="@drawable/ic_gbutton" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -114,19 +157,19 @@
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/ic_arrow_drop_down_black_24dp" />
+                app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:alpha="0.5"
                 android:layout_marginTop="-40dp"
-                android:src="@drawable/ic_arrow_drop_down_black_24dp" />
+                app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:alpha="0.3"
                 android:layout_marginTop="-20dp"
-                android:src="@drawable/ic_arrow_drop_down_black_24dp" />
+                app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
         </LinearLayout>
 
     </FrameLayout>
