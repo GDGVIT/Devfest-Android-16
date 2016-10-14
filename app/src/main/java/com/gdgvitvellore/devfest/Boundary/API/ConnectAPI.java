@@ -33,7 +33,6 @@ import com.gdgvitvellore.devfest.Entity.Actors.TimelineResult;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -102,9 +101,6 @@ public class ConnectAPI {
                             try {
                                 if (validateResponse(response)) {
                                     LoginResult loginResult = CustomTypeAdapter.typeRealmString().fromJson(response, LoginResult.class);
-                                    DataHandler.getInstance(context).saveUser(loginResult.getUser());
-                                    DataHandler.getInstance(context).saveTeam(loginResult.getTeam());
-                                    DataHandler.getInstance(context).saveSlotLastUsed(loginResult.getUser().getSlotLastTime());
                                     mServerAuthenticateListener.onRequestCompleted(LOGIN_CODE, loginResult);
                                 } else {
                                     mServerAuthenticateListener.onRequestError(LOGIN_CODE, ErrorDefinitions.getMessage(ErrorDefinitions.CODE_WRONG_FORMAT));

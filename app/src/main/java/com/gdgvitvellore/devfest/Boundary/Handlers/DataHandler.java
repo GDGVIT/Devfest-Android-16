@@ -418,6 +418,20 @@ public class DataHandler {
         return null;
     }
 
+    public List<Speakers> getSpeakers() {
+        List<Speakers> list = null;
+        RealmResults<Speakers> realmList = mRealm.where(Speakers.class).findAll();
+        if (realmList != null && realmList.size() > 0) {
+            list = new ArrayList<>();
+            Iterator<Speakers> iterator = realmList.iterator();
+            while (iterator.hasNext()) {
+                list.add(iterator.next());
+            }
+            return list;
+        }
+        return null;
+    }
+
     private Slot getSlot(){
         Slot slot = mRealm.where(Slot.class).findFirst();
         return slot;

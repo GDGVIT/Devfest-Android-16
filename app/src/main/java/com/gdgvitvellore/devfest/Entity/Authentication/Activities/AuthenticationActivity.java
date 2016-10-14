@@ -148,6 +148,9 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
             if(loginResult!=null){
                 if (loginResult.getStatus()== ErrorDefinitions.CODE_SUCCESS){
                     Log.d("LOGIN","SUCCESS");
+                    DataHandler.getInstance(this).saveUser(loginResult.getUser());
+                    DataHandler.getInstance(this).saveTeam(loginResult.getTeam());
+                    DataHandler.getInstance(this).saveSlotLastUsed(loginResult.getUser().getSlotLastTime());
                     Intent intent=new Intent(this, MainActivity.class);
                     intent.putExtra("status", Status.LOGGED_IN);
                     startActivity(intent);

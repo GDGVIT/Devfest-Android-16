@@ -89,6 +89,7 @@ public class MyTeamFragment extends Fragment implements ConnectAPI.ServerAuthent
         apis.setName("Assigned APIs");
         groups.add(apis);
         groups.add(myTeam);
+
         adapter=new MyAdapter(getContext(),groups);
         recyclerView.setAdapter(adapter);
 

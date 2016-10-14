@@ -42,6 +42,7 @@ import com.gdgvitvellore.devfest.Entity.Actors.User;
 import com.gdgvitvellore.devfest.Entity.Authentication.Activities.AuthenticationActivity;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -131,6 +132,8 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
             if (!(System.currentTimeMillis() - DataHandler.getInstance(getContext()).getSlotLastUsed() > PrivateContract.SLOT_WAIT_TIME)) {
                 trigger.setEnabled(false);
                 startWaitTimer(PrivateContract.SLOT_WAIT_TIME - (System.currentTimeMillis() - DataHandler.getInstance(getContext()).getSlotLastUsed()));
+            }else {
+                trigger.setEnabled(true);
             }
         } else {
             connectAPI.allApis(user.getEmail(), user.getAuthToken());
@@ -139,15 +142,14 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
 
     private void prepareBitmaps() {
         trigger.setEnabled(false);
-        bitmapArray=new Bitmap[apiList.size()];
+        bitmapArray = new Bitmap[apiList.size()];
         for (int i = 0; i < bitmapArray.length; i++) {
-            bitmapArray[i]=BitmapFactory.decodeByteArray(apiList.get(i).getImage(),0,apiList.get(i).getImage().length);
+            bitmapArray[i] = BitmapFactory.decodeByteArray(apiList.get(i).getImage(), 0, apiList.get(i).getImage().length);
         }
-        slot1.setImageBitmap(bitmapArray[new Random().nextInt(bitmapArray.length-1)]);
-        slot2.setImageBitmap(bitmapArray[new Random().nextInt(bitmapArray.length-1)]);
-        slot3.setImageBitmap(bitmapArray[new Random().nextInt(bitmapArray.length-1)]);
+        slot1.setImageBitmap(bitmapArray[new Random().nextInt(bitmapArray.length - 1)]);
+        slot2.setImageBitmap(bitmapArray[new Random().nextInt(bitmapArray.length - 1)]);
+        slot3.setImageBitmap(bitmapArray[new Random().nextInt(bitmapArray.length - 1)]);
         showMessage("Slot machine ready");
-        trigger.setEnabled(true);
     }
 
     private void animateSlots() {
@@ -324,12 +326,21 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
     @Override
     public void onRequestCompleted(int code, Object result) {
         if (code == ConnectAPI.ALL_APIS_CODE) {
+            progressDialog.cancel();
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setMessage("Loading Slots...");
             progressDialog.setMax(100);
+            progressDialog.setIndeterminate(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.show();
             startDownloadingImages((List<BaseAPI>) result);
         } else if (code == ConnectAPI.SLOTS_CODE) {
             SlotsResult slotsResult = (SlotsResult) result;
             if (slotsResult != null && slotsResult.getStatus() == 200) {
                 DataHandler.getInstance(getContext()).saveSlot(slotsResult.getSlot());
+                if (slotsResult.getSlot().getWinner() == "true") {
+                    showMessage("You already won. Have fun!");
+                }
             } else if (slotsResult.getStatus() == 400) {
                 showMessage(slotsResult.getMessage());
             } else {
@@ -339,7 +350,7 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
     }
 
     private void startDownloadingImages(List<BaseAPI> result) {
-        allAPIResult=result;
+        allAPIResult = result;
         Intent intent = new Intent(getActivity(), ImageDownloadService.class);
         String[] links = new String[result.size()];
         for (int i = 0; i < result.size(); i++) {
@@ -384,11 +395,20 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
                 int progress = resultData.getInt("progress");
                 int position = resultData.getInt("position");
                 byte[] array = resultData.getByteArray("result");
-                allAPIResult.get(position).setImage(array);
-                progressDialog.setProgress((int)((position+1)/allAPIResult.size()*100));
-                if(position==allAPIResult.size()-1){
-                    DataHandler.getInstance(getContext()).saveAllAPIs(allAPIResult);
-                    setData();
+                if (array != null) {
+                    allAPIResult.get(position).setImage(array);
+                    int prog = (100 * (position + 1)) / allAPIResult.size();
+                    Log.i(TAG, "onReceiveResult: prog" + prog);
+                    progressDialog.setProgress(prog);
+                    if (position == allAPIResult.size() - 1) {
+                        progressDialog.cancel();
+                        DataHandler.getInstance(getContext()).saveAllAPIs(allAPIResult);
+                        setData();
+                    }
+                } else {
+                    showMessage("Error loading");
+                    allAPIResult = new ArrayList<>();
+                    progressDialog.cancel();
                 }
             }
         }

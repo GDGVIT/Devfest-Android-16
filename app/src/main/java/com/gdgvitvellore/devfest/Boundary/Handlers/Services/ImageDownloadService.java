@@ -4,23 +4,16 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.ResultReceiver;
-import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.RequestFuture;
+import com.gdgvitvellore.devfest.Boundary.Customs.InputStreamVolleyRequest;
 import com.gdgvitvellore.devfest.Boundary.Handlers.AppController;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Prince Bansal Local on 14-10-2016.
@@ -44,49 +37,46 @@ public class ImageDownloadService extends IntentService {
         String[] links = intent.getStringArrayExtra("links");
         ResultReceiver receiver = (ResultReceiver) intent.getParcelableExtra("receiver");
         for (int i = 0; i < links.length; i++) {
-            //   try {
-            //String urlString= URLEncoder.encode(links[i],"utf-8");
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, links[i],
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Log.i(TAG, "onResponse: " + response);
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
+            try {
+                RequestFuture<byte[]> future = RequestFuture.newFuture();
+                InputStreamVolleyRequest request = new InputStreamVolleyRequest(Request.Method.GET, links[i], future, future, null);
+                request.setRetryPolicy(new DefaultRetryPolicy(10000, 1, 1));
+                AppController.getInstance().getRequestQueue().add(request);
 
-                }
-            });
-            AppController.getInstance().addToRequestQueue(stringRequest);
-                /*URL url = new URL("http://gdgvitvellore.com/images/logo-big.png");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setDoOutput(true);
-                connection.connect();
-                InputStream input = new BufferedInputStream(connection.getInputStream());
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                byte data[] = new byte[2048];
-                long total = 0;
-                int count;
-                while ((count = input.read(data)) != -1) {
-                    byteArrayOutputStream.write(data, 0, count);
-                }
-                byteArrayOutputStream.flush();
-                byteArrayOutputStream.close();
-                input.close();
-
+                byte[] response = future.get(180, TimeUnit.SECONDS); // Blocks for at most 10 seconds.
                 Bundle resultData = new Bundle();
                 resultData.putInt("progress", 100);
-                resultData.putInt("position",i);
-                resultData.putByteArray("result", byteArrayOutputStream.toByteArray());
-
+                resultData.putInt("position", i);
+                resultData.putByteArray("result", response);
                 receiver.send(UPDATE_PROGRESS, resultData);
-*/
-
-            /*} catch (IOException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
-            }*/
+                Bundle resultData = new Bundle();
+                resultData.putInt("progress", 100);
+                resultData.putInt("position", i);
+                resultData.putByteArray("result", null);
+                receiver.send(UPDATE_PROGRESS, resultData);
+                break;
+            }
+            // Exception handling
+            catch (ExecutionException e) {
+                // Exception handling
+                Bundle resultData = new Bundle();
+                resultData.putInt("progress", 100);
+                resultData.putInt("position", i);
+                resultData.putByteArray("result", null);
+                receiver.send(UPDATE_PROGRESS, resultData);
+                e.printStackTrace();
+                break;
+            } catch (TimeoutException t) {
+                t.printStackTrace();
+                Bundle resultData = new Bundle();
+                resultData.putInt("progress", 100);
+                resultData.putInt("position", i);
+                resultData.putByteArray("result", null);
+                receiver.send(UPDATE_PROGRESS, resultData);
+                break;
+            }
         }
     }
 
