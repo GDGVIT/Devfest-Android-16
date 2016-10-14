@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -60,6 +61,8 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     private int hoursToGo = 24;
     private int minutesToGo = 0;
     private int secondsToGo = 0;
+    private ImageView indicator1;
+    private ImageView indicator2;
 
     private int millisToGo = secondsToGo * 1000 + minutesToGo * 1000 * 60 + hoursToGo * 1000 * 60 * 60;
 
@@ -94,7 +97,6 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     private void init(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.phases_list);
         timer = (TextView) view.findViewById(R.id.time);
-        pagerIndicator = (CircleIndicator) view.findViewById(R.id.pager_indicator);
         viewPager = (VerticalViewPager) view.findViewById(R.id.pager);
         progressDialog = new ProgressDialog(getContext());
         root=(LinearLayout)view.findViewById(R.id.root);
@@ -108,6 +110,34 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         viewPager.setPageTransformer(false, new VerticalPageTransformer());
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                    if(position==0)
+                    {
+                        indicator1.setImageResource(R.drawable.white_indicator_circle);
+                        indicator2.setImageResource(R.drawable.white_alpha_indicator_circle);
+                    }
+                    else if(position==1)
+                    {
+                        indicator1.setImageResource(R.drawable.white_alpha_indicator_circle);
+                        indicator2.setImageResource(R.drawable.white_indicator_circle);
+                    }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         startTimer();
     }
 
@@ -131,7 +161,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
-        pagerIndicator.setViewPager(viewPager);
+      //  pagerIndicator.setViewPager(viewPager);
     }
 
     private void startTimer() {

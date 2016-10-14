@@ -2,6 +2,7 @@ package com.gdgvitvellore.devfest.Entity.Main.Activities;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,12 +20,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Animations.Main.DrawerCircularReveal;
 import com.gdgvitvellore.devfest.Control.Animations.Main.ObjectAnimations;
 import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
 import com.gdgvitvellore.devfest.Entity.About.Fragments.AboutFragment;
 import com.gdgvitvellore.devfest.Entity.Actors.DrawerItem;
+import com.gdgvitvellore.devfest.Entity.Authentication.Activities.AuthenticationActivity;
 import com.gdgvitvellore.devfest.Entity.Coupons.Fragment.CouponsFragment;
 import com.gdgvitvellore.devfest.Entity.FAQ.Fragments.FAQFragment;
 import com.gdgvitvellore.devfest.Entity.MyTeam.Fragments.MyTeamFragment;
@@ -36,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,ViewUtils {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, ViewUtils {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<DrawerItem> drawerItems;
     private int lastFragmentSelected = -1;
     private String[] toolbarTitles;
+    private int ISGUEST = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,10 +81,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         linearLayoutManager = new LinearLayoutManager(this);
 
         drawerItems = new ArrayList<>();
-        toolbarTitles=getResources().getStringArray(R.array.drawer_titles);
 
-        if(getIntent().hasExtra("status")){
-            showMessage(getIntent().getStringExtra("status"));
+        if (getIntent().hasExtra("status")) {
+
+            if (getIntent().getStringExtra("status").equals("Welcome Guest")) {
+                ISGUEST = 1;
+            }
+            // showMessage(getIntent().getStringExtra("status"));
         }
     }
 
@@ -89,7 +97,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
         drawerTrigger.setOnClickListener(this);
 
-        TypedArray drawerIcons = getResources().obtainTypedArray(R.array.drawer_icons);
+        TypedArray drawerIcons;
+        if (ISGUEST != 1) {
+            drawerIcons = getResources().obtainTypedArray(R.array.drawer_icons);
+            toolbarTitles = getResources().getStringArray(R.array.drawer_titles);
+
+        } else {
+            drawerIcons = getResources().obtainTypedArray(R.array.drawer_icons_guest);
+            toolbarTitles = getResources().getStringArray(R.array.drawer_titles_guest);
+        }
         for (int i = 0; i < toolbarTitles.length; i++) {
             //TODO To change the default icon later
             drawerItems.add(new DrawerItem(toolbarTitles[i], drawerIcons.getResourceId(i, R.drawable.ic_default)));
@@ -139,6 +155,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case 5:
                     Fragment aboutFragment = new AboutFragment();
                     manager.beginTransaction().replace(R.id.fragment_holder, aboutFragment, AboutFragment.class.getSimpleName()).commit();
+                    break;
+                case 6:
+                    DataHandler.getInstance(this).logout();
+                    DataHandler.getInstance(this).saveLoggedIn(false);
+                    startActivity(new Intent(MainActivity.this, AuthenticationActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    break;
             }
         }
     }
@@ -176,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
                 animator.start();
                 ObjectAnimations.drawerArrowAnimator(arrowIcon, ObjectAnimations.Position.DOWN).start();
-                ObjectAnimations.fragmentHolderAnimator(fragmentHolder, drawer.getHeight(),0,300).start();
+                ObjectAnimations.fragmentHolderAnimator(fragmentHolder, drawer.getHeight(), 0, 300).start();
 
             } else {
                 drawer.setVisibility(View.GONE);
@@ -187,15 +209,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 drawer.setVisibility(View.VISIBLE);
                 DrawerCircularReveal.circularRevealDrawer(drawer, 0, 0).start();
                 ObjectAnimations.drawerArrowAnimator(arrowIcon, ObjectAnimations.Position.UP).start();
-                ObjectAnimations.fragmentHolderAnimator(fragmentHolder,0,drawer.getHeight(),0).start();
+                ObjectAnimations.fragmentHolderAnimator(fragmentHolder, 0, drawer.getHeight(), 0).start();
             } else {
                 drawer.setVisibility(View.VISIBLE);
             }
             isDrawerOpened = true;
         }
     }
-
-
 
 
     @Override
@@ -208,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void showMessage(String message) {
-        Snackbar.make(fragmentHolder,message,Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(fragmentHolder, message, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

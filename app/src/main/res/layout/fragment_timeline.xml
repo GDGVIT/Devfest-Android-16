@@ -77,14 +77,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <me.relex.circleindicator.CircleIndicator
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="right"
-            app:ci_orientation="vertical"
-            app:ci_margin="30dp"
-            app:ci_height="25dp"
-            android:id="@+id/pager_indicator"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:paddingRight="20dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/indicator1"
+                android:src="@drawable/white_indicator_circle"
+                />
+
+            <ImageView
+                android:paddingTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/indicator2"
+                android:src="@drawable/white_alpha_indicator_circle"
+                />
+
+
+        </LinearLayout>
 
     </FrameLayout>
 

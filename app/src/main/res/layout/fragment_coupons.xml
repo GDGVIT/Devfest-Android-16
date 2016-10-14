@@ -52,23 +52,22 @@
         android:orientation="vertical"
         android:weightSum="1">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.6"
-            android:padding="30dp">
-
-            <link.fls.swipestack.SwipeStack
-                android:id="@+id/swipeStack"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:layout_marginTop="30dp"/>
-        </FrameLayout>
 
     </LinearLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="0dp">
 
-
+        <link.fls.swipestack.SwipeStack
+            android:id="@+id/swipeStack"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="30dp"
+            android:paddingTop="80dp"
+            android:paddingRight="30dp"
+            android:layout_marginTop="0dp"/>
+    </FrameLayout>
 
 
 
