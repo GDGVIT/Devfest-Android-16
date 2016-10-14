@@ -1,9 +1,12 @@
 package com.gdgvitvellore.devfest.Entity.MyTeam.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,23 +19,40 @@ import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter
 import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
 import com.bignerdranch.expandablerecyclerview.ViewHolder.ChildViewHolder;
 import com.bignerdranch.expandablerecyclerview.ViewHolder.ParentViewHolder;
-import com.gdgvitvellore.devfest.Entity.Actors.APIAssigned;
+import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
+import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
+import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
+import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
+import com.gdgvitvellore.devfest.Entity.Actors.API;
+import com.gdgvitvellore.devfest.Entity.Actors.APIAssignedResult;
+import com.gdgvitvellore.devfest.Entity.Actors.Member;
+import com.gdgvitvellore.devfest.Entity.Actors.Team;
+import com.gdgvitvellore.devfest.Entity.Actors.User;
+import com.gdgvitvellore.devfest.Entity.Authentication.Activities.AuthenticationActivity;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by Shuvam Ghosh on 10/11/2016.
  */
 
-public class MyTeamFragment extends Fragment {
-
+public class MyTeamFragment extends Fragment implements ConnectAPI.ServerAuthenticateListener,ViewUtils {
 
     private RecyclerView recyclerView;
-    private ArrayList<APIAssigned> apis;
+    private TextView userName,regNo,teamName;
+    private CoordinatorLayout root;
+
+    private ArrayList<API> apisList;
+    private ArrayList<Member> memberList;
     private LinearLayoutManager layoutManager;
+    private List<Group> groups;
+    private MyAdapter adapter;
+
+    private ConnectAPI connectAPI;
+    private Team team;
+    private User user;
 
     @Nullable
     @Override
@@ -47,75 +67,119 @@ public class MyTeamFragment extends Fragment {
 
     private void init(View rootView) {
         recyclerView=(RecyclerView)rootView.findViewById(R.id.recycler_view);
+        userName=(TextView)rootView.findViewById(R.id.name);
+        regNo=(TextView)rootView.findViewById(R.id.regno);
+        teamName=(TextView)rootView.findViewById(R.id.team_name);
+        root=(CoordinatorLayout)rootView.findViewById(R.id.root);
 
         layoutManager = new LinearLayoutManager(rootView.getContext());
+        groups=new ArrayList<>();
+
+        connectAPI=new ConnectAPI(getContext());
     }
 
     private void setInit() {
         recyclerView.setLayoutManager(layoutManager);
+        apisList = new ArrayList<>();
+        memberList = new ArrayList<>();
 
-        apis = new ArrayList<APIAssigned>();
+        Group myTeam=new Group(memberList);
+        myTeam.setName("My Team");
+        Group apis=new Group(apisList);
+        apis.setName("Assigned APIs");
+        groups.add(apis);
+        groups.add(myTeam);
 
+        adapter=new MyAdapter(getContext(),groups);
+        recyclerView.setAdapter(adapter);
+
+        connectAPI.setServerAuthenticateListener(this);
     }
 
     private void setData() {
-        //This is just the sample data
-        //TODO API integration needs to be done
-        Ingredient beef = new Ingredient("beef");
-        Ingredient cheese = new Ingredient("cheese");
-        Ingredient salsa = new Ingredient("salsa");
-        Ingredient tortilla = new Ingredient("tortilla");
 
-        Recipe taco = new Recipe(Arrays.asList(beef, cheese, salsa, tortilla));
-        taco.setName("My Team");
-        Recipe quesadilla = new Recipe(Arrays.asList(cheese, tortilla));
-        quesadilla.setName("Assigned APIs");
-        List<Recipe> recipes = Arrays.asList(taco, quesadilla);
-        MyAdapter adapter = new MyAdapter(getContext(), recipes);
-        recyclerView.setAdapter(adapter);
+        user=DataHandler.getInstance(getContext()).getUser();
+        team=DataHandler.getInstance(getContext()).getTeam();
+        if(user!=null&&team!=null){
+            userName.setText(user.getName());
+            regNo.setText(user.getRegistrationNumber());
+            teamName.setText(team.getName());
+            groups.get(1).setChildItemList(team.getMembers());
+            adapter.notifyDataSetChanged();
+            setAPIData(user.getEmail(),user.getAuthToken());
+        }else{
+            startActivity(new Intent(getActivity(), AuthenticationActivity.class));
+            getActivity().finish();
+        }
     }
 
-    private void initRootView(View rootView) {
-
-        
-
-        //These data comes from the slot machine
-
-      /*  APIAssigned api1 = new APIAssigned();
-        api1.setName("Facebook");
-        apis.add(api1);
-
-        APIAssigned api2 = new APIAssigned();
-        api2.setName("Google");
-        apis.add(api2);
-
-        APIAssigned api3 = new APIAssigned();
-        api3.setName("Geethub");
-        apis.add(api3);
-
-        adapter = new RecyclerViewAdapter(apis);
-        adapter = new RecyclerViewAdapter(apis);
-        apiRecView.setAdapter(adapter);*/
+    private void setAPIData(String email, String authToken) {
+        List<API> apiAssignedList=DataHandler.getInstance(getContext()).getAssignedApis();
+        if(apiAssignedList!=null&&apiAssignedList.size()>0){
+            groups.get(0).setChildItemList(apiAssignedList);
+            adapter.notifyDataSetChanged();
+        }else{
+            connectAPI.apis(email,authToken);
+        }
     }
+
+    @Override
+    public void onRequestInitiated(int code) {
+        if(code==ConnectAPI.APIS_CODE){
+            showMessage("Updating APIs");
+        }
+    }
+
+    @Override
+    public void onRequestCompleted(int code, Object result) {
+        if(code==ConnectAPI.APIS_CODE){
+            APIAssignedResult apiAssignedResult=(APIAssignedResult)result;
+
+            if(apiAssignedResult!=null){
+                if(apiAssignedResult.getStatus()== ErrorDefinitions.CODE_SUCCESS){
+                    DataHandler.getInstance(getContext()).saveApi(apiAssignedResult.getApis());
+                    setAPIData(user.getEmail(), user.getAuthToken());
+                }else if(apiAssignedResult.getStatus()== ErrorDefinitions.API_NOT_ASSIGNED){
+                    showMessage(ErrorDefinitions.getMessage(ErrorDefinitions.API_NOT_ASSIGNED));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onRequestError(int code, String message) {
+        showMessage(message);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Snackbar.make(root,message,Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorDialog() {
+
+    }
+
 
     /**
      * These classes are just sample classes
      * TODO Please make new models in Actors or either as inner calss and inflate the data
      */
-    public class Recipe implements ParentListItem {
+    public class Group implements ParentListItem {
 
         // a recipe contains several ingredients
-        private List mIngredients;
+        private List mItems;
         private String name;
 
-        public Recipe(List<Ingredient> ingredients) {
-            mIngredients = ingredients;
+        public Group(List items) {
+            mItems = items;
         }
 
 
         @Override
         public List<?> getChildItemList() {
-            return mIngredients;
+            return mItems;
         }
 
         @Override
@@ -130,49 +194,18 @@ public class MyTeamFragment extends Fragment {
         public void setName(String name) {
             this.name = name;
         }
-    }
-    public class Ingredient{
-        public String name;
 
-        public Ingredient(String beef) {
-            name=beef;
-        }
-
-        public String getName(){
-            return name;
+        public void setChildItemList(List members) {
+            mItems=members;
         }
     }
-    public class RecipeViewHolder extends ParentViewHolder {
 
-        private TextView mRecipeTextView;
 
-        public RecipeViewHolder(View itemView) {
-            super(itemView);
-            mRecipeTextView = (TextView)itemView.findViewById(R.id.about_list_item_content);
-        }
-
-        public void bind(Recipe recipe) {
-            mRecipeTextView.setText(recipe.getName());
-        }
-    }
-    public class IngredientViewHolder extends ChildViewHolder {
-
-        private TextView mIngredientTextView;
-
-        public IngredientViewHolder(View itemView) {
-            super(itemView);
-            mIngredientTextView = (TextView)itemView.findViewById(R.id.about_list_item_header);
-        }
-
-        public void bind(Ingredient ingredient) {
-            mIngredientTextView.setText(ingredient.getName());
-        }
-    }
-    public class MyAdapter extends ExpandableRecyclerAdapter<RecipeViewHolder, IngredientViewHolder> {
+    public class MyAdapter extends ExpandableRecyclerAdapter<MyAdapter.GroupViewHolder,MyAdapter.ItemViewHolder> {
 
         private LayoutInflater mInflator;
 
-        public MyAdapter(Context context, @NonNull List<Recipe> parentItemList) {
+        public MyAdapter(Context context, @NonNull List<Group> parentItemList) {
             super(parentItemList);
             mInflator = LayoutInflater.from(context);
         }
@@ -181,33 +214,60 @@ public class MyTeamFragment extends Fragment {
 
 
         @Override
-        public RecipeViewHolder onCreateParentViewHolder(ViewGroup parentViewGroup) {
-            View recipeView = mInflator.inflate(R.layout.fragment_myteam_group, parentViewGroup, false);
-            return new RecipeViewHolder(recipeView);
+        public GroupViewHolder onCreateParentViewHolder(ViewGroup parentViewGroup) {
+            View groupView = mInflator.inflate(R.layout.fragment_myteam_group, parentViewGroup, false);
+            return new GroupViewHolder(groupView);
         }
 
         @Override
-        public IngredientViewHolder onCreateChildViewHolder(ViewGroup childViewGroup) {
-            View ingredientView = mInflator.inflate(R.layout.fragment_myteam_group_item, childViewGroup, false);
-            return new IngredientViewHolder(ingredientView);
+        public ItemViewHolder onCreateChildViewHolder(ViewGroup childViewGroup) {
+            View itemView = mInflator.inflate(R.layout.fragment_myteam_group_item, childViewGroup, false);
+            return new ItemViewHolder(itemView);
         }
-
-        // onBind ...
 
 
         @Override
-        public void onBindParentViewHolder(RecipeViewHolder parentViewHolder, int position, ParentListItem parentListItem) {
-            Recipe recipe = (Recipe) parentListItem;
-            parentViewHolder.bind(recipe);
+        public void onBindParentViewHolder(GroupViewHolder parentViewHolder, int position, ParentListItem parentListItem) {
+            Group group = (Group) parentListItem;
+            parentViewHolder.bind(group);
         }
 
         @Override
-        public void onBindChildViewHolder(IngredientViewHolder childViewHolder, int position, Object childListItem) {
-            Ingredient ingredient = (Ingredient) childListItem;
-            childViewHolder.bind(ingredient);
+        public void onBindChildViewHolder(ItemViewHolder childViewHolder, int position, Object childListItem) {
+            childViewHolder.bind(childListItem);
         }
 
+        public class GroupViewHolder extends ParentViewHolder {
 
+            private TextView mGroupTextView;
+
+            public GroupViewHolder(View itemView) {
+                super(itemView);
+                mGroupTextView = (TextView)itemView.findViewById(R.id.about_list_item_content);
+            }
+
+            public void bind(Group group) {
+                mGroupTextView.setText(group.getName());
+            }
+        }
+        public class ItemViewHolder extends ChildViewHolder {
+
+            private TextView mItemTextView;
+
+            public ItemViewHolder(View itemView) {
+                super(itemView);
+                mItemTextView = (TextView)itemView.findViewById(R.id.about_list_item_header);
+            }
+
+            public void bind(Object item) {
+                if (item instanceof API)
+                    mItemTextView.setText(((API)item).getName());
+                else if(item instanceof Member){
+                    mItemTextView.setText(((Member)item).getName());
+                }
+            }
+        }
 
     }
 }
+

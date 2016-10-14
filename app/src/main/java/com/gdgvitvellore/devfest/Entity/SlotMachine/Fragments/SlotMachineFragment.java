@@ -3,289 +3,416 @@ package com.gdgvitvellore.devfest.Entity.SlotMachine.Fragments;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import com.bydavy.morpher.DigitalClockView;
+import com.bydavy.morpher.font.DFont;
+import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
+import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
+import com.gdgvitvellore.devfest.Boundary.Handlers.Services.ImageDownloadService;
+import com.gdgvitvellore.devfest.Control.Animations.SlotMachine.ObjectAnimations;
+import com.gdgvitvellore.devfest.Control.Contracts.PrivateContract;
+import com.gdgvitvellore.devfest.Control.Utils.NetworkUtils;
+import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
+import com.gdgvitvellore.devfest.Entity.Actors.API;
+import com.gdgvitvellore.devfest.Entity.Actors.BaseAPI;
+import com.gdgvitvellore.devfest.Entity.Actors.SlotsResult;
+import com.gdgvitvellore.devfest.Entity.Actors.User;
+import com.gdgvitvellore.devfest.Entity.Authentication.Activities.AuthenticationActivity;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
  * Created by Shuvam Ghosh on 10/11/2016.
  */
 
-public class SlotMachineFragment extends Fragment {
+public class SlotMachineFragment extends Fragment implements View.OnTouchListener, ConnectAPI.ServerAuthenticateListener, ViewUtils {
 
-    private ImageView iv;
-    private ImageView slot1;
-    private ImageView slot2;
-    private ImageView slot3;
-    private LinearLayout triggerHolder,arrowLayout;
-    private TextView timeRemaining;
-    private int min=0;
-    private int sec=0;
+    private static final String TAG = SlotMachineFragment.class.getSimpleName();
 
+    private ImageView trigger;
+    private ImageView slot1, slot2, slot3;
+    private LinearLayout triggerHolder, arrowLayout;
+    private DigitalClockView digitalClockView;
+    private FrameLayout root;
+    private ProgressDialog progressDialog;
 
-    private int imgResources[]={
-            R.drawable.ic_maps,
-            R.drawable.ic_edu,
-            R.drawable.ic_github,
-            R.drawable.ic_android_black_24dp
-    };
+    private int min = 0;
+    private int sec = 0;
+    private PointF downPT = new PointF();
+    private PointF startPT = new PointF();
+
+    private List<BaseAPI> apiList;
+
     private CountDownTimer timer;
+    private ConnectAPI connectAPI;
+
+    private User user;
+    private List<BaseAPI> allAPIResult;
+    private Bitmap[] bitmapArray;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView;
-        rootView = inflater.inflate(R.layout.fragment_slot_machine,container,false);
-        setViewInit(rootView);
-        setViewSet();
+        rootView = inflater.inflate(R.layout.fragment_slot_machine, container, false);
+        init(rootView);
+        setInit();
+        setData();
         return rootView;
     }
 
-    private void setViewInit(View rootView) {
-
-        iv = (ImageView)rootView.findViewById(R.id.imageView);
+    private void init(View rootView) {
+        trigger = (ImageView) rootView.findViewById(R.id.imageView);
         slot1 = (ImageView) rootView.findViewById(R.id.slot1);
         slot2 = (ImageView) rootView.findViewById(R.id.slot2);
-        slot3 = (ImageView)rootView.findViewById(R.id.slot3);
-        arrowLayout = (LinearLayout)rootView.findViewById(R.id.arrows_layout);
-        triggerHolder=(LinearLayout)rootView.findViewById(R.id.trigger_holder);
-        timeRemaining = (TextView)rootView.findViewById(R.id.timeRemaining);
+        slot3 = (ImageView) rootView.findViewById(R.id.slot3);
+        arrowLayout = (LinearLayout) rootView.findViewById(R.id.arrows_layout);
+        triggerHolder = (LinearLayout) rootView.findViewById(R.id.trigger_holder);
+        root = (FrameLayout) rootView.findViewById(R.id.root);
+        progressDialog = new ProgressDialog(getContext());
 
+        digitalClockView = (DigitalClockView) rootView.findViewById(R.id.digitalClock);
+        user = DataHandler.getInstance(getContext()).getUser();
+        if (user == null) {
+            startActivity(new Intent(getActivity(), AuthenticationActivity.class));
+            getActivity().finish();
+        }
 
-        ObjectAnimator animator2 = ObjectAnimator.ofFloat(arrowLayout,"y",arrowLayout.getY()+150,arrowLayout.getY()+240,arrowLayout.getY()+150);
-        animator2.setDuration(500);
-        animator2.setStartDelay(100);
-        animator2.start();
+        connectAPI = new ConnectAPI(getContext());
     }
 
-    private void setViewSet() {
 
-        timeRemaining.setVisibility(View.INVISIBLE);
-        iv.setOnTouchListener(new View.OnTouchListener() {
+    private void setInit() {
+        digitalClockView.setFont(new DFont(70, 2));
+        digitalClockView.setMorphingDuration(100);
+        progressDialog.setCancelable(false);
 
-            PointF DownPT = new PointF();
-            PointF StartPT = new PointF();
+        ObjectAnimations.triggerArrowAnimator(triggerHolder, 60).start();
 
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+        digitalClockView.setVisibility(View.INVISIBLE);
 
-                int eid = motionEvent.getAction();
-                switch(eid)
-                {
-                    case MotionEvent.ACTION_MOVE:
-                        PointF mv = new PointF(motionEvent.getX()-DownPT.x,motionEvent.getY()- DownPT.y);
-                        Log.i("st+mv", "onTouch: "+StartPT.y+"*"+mv.y+"*"+(StartPT.y+mv.y));
-                        Rect rec=new Rect();
-                        Rect rec2=new Rect();
-                        triggerHolder.getLocalVisibleRect(rec2);
-                        iv.getLocalVisibleRect(rec);
-                        if(StartPT.y+mv.y>=rec2.top&&StartPT.y+mv.y<=rec2.height()-rec.height()){
-                            iv.setY((int) (StartPT.y+mv.y));
-                            StartPT = new PointF(iv.getX(), iv.getY());
-                        }
-                        break;
-                    case MotionEvent.ACTION_DOWN:
+        trigger.setOnTouchListener(this);
 
-                        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(arrowLayout,"alpha",1f,0f);
-                        fadeOut.setDuration(400);
-                        fadeOut.start();
-                        DownPT.x = motionEvent.getX();
-                        DownPT.y = motionEvent.getY();
-                        StartPT = new PointF( iv.getX(), iv.getY());
-                        break;
-                    case MotionEvent.ACTION_UP :
+        connectAPI.setServerAuthenticateListener(this);
+        if (!NetworkUtils.hasConnectivity(getContext())) {
+            trigger.setEnabled(false);
+            showMessage("Connect to internet");
+        }
+    }
 
-
-                        float in=iv.getY();
-                        ObjectAnimator animator = ObjectAnimator.ofFloat(iv,"y",in,35,20,30,20,25,20);
-                        animator.setDuration(500);
-                        animator.start();
-                        animateSlots();
-                        animator.addListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animator) {
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animator) {
-                                ObjectAnimator fadeIn = ObjectAnimator.ofFloat(arrowLayout,"alpha",0f,1f);
-                                fadeIn.setDuration(500);
-                                fadeIn.start();
-                                arrowLayout.setVisibility(View.VISIBLE);
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animator) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animator) {
-
-                            }
-                        });
-
-                        break;
-                    default :
-                        break;
-                }
-
-                return true;
+    private void setData() {
+        apiList = DataHandler.getInstance(getContext()).getAllApis();
+        if (apiList != null && apiList.size() > 0) {
+            prepareBitmaps();
+            if (!(System.currentTimeMillis() - DataHandler.getInstance(getContext()).getSlotLastUsed() > PrivateContract.SLOT_WAIT_TIME)) {
+                trigger.setEnabled(false);
+                startWaitTimer(PrivateContract.SLOT_WAIT_TIME - (System.currentTimeMillis() - DataHandler.getInstance(getContext()).getSlotLastUsed()));
+            }else {
+                trigger.setEnabled(true);
             }
-        });
+        } else {
+            connectAPI.allApis(user.getEmail(), user.getAuthToken());
+        }
+    }
+
+    private void prepareBitmaps() {
+        trigger.setEnabled(false);
+        bitmapArray = new Bitmap[apiList.size()];
+        for (int i = 0; i < bitmapArray.length; i++) {
+            bitmapArray[i] = BitmapFactory.decodeByteArray(apiList.get(i).getImage(), 0, apiList.get(i).getImage().length);
+        }
+        slot1.setImageBitmap(bitmapArray[new Random().nextInt(bitmapArray.length - 1)]);
+        slot2.setImageBitmap(bitmapArray[new Random().nextInt(bitmapArray.length - 1)]);
+        slot3.setImageBitmap(bitmapArray[new Random().nextInt(bitmapArray.length - 1)]);
+        showMessage("Slot machine ready");
     }
 
     private void animateSlots() {
 
-
-        ObjectAnimator animator1 = ObjectAnimator.ofFloat(slot1,"translationY",0,-80,80,0);
-        ObjectAnimator alpha1 = ObjectAnimator.ofFloat(slot1,"alpha",1,0,0,1);
-
-        ObjectAnimator animator2 = ObjectAnimator.ofFloat(slot2,"translationY",0,-80,80,0);
-        ObjectAnimator alpha2 = ObjectAnimator.ofFloat(slot2,"alpha",1,0,0,1);
-
-        ObjectAnimator animator3 = ObjectAnimator.ofFloat(slot3,"translationY",0,-80,80,0);
-        ObjectAnimator alpha3 = ObjectAnimator.ofFloat(slot3,"alpha",1,0,0,1);
-
-
-        animator1.setDuration(100);
-        alpha1.setDuration(100);
-
-        animator2.setDuration(100);
-        alpha2.setDuration(100);
-
-        animator3.setDuration(100);
-        alpha3.setDuration(100);
-
-        animator1.setInterpolator(new LinearInterpolator());
-        alpha1.setInterpolator(new LinearInterpolator());
-        animator1.setRepeatCount(60);
-        animator2.setRepeatCount(80);
-        animator3.setRepeatCount(100);
-
-
-        animator1.setRepeatMode(ValueAnimator.RESTART);
-        animator2.setRepeatMode(ValueAnimator.RESTART);
-        animator3.setRepeatMode(ValueAnimator.RESTART);
-
-
-
-        alpha1.setRepeatCount(60);
-        alpha2.setRepeatCount(80);
-        alpha3.setRepeatCount(100);
-
-
-        alpha1.setRepeatMode(ValueAnimator.RESTART);
-        alpha2.setRepeatMode(ValueAnimator.RESTART);
-        alpha3.setRepeatMode(ValueAnimator.RESTART);
-
-
-        AnimatorSet set=new AnimatorSet();
-        set.playTogether(animator1,alpha1,animator2,alpha2,animator3,alpha3);
+        trigger.setEnabled(false);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(ObjectAnimations.slotTranslateAnimation(slot1, 60),
+                ObjectAnimations.slotTranslateAnimation(slot2, 80),
+                ObjectAnimations.slotTranslateAnimation(slot3, 100),
+                ObjectAnimations.slotTranslateAnimation(slot1, 60),
+                ObjectAnimations.slotTranslateAnimation(slot2, 80),
+                ObjectAnimations.slotTranslateAnimation(slot3, 100));
         set.start();
-        CountDownTimer timer=new CountDownTimer(6000,100) {
-            int i=1;
-            @Override
-            public void onTick(long l) {
-                slot1.setImageResource(imgResources[i]);
-                if(i>=3){
-                    i=0;
-                }else{
-                    i++;
-                }
-            }
-            @Override
-            public void onFinish() {
 
-            }
-        }.start();
 
-        CountDownTimer timer1 = new CountDownTimer(8000,100) {
-            int j=2;
-            @Override
-            public void onTick(long l) {
-                int i = new Random().nextInt(4);
-                int j = new Random().nextInt(4);
-                int k = new Random().nextInt(4);
-                slot2.setImageResource(imgResources[j]);
-                if(j>=3){
-                    j=0;
-                }else{
-                    j++;
-                }
-            }
-            @Override
-            public void onFinish() {
-            }
-        }.start();
+        CountDownTimer swapTimer = new CountDownTimer(10000, 100) {
 
-        CountDownTimer timer2=new CountDownTimer(10000,100) {
-            int k=3;
+            int i = new Random().nextInt(apiList.size() - 1);
+            int j = new Random().nextInt(apiList.size() - 1);
+            int k = new Random().nextInt(apiList.size() - 1);
+
+
             @Override
             public void onTick(long l) {
 
-                slot3.setImageResource(imgResources[k]);
-                if(k>=3){
-                    k=0;
-                }else{
-                    k++;
+                if (l > 6000 && l <= 10000) {
+                    slot1.setImageBitmap(bitmapArray[i]);
+                    slot2.setImageBitmap(bitmapArray[j]);
+                    slot3.setImageBitmap(bitmapArray[k]);
+                    i = i >= bitmapArray.length - 1 ? 0 : i + 1;
+                    j = j >= bitmapArray.length - 1 ? 0 : j + 1;
+                    k = k >= bitmapArray.length - 1 ? 0 : k + 1;
+
+                } else if (l <= 6000 && l > 2000) {
+                    j = j >= bitmapArray.length - 1 ? 0 : j + 1;
+                    k = k >= bitmapArray.length - 1 ? 0 : k + 1;
+                    slot2.setImageBitmap(bitmapArray[j]);
+                    slot3.setImageBitmap(bitmapArray[k]);
+
+                } else {
+                    k = k >= bitmapArray.length - 1 ? 0 : k + 1;
+                    slot3.setImageBitmap(bitmapArray[k]);
                 }
             }
+
             @Override
             public void onFinish() {
-                startTimer();
+                startWaitTimer(PrivateContract.SLOT_WAIT_TIME);
+                DataHandler.getInstance(getContext()).saveSlotLastUsed(System.currentTimeMillis());
+                connectAPI.slots(user.getEmail(), user.getAuthToken(), i == j + 1 && j + 1 == k + 1 ? true : false, "" + i + j + k);
+                Log.i(TAG, "onFinish: " + i + ":" + j + ":" + k);
             }
         }.start();
     }
-    private void startTimer() {
-        iv.setEnabled(false);
-        if(timer!=null){
+
+    private void startWaitTimer(long waitTime) {
+        trigger.setEnabled(false);
+        if (timer != null) {
             timer.cancel();
         }
-        min=0;
-        sec=0;
-        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(timeRemaining,"alpha",0f,1f);
-        fadeIn.setDuration(500);
-        fadeIn.start();
-        timeRemaining.setVisibility(View.VISIBLE);
-        timer = new CountDownTimer(60000,1000) {
+        min = 0;
+        sec = 0;
+
+        ObjectAnimations.fadeInAnimation(digitalClockView).start();
+
+        digitalClockView.setVisibility(View.VISIBLE);
+
+        timer = new CountDownTimer(waitTime, 1000) {
             @Override
             public void onTick(long l) {
 
-                min=(int)l/1000/60;
-                sec=((int)l/1000)%60;
-                timeRemaining.setText((min/10!=0?min:"0"+min)+" : "+(sec/10!=0?sec:"0"+sec));
+                min = (int) l / 1000 / 60;
+                sec = ((int) l / 1000) % 60;
+                digitalClockView.setTime((min / 10 != 0 ? min : "0" + min) + ":" + (sec / 10 != 0 ? sec : "0" + sec));
             }
+
             @Override
             public void onFinish() {
-                timeRemaining.setText("00 : 00");
+                digitalClockView.setTime("00:00");
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        timeRemaining.setVisibility(View.GONE);
+                        ObjectAnimations.fadeOutAnimation(digitalClockView).start();
                     }
-                },1000);
-                iv.setEnabled(true);
+                }, 1000);
+                if (NetworkUtils.hasConnectivity(getContext()))
+                    trigger.setEnabled(true);
+                else {
+                    trigger.setEnabled(false);
+                    showMessage("Connect to internet");
+                }
             }
         }.start();
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+
+        int eid = event.getAction();
+        switch (eid) {
+            case MotionEvent.ACTION_MOVE:
+                PointF mv = new PointF(event.getX() - downPT.x, event.getY() - downPT.y);
+                Rect rec = new Rect();
+                Rect rec2 = new Rect();
+                triggerHolder.getLocalVisibleRect(rec2);
+                trigger.getLocalVisibleRect(rec);
+                if (startPT.y + mv.y >= rec2.top && startPT.y + mv.y <= rec2.height() - rec.height()) {
+                    trigger.setY((int) (startPT.y + mv.y));
+                    startPT = new PointF(trigger.getX(), trigger.getY());
+                }
+                break;
+            case MotionEvent.ACTION_DOWN:
+
+                ObjectAnimations.fadeOutAnimation(arrowLayout).start();
+                downPT.x = event.getX();
+                downPT.y = event.getY();
+                startPT = new PointF(trigger.getX(), trigger.getY());
+                break;
+            case MotionEvent.ACTION_UP:
+                Animator animator = ObjectAnimations.flickerAnimation(trigger);
+                animator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        ObjectAnimations.fadeInAnimation(arrowLayout).start();
+                        arrowLayout.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                });
+                animator.start();
+                animateSlots();
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (NetworkUtils.hasConnectivity(getContext()) && !digitalClockView.isMorphingAnimationRunning()) {
+            trigger.setEnabled(true);
+        } else if (!digitalClockView.isMorphingAnimationRunning()) {
+            trigger.setEnabled(false);
+            showMessage("Connect to internet");
+        }
+    }
+
+    @Override
+    public void onRequestInitiated(int code) {
+        if (code == ConnectAPI.ALL_APIS_CODE) {
+            progressDialog.setMessage("Fetching Slot...");
+            progressDialog.show();
+        } else if (code == ConnectAPI.SLOTS_CODE) {
+
+        }
+    }
+
+    @Override
+    public void onRequestCompleted(int code, Object result) {
+        if (code == ConnectAPI.ALL_APIS_CODE) {
+            progressDialog.cancel();
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setMessage("Loading Slots...");
+            progressDialog.setMax(100);
+            progressDialog.setIndeterminate(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.show();
+            startDownloadingImages((List<BaseAPI>) result);
+        } else if (code == ConnectAPI.SLOTS_CODE) {
+            SlotsResult slotsResult = (SlotsResult) result;
+            if (slotsResult != null && slotsResult.getStatus() == 200) {
+                DataHandler.getInstance(getContext()).saveSlot(slotsResult.getSlot());
+                if (slotsResult.getSlot().getWinner() == "true") {
+                    showMessage("You already won. Have fun!");
+                }
+            } else if (slotsResult.getStatus() == 400) {
+                showMessage(slotsResult.getMessage());
+            } else {
+                showMessage(slotsResult.getMessage());
+            }
+        }
+    }
+
+    private void startDownloadingImages(List<BaseAPI> result) {
+        allAPIResult = result;
+        Intent intent = new Intent(getActivity(), ImageDownloadService.class);
+        String[] links = new String[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            links[i] = result.get(i).getLogo();
+        }
+        intent.putExtra("links", links);
+        intent.putExtra("receiver", new DownloadReceiver(new Handler()));
+        getActivity().startService(intent);
+    }
+
+    @Override
+    public void onRequestError(int code, String message) {
+        if (code == ConnectAPI.ALL_APIS_CODE) {
+            progressDialog.cancel();
+            showMessage(message);
+        } else if (code == ConnectAPI.SLOTS_CODE) {
+            showMessage(message);
+        }
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Snackbar.make(root, message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorDialog() {
+
+    }
+
+    @SuppressLint("ParcelCreator")
+    private class DownloadReceiver extends ResultReceiver {
+        public DownloadReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            super.onReceiveResult(resultCode, resultData);
+            if (resultCode == ImageDownloadService.UPDATE_PROGRESS) {
+                Log.i(TAG, "onReceiveResult: " + resultData.toString());
+                int progress = resultData.getInt("progress");
+                int position = resultData.getInt("position");
+                byte[] array = resultData.getByteArray("result");
+                if (array != null) {
+                    allAPIResult.get(position).setImage(array);
+                    int prog = (100 * (position + 1)) / allAPIResult.size();
+                    Log.i(TAG, "onReceiveResult: prog" + prog);
+                    progressDialog.setProgress(prog);
+                    if (position == allAPIResult.size() - 1) {
+                        progressDialog.cancel();
+                        DataHandler.getInstance(getContext()).saveAllAPIs(allAPIResult);
+                        setData();
+                    }
+                } else {
+                    showMessage("Error loading");
+                    allAPIResult = new ArrayList<>();
+                    progressDialog.cancel();
+                }
+            }
+        }
+
+
     }
 }

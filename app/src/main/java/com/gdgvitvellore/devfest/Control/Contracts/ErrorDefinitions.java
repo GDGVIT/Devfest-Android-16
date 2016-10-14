@@ -16,6 +16,9 @@ public class ErrorDefinitions {
     public static final int CODE_INVALID_CREDENTIALS = 401;
     public static final int CODE_LOGGED_IN = 200;
 
+    //My Team codes
+    public static final int API_NOT_ASSIGNED =301 ;
+
 
     /**
      * Used to get the error description for respective error code.
@@ -39,6 +42,9 @@ public class ErrorDefinitions {
                 break;
             case 200:
                 mes="Logged In";
+                break;
+            case 301:
+                mes="No APIs assigned till now";
                 break;
             default:
                 mes="Unknown Error";

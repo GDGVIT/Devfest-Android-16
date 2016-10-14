@@ -11,7 +11,6 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -20,13 +19,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'armeabi-v7a', 'mips', 'arm64-v8a', 'x86_64'
+            universalApk false
+        }
+    }
 }
+
+
 
 dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
+    compile project(':library')
     /*Support Libraries*/
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support:support-v4:24.1.1'
@@ -37,9 +47,6 @@ dependencies {
     /*Networking and Parsing Libs*/
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.google.code.gson:gson:2.7'
-    compile 'io.reactivex:rxjava:1.1.6'
-    compile 'io.reactivex:rxandroid:1.2.1'
-
 
     /*UI Libraries*/
     compile 'de.hdodenhof:circleimageview:2.1.0'
@@ -50,6 +57,6 @@ dependencies {
     compile 'link.fls:swipestack:0.3.0'
     compile 'com.google.zxing:core:3.2.1'
     compile 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
-
-
+    compile 'com.github.bumptech.glide:glide:3.6.0'
+    compile 'com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.1'
 }

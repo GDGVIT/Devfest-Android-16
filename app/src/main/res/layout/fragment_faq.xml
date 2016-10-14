@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/fragment_faq_root"
     android:layout_height="match_parent"
     tools:context="com.gdgvitvellore.devfest.Entity.FAQ.Fragments.FAQFragment">
 
@@ -66,6 +67,7 @@
                     android:layout_height="match_parent">
 
                     <EditText
+                        android:id="@+id/fragment_faq_et_question"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
                         android:padding="20dp"

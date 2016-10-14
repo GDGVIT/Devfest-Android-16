@@ -1,10 +1,12 @@
 package com.gdgvitvellore.devfest.Entity.Timeline.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -17,13 +19,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
+import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
 import com.gdgvitvellore.devfest.Entity.Actors.Phase;
-import com.gdgvitvellore.devfest.Entity.Actors.Timeline;
 import com.gdgvitvellore.devfest.Entity.Actors.TimelineResult;
 import com.gdgvitvellore.devfest.Entity.Customs.EmptyFragment;
 import com.gdgvitvellore.devfest.Entity.Customs.VerticalPageTransformer;
@@ -33,17 +36,23 @@ import com.gdgvitvellore.devfest.gdgdevfest.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.relex.circleindicator.CircleIndicator;
+
 /**
  * Created by Prince Bansal Local on 10/10/2016.
  */
 
-public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthenticateListener {
+public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthenticateListener,ViewUtils {
 
     private static final int NUM_PAGES = 2;
+    private static final String TAG = TimelineFragment.class.getSimpleName();
+
     private VerticalViewPager viewPager;
     private RecyclerView recyclerView;
     private TextView timer;
-   // private CircleIndicator pagerIndicator;
+    private CircleIndicator pagerIndicator;
+    private ProgressDialog progressDialog;
+    private LinearLayout root;
 
     private PhasesAdapter mAdapter;
     private List<Phase> phaseList = new ArrayList<>();
@@ -76,33 +85,21 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         getCredentials();
         setInit();
         setData();
-        fetchData();
     }
 
     private void getCredentials() {
-        email = DataHandler.getInstance(getActivity()).getUserMail();
+        email = DataHandler.getInstance(getActivity()).getUser().getEmail();
         Log.d("EMAIL", email);
-        auth = DataHandler.getInstance(getActivity()).getAuthToken();
-        Log.d("PASSWORD",auth);
-    }
-
-    private void fetchData() {
-        Timeline timeline = DataHandler.getInstance(getActivity()).getTimeline();
-        if (timeline == null){
-            connectAPI.timeline(email, auth);
-        }
-        else{
-
-        }
+        auth = DataHandler.getInstance(getActivity()).getUser().getAuthToken();
+        Log.d("PASSWORD", auth);
     }
 
     private void init(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.phases_list);
         timer = (TextView) view.findViewById(R.id.time);
-      //  pagerIndicator = (CircleIndicator)view.findViewById(R.id.pager_indicator);
-        viewPager=(VerticalViewPager)view.findViewById(R.id.pager);
-        indicator1 = (ImageView)view.findViewById(R.id.indicator1);
-        indicator2 = (ImageView)view.findViewById(R.id.indicator2);
+        viewPager = (VerticalViewPager) view.findViewById(R.id.pager);
+        progressDialog = new ProgressDialog(getContext());
+        root=(LinearLayout)view.findViewById(R.id.root);
 
         connectAPI = new ConnectAPI(getActivity());
     }
@@ -147,19 +144,19 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     private void setData() {
         setupViewPager(viewPager);
 
-        Phase phase = new Phase("Hackathon Phase 1", "10:00 - 12:30");
-        phaseList.add(phase);
-
-        phase = new Phase("Hackathon Phase 2", "12:30 - 15:00");
-        phaseList.add(phase);
-
-        phase = new Phase("Hackathon Phase 3", "15:00 - 17:00");
-        phaseList.add(phase);
-        mAdapter = new PhasesAdapter(phaseList);
-
-        recyclerView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
+        List<Phase> phases = DataHandler.getInstance(getContext()).getPhases();
+        if (phases != null) {
+            Log.i(TAG, "setData: ");
+            phaseList = phases;
+            mAdapter = new PhasesAdapter(phaseList);
+            recyclerView.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
+        } else {
+            connectAPI.timeline(DataHandler.getInstance(getContext()).getUser().getEmail(),
+                    DataHandler.getInstance(getContext()).getUser().getAuthToken());
+        }
     }
+
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
@@ -175,7 +172,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
                 int seconds = (int) (millis / 1000) % 60;
                 int minutes = (int) ((millis / (1000 * 60)) % 60);
                 int hours = (int) ((millis / (1000 * 60 * 60)) % 24);
-                String text = String.format("%02d hours, %02d minutes, %02d seconds", hours, minutes, seconds);
+                String text = String.format("%02d H, %02d M, %02d S", hours, minutes, seconds);
                 timer.setText(text);
             }
 
@@ -190,18 +187,25 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
     @Override
     public void onRequestInitiated(int code) {
-
+        if (code == ConnectAPI.TIMELINE_CODE) {
+            progressDialog.setMessage("Loading timeline...");
+            progressDialog.show();
+        }
     }
 
     @Override
     public void onRequestCompleted(int code, Object result) {
 
-        if (code == ConnectAPI.TIMELINE_CODE){
+        progressDialog.cancel();
+        if (code == ConnectAPI.TIMELINE_CODE) {
             TimelineResult timelineResult = (TimelineResult) result;
-            if (timelineResult!=null){
-                if (timelineResult.getStatus() == ErrorDefinitions.CODE_LOGGED_IN){
+            if (timelineResult != null) {
+                if (timelineResult.getStatus() == ErrorDefinitions.CODE_SUCCESS) {
                     DataHandler.getInstance(getActivity()).saveTimeline(timelineResult.getTimeline());
-                    Log.d("Realm result:", DataHandler.getInstance(getActivity()).getTimeline().toString());
+                    Log.d("Realm result:", DataHandler.getInstance(getActivity()).getPhases().toString());
+                    setData();
+                }else{
+                    showMessage(timelineResult.getMessage());
                 }
             }
         }
@@ -210,9 +214,20 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
     @Override
     public void onRequestError(int code, String message) {
-        if (code == ConnectAPI.TIMELINE_CODE){
-         fetchData();
+        progressDialog.cancel();
+        if (code == ConnectAPI.TIMELINE_CODE) {
+            showMessage(message);
         }
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Snackbar.make(root,message,Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorDialog() {
+
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -223,12 +238,11 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
         @Override
         public Fragment getItem(int position) {
-            if(position==0){
+            if (position == 0) {
                 return new TimelineDisplayFragment();
-            }else if(position==1){
+            } else if (position == 1) {
                 return new TimelineAboutFragment();
-            }
-            else return new EmptyFragment();
+            } else return new EmptyFragment();
         }
 
         @Override
@@ -259,9 +273,9 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         public void onBindViewHolder(MyViewHolder holder, int position) {
 
             Phase phase = phasesList.get(position);
-            holder.name.setText(phase.getName());
-            holder.time.setText(phase.getTime());
-            if(position==0){
+            holder.name.setText(phase.getTitle());
+            holder.time.setText(phase.getStartTime() + "-" + phase.getEndTime());
+            if (position == 0) {
                 holder.time.setActivated(true);
             }
             /*if(phase.isRunning()){

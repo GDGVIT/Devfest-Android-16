@@ -10,7 +10,7 @@ import io.realm.RealmObject;
 public class SlotsResult extends RealmObject {
     private int status;
     private String message;
-    private RealmList<Slots> slots;
+    private Slot slot;
 
 
     public int getStatus() {
@@ -29,12 +29,12 @@ public class SlotsResult extends RealmObject {
     }
 
 
-    public RealmList<Slots> getSlots() {
-        return slots;
+    public Slot getSlot() {
+        return slot;
     }
 
-    public void setSlots(RealmList<Slots> slots) {
-        this.slots = slots;
+    public void setSlots(Slot slot) {
+        this.slot = slot;
     }
 
 
