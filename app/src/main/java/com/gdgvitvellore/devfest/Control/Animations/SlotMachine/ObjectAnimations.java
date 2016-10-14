@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 public class ObjectAnimations {
 
 
-
     public static enum Position{UP,DOWN};
 
     public static Animator triggerArrowAnimator(View v, int offset){
@@ -53,6 +52,12 @@ public class ObjectAnimations {
     }
     public static Animator fadeOutAnimation(View v) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(v, "alpha", 1f, 0f);
+        animator.setDuration(500);
+        return animator;
+    }
+
+    public static Animator flickerAnimation(View v) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(v, "translationY" ,35, 20, 30, 20, 25, 20);
         animator.setDuration(500);
         return animator;
     }

@@ -3,63 +3,76 @@ package com.gdgvitvellore.devfest.Entity.SlotMachine.Fragments;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bydavy.morpher.DigitalClockView;
 import com.bydavy.morpher.font.DFont;
+import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
+import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
+import com.gdgvitvellore.devfest.Boundary.Handlers.Services.ImageDownloadService;
 import com.gdgvitvellore.devfest.Control.Animations.SlotMachine.ObjectAnimations;
 import com.gdgvitvellore.devfest.Control.Contracts.PrivateContract;
+import com.gdgvitvellore.devfest.Control.Utils.NetworkUtils;
+import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
+import com.gdgvitvellore.devfest.Entity.Actors.API;
+import com.gdgvitvellore.devfest.Entity.Actors.BaseAPI;
+import com.gdgvitvellore.devfest.Entity.Actors.SlotsResult;
+import com.gdgvitvellore.devfest.Entity.Actors.User;
+import com.gdgvitvellore.devfest.Entity.Authentication.Activities.AuthenticationActivity;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
+import java.util.List;
 import java.util.Random;
 
 /**
  * Created by Shuvam Ghosh on 10/11/2016.
  */
 
-public class SlotMachineFragment extends Fragment implements View.OnTouchListener {
+public class SlotMachineFragment extends Fragment implements View.OnTouchListener, ConnectAPI.ServerAuthenticateListener, ViewUtils {
 
     private static final String TAG = SlotMachineFragment.class.getSimpleName();
+
     private ImageView trigger;
     private ImageView slot1, slot2, slot3;
     private LinearLayout triggerHolder, arrowLayout;
     private DigitalClockView digitalClockView;
+    private FrameLayout root;
+    private ProgressDialog progressDialog;
+
     private int min = 0;
     private int sec = 0;
+    private PointF downPT = new PointF();
+    private PointF startPT = new PointF();
 
-    PointF downPT = new PointF();
-    PointF startPT = new PointF();
+    private List<BaseAPI> apiList;
 
-    private int imgResources[] = {
-            R.drawable.api1,
-            R.drawable.api2,
-            R.drawable.api3,
-            R.drawable.api4,
-            R.drawable.api5,
-            R.drawable.api6,
-            R.drawable.api7,
-            R.drawable.api8,
-            R.drawable.api9,
-            R.drawable.api10,
-            R.drawable.api11,
-            R.drawable.api12,
-            R.drawable.api13,
-            R.drawable.api14,
-    };
     private CountDownTimer timer;
+    private ConnectAPI connectAPI;
+
+    private User user;
+    private List<BaseAPI> allAPIResult;
+    private Bitmap[] bitmapArray;
 
     @Nullable
     @Override
@@ -68,6 +81,7 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
         rootView = inflater.inflate(R.layout.fragment_slot_machine, container, false);
         init(rootView);
         setInit();
+        setData();
         return rootView;
     }
 
@@ -78,26 +92,67 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
         slot3 = (ImageView) rootView.findViewById(R.id.slot3);
         arrowLayout = (LinearLayout) rootView.findViewById(R.id.arrows_layout);
         triggerHolder = (LinearLayout) rootView.findViewById(R.id.trigger_holder);
+        root = (FrameLayout) rootView.findViewById(R.id.root);
+        progressDialog = new ProgressDialog(getContext());
 
         digitalClockView = (DigitalClockView) rootView.findViewById(R.id.digitalClock);
+        user = DataHandler.getInstance(getContext()).getUser();
+        if (user == null) {
+            startActivity(new Intent(getActivity(), AuthenticationActivity.class));
+            getActivity().finish();
+        }
 
+        connectAPI = new ConnectAPI(getContext());
     }
 
 
     private void setInit() {
         digitalClockView.setFont(new DFont(70, 2));
         digitalClockView.setMorphingDuration(100);
+        progressDialog.setCancelable(false);
 
         ObjectAnimations.triggerArrowAnimator(triggerHolder, 60).start();
 
         digitalClockView.setVisibility(View.INVISIBLE);
 
         trigger.setOnTouchListener(this);
+
+        connectAPI.setServerAuthenticateListener(this);
+        if (!NetworkUtils.hasConnectivity(getContext())) {
+            trigger.setEnabled(false);
+            showMessage("Connect to internet");
+        }
+    }
+
+    private void setData() {
+        apiList = DataHandler.getInstance(getContext()).getAllApis();
+        if (apiList != null && apiList.size() > 0) {
+            prepareBitmaps();
+            if (!(System.currentTimeMillis() - DataHandler.getInstance(getContext()).getSlotLastUsed() > PrivateContract.SLOT_WAIT_TIME)) {
+                trigger.setEnabled(false);
+                startWaitTimer(PrivateContract.SLOT_WAIT_TIME - (System.currentTimeMillis() - DataHandler.getInstance(getContext()).getSlotLastUsed()));
+            }
+        } else {
+            connectAPI.allApis(user.getEmail(), user.getAuthToken());
+        }
+    }
+
+    private void prepareBitmaps() {
+        trigger.setEnabled(false);
+        bitmapArray=new Bitmap[apiList.size()];
+        for (int i = 0; i < bitmapArray.length; i++) {
+            bitmapArray[i]=BitmapFactory.decodeByteArray(apiList.get(i).getImage(),0,apiList.get(i).getImage().length);
+        }
+        slot1.setImageBitmap(bitmapArray[new Random().nextInt(bitmapArray.length-1)]);
+        slot2.setImageBitmap(bitmapArray[new Random().nextInt(bitmapArray.length-1)]);
+        slot3.setImageBitmap(bitmapArray[new Random().nextInt(bitmapArray.length-1)]);
+        showMessage("Slot machine ready");
+        trigger.setEnabled(true);
     }
 
     private void animateSlots() {
 
-
+        trigger.setEnabled(false);
         AnimatorSet set = new AnimatorSet();
         set.playTogether(ObjectAnimations.slotTranslateAnimation(slot1, 60),
                 ObjectAnimations.slotTranslateAnimation(slot2, 80),
@@ -107,49 +162,48 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
                 ObjectAnimations.slotTranslateAnimation(slot3, 100));
         set.start();
 
-        final int p = new Random().nextInt(imgResources.length-1);
-        final int q = new Random().nextInt(imgResources.length-1);
-        final int r = new Random().nextInt(imgResources.length-1);
-        Log.i(TAG, "animateSlots: I:j:k:"+p+":"+q+":"+r);
+
         CountDownTimer swapTimer = new CountDownTimer(10000, 100) {
 
-            int i=p;
-            int j=q;
-            int k=r;
+            int i = new Random().nextInt(apiList.size() - 1);
+            int j = new Random().nextInt(apiList.size() - 1);
+            int k = new Random().nextInt(apiList.size() - 1);
 
 
             @Override
             public void onTick(long l) {
 
-                if(l>6000&&l<=10000){
-                    slot1.setImageResource(imgResources[i]);
-                    slot2.setImageResource(imgResources[j]);
-                    slot3.setImageResource(imgResources[k]);
-                    i=i>=imgResources.length-1?0:i+1;
-                    j=j>=imgResources.length-1?0:j+1;
-                    k=k>=imgResources.length-1?0:k+1;
+                if (l > 6000 && l <= 10000) {
+                    slot1.setImageBitmap(bitmapArray[i]);
+                    slot2.setImageBitmap(bitmapArray[j]);
+                    slot3.setImageBitmap(bitmapArray[k]);
+                    i = i >= bitmapArray.length - 1 ? 0 : i + 1;
+                    j = j >= bitmapArray.length - 1 ? 0 : j + 1;
+                    k = k >= bitmapArray.length - 1 ? 0 : k + 1;
 
-                }else if(l<=6000&&l>2000){
-                    j=j>=imgResources.length-1?0:j+1;
-                    k=k>=imgResources.length-1?0:k+1;
-                    slot2.setImageResource(imgResources[j]);
-                    slot3.setImageResource(imgResources[k]);
+                } else if (l <= 6000 && l > 2000) {
+                    j = j >= bitmapArray.length - 1 ? 0 : j + 1;
+                    k = k >= bitmapArray.length - 1 ? 0 : k + 1;
+                    slot2.setImageBitmap(bitmapArray[j]);
+                    slot3.setImageBitmap(bitmapArray[k]);
 
-                }else{
-                    k=k>=imgResources.length-1?0:k+1;
-                    slot3.setImageResource(imgResources[k]);
+                } else {
+                    k = k >= bitmapArray.length - 1 ? 0 : k + 1;
+                    slot3.setImageBitmap(bitmapArray[k]);
                 }
             }
 
             @Override
             public void onFinish() {
-                startWaitTimer();
-                Log.i(TAG, "onFinish: "+i+":"+j+":"+k);
+                startWaitTimer(PrivateContract.SLOT_WAIT_TIME);
+                DataHandler.getInstance(getContext()).saveSlotLastUsed(System.currentTimeMillis());
+                connectAPI.slots(user.getEmail(), user.getAuthToken(), i == j + 1 && j + 1 == k + 1 ? true : false, "" + i + j + k);
+                Log.i(TAG, "onFinish: " + i + ":" + j + ":" + k);
             }
         }.start();
     }
 
-    private void startWaitTimer() {
+    private void startWaitTimer(long waitTime) {
         trigger.setEnabled(false);
         if (timer != null) {
             timer.cancel();
@@ -161,7 +215,7 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
 
         digitalClockView.setVisibility(View.VISIBLE);
 
-        timer = new CountDownTimer(PrivateContract.SLOT_WAIT_TIME, 1000) {
+        timer = new CountDownTimer(waitTime, 1000) {
             @Override
             public void onTick(long l) {
 
@@ -179,7 +233,12 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
                         ObjectAnimations.fadeOutAnimation(digitalClockView).start();
                     }
                 }, 1000);
-                trigger.setEnabled(true);
+                if (NetworkUtils.hasConnectivity(getContext()))
+                    trigger.setEnabled(true);
+                else {
+                    trigger.setEnabled(false);
+                    showMessage("Connect to internet");
+                }
             }
         }.start();
     }
@@ -208,13 +267,7 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
                 startPT = new PointF(trigger.getX(), trigger.getY());
                 break;
             case MotionEvent.ACTION_UP:
-
-
-                float in = trigger.getY();
-                ObjectAnimator animator = ObjectAnimator.ofFloat(trigger, "y", in, 35, 20, 30, 20, 25, 20);
-                animator.setDuration(500);
-                animator.start();
-                animateSlots();
+                Animator animator = ObjectAnimations.flickerAnimation(trigger);
                 animator.addListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animator) {
@@ -223,9 +276,7 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
 
                     @Override
                     public void onAnimationEnd(Animator animator) {
-                        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(arrowLayout, "alpha", 0f, 1f);
-                        fadeIn.setDuration(500);
-                        fadeIn.start();
+                        ObjectAnimations.fadeInAnimation(arrowLayout).start();
                         arrowLayout.setVisibility(View.VISIBLE);
                     }
 
@@ -239,12 +290,109 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
 
                     }
                 });
-
+                animator.start();
+                animateSlots();
                 break;
             default:
                 break;
         }
 
         return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (NetworkUtils.hasConnectivity(getContext()) && !digitalClockView.isMorphingAnimationRunning()) {
+            trigger.setEnabled(true);
+        } else if (!digitalClockView.isMorphingAnimationRunning()) {
+            trigger.setEnabled(false);
+            showMessage("Connect to internet");
+        }
+    }
+
+    @Override
+    public void onRequestInitiated(int code) {
+        if (code == ConnectAPI.ALL_APIS_CODE) {
+            progressDialog.setMessage("Fetching Slot...");
+            progressDialog.show();
+        } else if (code == ConnectAPI.SLOTS_CODE) {
+
+        }
+    }
+
+    @Override
+    public void onRequestCompleted(int code, Object result) {
+        if (code == ConnectAPI.ALL_APIS_CODE) {
+            progressDialog.setMax(100);
+            startDownloadingImages((List<BaseAPI>) result);
+        } else if (code == ConnectAPI.SLOTS_CODE) {
+            SlotsResult slotsResult = (SlotsResult) result;
+            if (slotsResult != null && slotsResult.getStatus() == 200) {
+                DataHandler.getInstance(getContext()).saveSlot(slotsResult.getSlot());
+            } else if (slotsResult.getStatus() == 400) {
+                showMessage(slotsResult.getMessage());
+            } else {
+                showMessage(slotsResult.getMessage());
+            }
+        }
+    }
+
+    private void startDownloadingImages(List<BaseAPI> result) {
+        allAPIResult=result;
+        Intent intent = new Intent(getActivity(), ImageDownloadService.class);
+        String[] links = new String[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            links[i] = result.get(i).getLogo();
+        }
+        intent.putExtra("links", links);
+        intent.putExtra("receiver", new DownloadReceiver(new Handler()));
+        getActivity().startService(intent);
+    }
+
+    @Override
+    public void onRequestError(int code, String message) {
+        if (code == ConnectAPI.ALL_APIS_CODE) {
+            progressDialog.cancel();
+            showMessage(message);
+        } else if (code == ConnectAPI.SLOTS_CODE) {
+            showMessage(message);
+        }
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Snackbar.make(root, message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorDialog() {
+
+    }
+
+    @SuppressLint("ParcelCreator")
+    private class DownloadReceiver extends ResultReceiver {
+        public DownloadReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            super.onReceiveResult(resultCode, resultData);
+            if (resultCode == ImageDownloadService.UPDATE_PROGRESS) {
+                Log.i(TAG, "onReceiveResult: " + resultData.toString());
+                int progress = resultData.getInt("progress");
+                int position = resultData.getInt("position");
+                byte[] array = resultData.getByteArray("result");
+                allAPIResult.get(position).setImage(array);
+                progressDialog.setProgress((int)((position+1)/allAPIResult.size()*100));
+                if(position==allAPIResult.size()-1){
+                    DataHandler.getInstance(getContext()).saveAllAPIs(allAPIResult);
+                    setData();
+                }
+            }
+        }
+
+
     }
 }

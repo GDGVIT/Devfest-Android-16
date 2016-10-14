@@ -1,17 +1,14 @@
 package com.gdgvitvellore.devfest.Entity.Actors;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
-
 /**
- * @see <a href="https://github.com/GDGVIT/devfest-portal/wiki">API Reference</a>
+ * Created by Prince Bansal Local on 10/13/2016.
  */
 
-public class SlotsResult extends RealmObject {
+public class ChatbotResult {
+
     private int status;
     private String message;
-    private Slot slot;
-
+    private String answer;
 
     public int getStatus() {
         return status;
@@ -24,18 +21,16 @@ public class SlotsResult extends RealmObject {
     public String getMessage() {
         return message;
     }
+
     public void setMessage(String message) {
         this.message = message;
     }
 
-
-    public Slot getSlot() {
-        return slot;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setSlots(Slot slot) {
-        this.slot = slot;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
-
-
 }

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class Slots extends RealmObject{
+public class Slot extends RealmObject{
 
     @SerializedName("winner")
     @Expose

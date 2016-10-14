@@ -1,13 +1,15 @@
 package com.gdgvitvellore.devfest.Entity.Actors;
 
-
+/**
+ * Created by Prince Bansal Local on 10/14/2016.
+ */
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class APIAssigned extends RealmObject {
+public class BaseAPI extends RealmObject {
 
     @SerializedName("name")
     @Expose
@@ -18,6 +20,7 @@ public class APIAssigned extends RealmObject {
     @SerializedName("logo")
     @Expose
     private String logo;
+    private byte[] image;
 
     /**
      *
@@ -73,4 +76,11 @@ public class APIAssigned extends RealmObject {
         this.logo = logo;
     }
 
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
 }

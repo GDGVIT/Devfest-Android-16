@@ -7,23 +7,27 @@ package com.gdgvitvellore.devfest.Boundary.Handlers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.gdgvitvellore.devfest.Control.Contracts.PrivateContract;
-import com.gdgvitvellore.devfest.Entity.Actors.APIAssigned;
+import com.gdgvitvellore.devfest.Entity.Actors.API;
+import com.gdgvitvellore.devfest.Entity.Actors.BaseAPI;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
 import com.gdgvitvellore.devfest.Entity.Actors.LogoutResult;
 import com.gdgvitvellore.devfest.Entity.Actors.Phase;
-import com.gdgvitvellore.devfest.Entity.Actors.Slots;
+import com.gdgvitvellore.devfest.Entity.Actors.Slot;
 import com.gdgvitvellore.devfest.Entity.Actors.Speakers;
 import com.gdgvitvellore.devfest.Entity.Actors.Team;
 import com.gdgvitvellore.devfest.Entity.Actors.User;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
 /**
  * This singleton class will be used to fetch as well as store any data.
@@ -32,6 +36,7 @@ import io.realm.RealmList;
 
 public class DataHandler {
 
+    private static final String TAG = DataHandler.class.getSimpleName();
     //Singleton reference
     public static DataHandler myInstance;
 
@@ -142,34 +147,31 @@ public class DataHandler {
 
     }
 
-    public String getUserMail(){
-
-        User user = mRealm.where(User.class).findFirst();
-        if(user!=null) {
-            String mailid = user.getEmail();
-            return mailid;
-        }else{
-            return null;
-        }
+    /**
+     * Use this method to save {@link long} to SharedPreferences
+     *
+     * @param key   Key value of the pair to store
+     * @param value int value to store
+     */
+    private void savePreference(String key, long value) {
+        mPreferences.edit().putLong(key, value).commit();
     }
 
-    public String getAuthToken(){
-        User user = mRealm.where(User.class).findFirst();
-        if(user!=null) {
-            String auth = user.getAuthToken();
-            return auth;
-        }else{
-            return null;
-        }
+    /**
+     * Use this method to retrieve {@link long} from SharedPreferences using key
+     *
+     * @param key Key of the pair to fetch
+     * @param def Default long value to fetch
+     * @return Returns int value with associated key from SharedPreferences.
+     * If value doesn't exist, returns default value passed in argument.
+     */
+
+    public long getPreference(String key, long def) {
+
+        return mPreferences.getLong(key, def);
+
     }
 
-    public List<Phase> getPhases(){
-        return Arrays.asList((Phase[]) mRealm.where(Phase.class).findAll().toArray());
-    }
-
-    public List<FAQ> getFAQ(){
-        return Arrays.asList((FAQ[]) mRealm.where(FAQ.class).findAll().toArray());
-    }
 
     /**
      * Use this method to save {@link HashSet<String>} to SharedPreferences
@@ -274,7 +276,8 @@ public class DataHandler {
         }
     }
 
-    public void saveApi(RealmList<APIAssigned> apis) {
+    public void saveApi(RealmList<API> apis) {
+
         if (apis != null) {
             mRealm.beginTransaction();
             mRealm.copyToRealm(apis);
@@ -282,7 +285,7 @@ public class DataHandler {
         }
     }
 
-    public void saveSlots(RealmList<Slots> slots) {
+    public void saveSlot(Slot slots) {
         if (slots != null) {
             mRealm.beginTransaction();
             mRealm.copyToRealm(slots);
@@ -291,8 +294,21 @@ public class DataHandler {
         }
     }
 
+    public void saveAllAPIs(List<BaseAPI> baseAPIs) {
+        RealmList<BaseAPI> realmList=new RealmList<>();
+        for(BaseAPI baseAPI:baseAPIs){
+            realmList.add(baseAPI);
+        }
+        if (baseAPIs != null) {
+            mRealm.beginTransaction();
+            mRealm.copyToRealm(realmList);
+            mRealm.commitTransaction();
+
+        }
+    }
+
     public void saveLogout(LogoutResult logoutResults) {
-        if(logoutResults!=null) {
+        if (logoutResults != null) {
             mRealm.beginTransaction();
             mRealm.copyToRealm(logoutResults);
             mRealm.commitTransaction();
@@ -308,4 +324,102 @@ public class DataHandler {
         savePreference("loggedIn", isloggedIn);
     }
 
+
+    public void saveSlotLastUsed(long l) {
+        savePreference("slotLastUsed", l);
+    }
+
+    public long getSlotLastUsed() {
+        return getPreference("slotLastUsed",System.currentTimeMillis());
+    }
+
+    public User getUser() {
+
+        User user = mRealm.where(User.class).findFirst();
+        if (user != null) {
+            return user;
+        } else {
+            return null;
+        }
+    }
+
+    public Team getTeam() {
+        Team team = mRealm.where(Team.class).findFirst();
+        if (team != null) {
+            return team;
+        } else {
+            return null;
+        }
+    }
+
+    public User getAuthToken() {
+        User user = mRealm.where(User.class).findFirst();
+        if (user != null) {
+            return user;
+        } else {
+            return null;
+        }
+    }
+
+    public List<Phase> getPhases() {
+        List<Phase> list = null;
+        RealmResults<Phase> realmList = mRealm.where(Phase.class).findAll();
+        Log.i(TAG, "getPhases: " + realmList.size());
+        if (realmList != null && realmList.size() > 0) {
+            list = new ArrayList<>();
+            Iterator<Phase> iterator = realmList.iterator();
+            while (iterator.hasNext()) {
+                list.add(iterator.next());
+            }
+            return list;
+        }
+        return null;
+    }
+
+    public List<FAQ> getFAQ() {
+        List<FAQ> list = null;
+        RealmResults<FAQ> realmList = mRealm.where(FAQ.class).findAll();
+        if (realmList != null && realmList.size() > 0) {
+            list = new ArrayList<>();
+            Iterator<FAQ> iterator = realmList.iterator();
+            while (iterator.hasNext()) {
+                list.add(iterator.next());
+            }
+            return list;
+        }
+        return null;
+    }
+
+    public List<API> getAssignedApis() {
+        List<API> list = null;
+        RealmResults<API> realmList = mRealm.where(API.class).findAll();
+        if (realmList != null && realmList.size() > 0) {
+            list = new ArrayList<>();
+            Iterator<API> iterator = realmList.iterator();
+            while (iterator.hasNext()) {
+                list.add(iterator.next());
+            }
+            return list;
+        }
+        return null;
+    }
+
+    public List<BaseAPI> getAllApis() {
+        List<BaseAPI> list = null;
+        RealmResults<BaseAPI> realmList = mRealm.where(BaseAPI.class).findAll();
+        if (realmList != null && realmList.size() > 0) {
+            list = new ArrayList<>();
+            Iterator<BaseAPI> iterator = realmList.iterator();
+            while (iterator.hasNext()) {
+                list.add(iterator.next());
+            }
+            return list;
+        }
+        return null;
+    }
+
+    private Slot getSlot(){
+        Slot slot = mRealm.where(Slot.class).findFirst();
+        return slot;
+    }
 }

@@ -10,7 +10,7 @@ import io.realm.RealmObject;
 public class APIAssignedResult extends RealmObject {
     private int status;
     private String message;
-    private RealmList<APIAssigned> apis;
+    private RealmList<API> apis;
 
 
     public int getStatus() {
@@ -29,12 +29,12 @@ public class APIAssignedResult extends RealmObject {
     }
 
 
-    public RealmList<APIAssigned> getApis() {
+    public RealmList<API> getApis() {
         return apis;
     }
 
 
-    public void setApis(RealmList<APIAssigned> apis) {
+    public void setApis(RealmList<API> apis) {
         this.apis = apis;
     }
 

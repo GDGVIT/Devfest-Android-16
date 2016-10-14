@@ -9,14 +9,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.gdgvitvellore.devfest.Entity.Onboarding.Activities.OnboardingActivity">
+        <activity android:name="com.gdgvitvellore.devfest.Entity.Onboarding.Activities.OnboardingActivity"
+            android:screenOrientation="portrait">
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
 
-        <activity android:name="com.gdgvitvellore.devfest.Entity.Splash.Activities.SplashActivity">
+        <activity android:name="com.gdgvitvellore.devfest.Entity.Splash.Activities.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -25,10 +27,14 @@
 
 
         <activity android:name="com.gdgvitvellore.devfest.Entity.Main.Activities.MainActivity"
-            android:exported="true"></activity>
+            android:exported="true"
+            android:screenOrientation="portrait"></activity>
 
         <activity android:name="com.gdgvitvellore.devfest.Entity.Authentication.Activities.AuthenticationActivity"
-            android:exported="true"></activity>
+            android:exported="true"
+            android:screenOrientation="portrait"></activity>
+
+        <service android:name="com.gdgvitvellore.devfest.Boundary.Handlers.Services.ImageDownloadService"/>
 
     </application>
 
