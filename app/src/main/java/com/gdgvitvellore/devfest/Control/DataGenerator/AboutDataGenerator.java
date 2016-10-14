@@ -96,8 +96,6 @@ public class AboutDataGenerator {
     public static Group getContacts(AboutFragment aboutFragment){
 
         List<Child> childList=new ArrayList<>();
-<<<<<<< HEAD
-=======
         Child child1=new Child();
         child1.setName("Facebook");
         child1.setImageType(Child.IMAGE_RESOURCE);
@@ -147,7 +145,6 @@ public class AboutDataGenerator {
         childList.add(child5);
         childList.add(child6);
 
->>>>>>> da08a59a4a7c832724a1458f683159a4145c2fc4
         Group group= aboutFragment.new Group(childList);
         group.setName("Contact Us");
         return group;
