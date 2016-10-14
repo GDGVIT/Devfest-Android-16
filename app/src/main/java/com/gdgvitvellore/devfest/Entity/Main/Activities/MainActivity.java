@@ -161,6 +161,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     DataHandler.getInstance(this).saveLoggedIn(false);
                     startActivity(new Intent(MainActivity.this, AuthenticationActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     break;
+                default:
+                    break;
             }
         }
     }

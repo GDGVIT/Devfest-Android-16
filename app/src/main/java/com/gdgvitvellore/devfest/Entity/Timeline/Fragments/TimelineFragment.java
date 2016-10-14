@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
+import com.gdgvitvellore.devfest.Control.Algorithms.TimelineAlgos;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
 import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
 import com.gdgvitvellore.devfest.Entity.Actors.Phase;
@@ -36,23 +37,25 @@ import com.gdgvitvellore.devfest.gdgdevfest.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.relex.circleindicator.CircleIndicator;
+
 
 /**
  * Created by Prince Bansal Local on 10/10/2016.
  */
 
-public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthenticateListener,ViewUtils {
+public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthenticateListener, ViewUtils {
 
     private static final int NUM_PAGES = 2;
     private static final String TAG = TimelineFragment.class.getSimpleName();
 
     private VerticalViewPager viewPager;
     private RecyclerView recyclerView;
-    private TextView timer;
-    private CircleIndicator pagerIndicator;
+    private TextView timer, title;
     private ProgressDialog progressDialog;
     private LinearLayout root;
+
+    private TimelineDisplayFragment timelineDisplayFragment;
+    private TimelineAboutFragment timelineAboutFragment;
 
     private PhasesAdapter mAdapter;
     private List<Phase> phaseList = new ArrayList<>();
@@ -69,6 +72,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     private ConnectAPI connectAPI;
 
     private String email, auth;
+    private Phase currentPhase;
 
 
     @Nullable
@@ -87,6 +91,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         setData();
     }
 
+
     private void getCredentials() {
         email = DataHandler.getInstance(getActivity()).getUser().getEmail();
         Log.d("EMAIL", email);
@@ -94,13 +99,20 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         Log.d("PASSWORD", auth);
     }
 
+
     private void init(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.phases_list);
         timer = (TextView) view.findViewById(R.id.time);
+        title = (TextView) view.findViewById(R.id.title);
         viewPager = (VerticalViewPager) view.findViewById(R.id.pager);
         progressDialog = new ProgressDialog(getContext());
-        root=(LinearLayout)view.findViewById(R.id.root);
+        root = (LinearLayout) view.findViewById(R.id.root);
 
+        timelineDisplayFragment = new TimelineDisplayFragment();
+        timelineAboutFragment = new TimelineAboutFragment();
+
+        indicator1 = (ImageView)view.findViewById(R.id.indicator1);
+        indicator2 = (ImageView)view.findViewById(R.id.indicator2);
         connectAPI = new ConnectAPI(getActivity());
     }
 
@@ -151,17 +163,26 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
             mAdapter = new PhasesAdapter(phaseList);
             recyclerView.setAdapter(mAdapter);
             mAdapter.notifyDataSetChanged();
+            if (currentPhase != null) {
+                refreshCurrentEvent();
+            }
         } else {
             connectAPI.timeline(DataHandler.getInstance(getContext()).getUser().getEmail(),
                     DataHandler.getInstance(getContext()).getUser().getAuthToken());
         }
     }
 
+    private void refreshCurrentEvent() {
+        title.setText(currentPhase.getTitle());
+        timer.setText(currentPhase.getStartTime() + "-" + currentPhase.getEndTime());
+
+        timelineAboutFragment.setTimelineAbout(currentPhase.getDescription());
+        timelineDisplayFragment.setImage(currentPhase.getImageUrl());
+    }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
-      //  pagerIndicator.setViewPager(viewPager);
     }
 
     private void startTimer() {
@@ -204,7 +225,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
                     DataHandler.getInstance(getActivity()).saveTimeline(timelineResult.getTimeline());
                     Log.d("Realm result:", DataHandler.getInstance(getActivity()).getPhases().toString());
                     setData();
-                }else{
+                } else {
                     showMessage(timelineResult.getMessage());
                 }
             }
@@ -222,7 +243,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
     @Override
     public void showMessage(String message) {
-        Snackbar.make(root,message,Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(root, message, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -231,6 +252,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
+
 
         public ViewPagerAdapter(FragmentManager manager) {
             super(manager);
@@ -275,15 +297,12 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
             Phase phase = phasesList.get(position);
             holder.name.setText(phase.getTitle());
             holder.time.setText(phase.getStartTime() + "-" + phase.getEndTime());
-            if (position == 0) {
+
+            if (TimelineAlgos.calculateTime(phase.getStartTime(), phase.getEndTime())) {
+                currentPhase = phase;
                 holder.time.setActivated(true);
             }
-            /*if(phase.isRunning()){
-                holder.time.setActivated(true);
-                if(nowPhase!=null)
-                nowPhase.setRunning(false);
-                nowPhase=phase;
-            }*/
+
         }
 
 
@@ -306,9 +325,10 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
             public void onClick(View v) {
                 //phaseList.get(getAdapterPosition()).setRunning(true);
                 //notifyDataSetChanged();
+                notifyDataSetChanged();
+                refreshCurrentEvent();
             }
         }
-
 
     }
 

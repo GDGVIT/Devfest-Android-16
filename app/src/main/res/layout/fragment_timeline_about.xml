@@ -6,18 +6,17 @@
     android:background="@color/colorPrimary">
 
     <TextView
-        android:id="@+id/timeline_about"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:text="Timeline About"
+        android:text="Details"
         android:textSize="16sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/timeline_about"
         android:textColor="@color/white"
-        android:text="This page will contain all the information about the phase selected."
         android:layout_marginTop="@dimen/activity_vertical_margin_24dp"
         android:textSize="12sp" />
 

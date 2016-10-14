@@ -99,43 +99,43 @@ public class AboutDataGenerator {
         Child child1=new Child();
         child1.setName("Facebook");
         child1.setImageType(Child.IMAGE_RESOURCE);
-        //child1.setImageResource(R.drawable.ic_facebook);
-        child1.setImageResource(R.drawable.ic_gdg);
+        child1.setImageResource(R.drawable.ic_facebook);
+        //child1.setImageResource(R.drawable.ic_gdg);
         child1.setDesignation("http://facebook.com/gdgvitvellore");
 
         Child child2=new Child();
         child2.setName("Website");
         child2.setImageType(Child.IMAGE_RESOURCE);
-        //child2.setImageResource(R.drawable.ic_website);
-        child2.setImageResource(R.drawable.ic_gdg);
+        child2.setImageResource(R.drawable.ic_website);
+        //child2.setImageResource(R.drawable.ic_gdg);
         child2.setDesignation("http://gdgvitvellore.com/");
 
         Child child3=new Child();
         child3.setName("Google+");
         child3.setImageType(Child.IMAGE_RESOURCE);
-        //child3.setImageResource(R.drawable.ic_gplus);
-        child3.setImageResource(R.drawable.ic_gdg);
+        child3.setImageResource(R.drawable.ic_gplus);
+        //child3.setImageResource(R.drawable.ic_gdg);
         child3.setDesignation("https://plus.google.com/+gdgvitvellore");
 
         Child child4=new Child();
         child4.setName("Mail");
         child4.setImageType(Child.IMAGE_RESOURCE);
-        //child4.setImageResource(R.drawable.ic_mail);
-        child4.setImageResource(R.drawable.ic_gdg);
+        child4.setImageResource(R.drawable.ic_email);
+       // child4.setImageResource(R.drawable.ic_gdg);
         child4.setDesignation("gdgvitvellore@gmail.com");
 
         Child child5=new Child();
         child5.setName("CALL");
         child5.setImageType(Child.IMAGE_RESOURCE);
-        //child5.setImageResource(R.drawable.ic_call);
-        child5.setImageResource(R.drawable.ic_gdg);
+        child5.setImageResource(R.drawable.ic_call);
+        //child5.setImageResource(R.drawable.ic_gdg);
         child5.setDesignation("+917708150636");
 
         Child child6=new Child();
         child6.setName("FIND US");
         child6.setImageType(Child.IMAGE_RESOURCE);
-        //child6.setImageResource(R.drawable.ic_location);
-        child6.setImageResource(R.drawable.ic_gdg);
+        child6.setImageResource(R.drawable.ic_mappin);
+        //child6.setImageResource(R.drawable.ic_gdg);
         child6.setDesignation("http://facebook.com/gdgvitvellore");
 
         childList.add(child1);
