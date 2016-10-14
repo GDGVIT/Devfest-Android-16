@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Animations.Main.DrawerCircularReveal;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,ViewUtils {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, ViewUtils {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<DrawerItem> drawerItems;
     private int lastFragmentSelected = -1;
     private String[] toolbarTitles;
+    private int ISGUEST = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,10 +81,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         linearLayoutManager = new LinearLayoutManager(this);
 
         drawerItems = new ArrayList<>();
-        toolbarTitles=getResources().getStringArray(R.array.drawer_titles);
 
-        if(getIntent().hasExtra("status")){
-            showMessage(getIntent().getStringExtra("status"));
+        if (getIntent().hasExtra("status")) {
+
+            if (getIntent().getStringExtra("status").equals("Welcome Guest")) {
+                ISGUEST = 1;
+            }
+            // showMessage(getIntent().getStringExtra("status"));
         }
     }
 
@@ -92,7 +97,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
         drawerTrigger.setOnClickListener(this);
 
-        TypedArray drawerIcons = getResources().obtainTypedArray(R.array.drawer_icons);
+        TypedArray drawerIcons;
+        if (ISGUEST != 1) {
+            drawerIcons = getResources().obtainTypedArray(R.array.drawer_icons);
+            toolbarTitles = getResources().getStringArray(R.array.drawer_titles);
+
+        } else {
+            drawerIcons = getResources().obtainTypedArray(R.array.drawer_icons_guest);
+            toolbarTitles = getResources().getStringArray(R.array.drawer_titles_guest);
+        }
         for (int i = 0; i < toolbarTitles.length; i++) {
             //TODO To change the default icon later
             drawerItems.add(new DrawerItem(toolbarTitles[i], drawerIcons.getResourceId(i, R.drawable.ic_default)));
@@ -187,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
                 animator.start();
                 ObjectAnimations.drawerArrowAnimator(arrowIcon, ObjectAnimations.Position.DOWN).start();
-                ObjectAnimations.fragmentHolderAnimator(fragmentHolder, drawer.getHeight(),0,300).start();
+                ObjectAnimations.fragmentHolderAnimator(fragmentHolder, drawer.getHeight(), 0, 300).start();
 
             } else {
                 drawer.setVisibility(View.GONE);
@@ -198,15 +211,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 drawer.setVisibility(View.VISIBLE);
                 DrawerCircularReveal.circularRevealDrawer(drawer, 0, 0).start();
                 ObjectAnimations.drawerArrowAnimator(arrowIcon, ObjectAnimations.Position.UP).start();
-                ObjectAnimations.fragmentHolderAnimator(fragmentHolder,0,drawer.getHeight(),0).start();
+                ObjectAnimations.fragmentHolderAnimator(fragmentHolder, 0, drawer.getHeight(), 0).start();
             } else {
                 drawer.setVisibility(View.VISIBLE);
             }
             isDrawerOpened = true;
         }
     }
-
-
 
 
     @Override
@@ -219,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void showMessage(String message) {
-        Snackbar.make(fragmentHolder,message,Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(fragmentHolder, message, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

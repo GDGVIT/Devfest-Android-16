@@ -30,7 +30,7 @@ public class TimelineDisplayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_timeline_display,container, false);
-        displayImage = (ImageView) view.findViewById(R.id.timeline_display);
+        displayImage = (ImageView) view.findViewById(R.id.pagerImage);
         return view;
     }
 

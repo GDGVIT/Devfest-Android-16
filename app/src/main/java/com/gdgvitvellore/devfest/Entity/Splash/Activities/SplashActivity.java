@@ -10,6 +10,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
+import com.gdgvitvellore.devfest.Control.Contracts.Status;
 import com.gdgvitvellore.devfest.Entity.Customs.RevealActivity;
 import com.gdgvitvellore.devfest.Entity.Main.Activities.MainActivity;
 import com.gdgvitvellore.devfest.Entity.Onboarding.Activities.OnboardingActivity;

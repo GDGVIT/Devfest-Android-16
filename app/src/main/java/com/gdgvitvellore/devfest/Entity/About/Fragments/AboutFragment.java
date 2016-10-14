@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -93,6 +94,7 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         connectAPI.setServerAuthenticateListener(this);
         speakersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
+
 
     private void setData() {
         setSpeakers();
