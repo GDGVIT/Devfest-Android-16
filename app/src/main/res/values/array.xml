@@ -10,4 +10,13 @@
         <item>@drawable/ic_about</item>
         <item>@drawable/ic_logout</item>
     </array>
+    <array name="drawer_icons_guest">
+        <item>@drawable/ic_timeline</item>
+        <item>@drawable/ic_myteam</item>
+        <item>@drawable/ic_slot</item>
+        <item>@drawable/ic_android_black_24dp</item>
+        <item>@drawable/ic_chatbot</item>
+        <item>@drawable/ic_about</item>
+        <item>@drawable/ic_login</item>
+    </array>
 </resources>

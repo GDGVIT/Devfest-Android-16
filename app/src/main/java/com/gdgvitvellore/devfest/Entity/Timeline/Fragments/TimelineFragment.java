@@ -4,12 +4,9 @@ package com.gdgvitvellore.devfest.Entity.Timeline.Fragments;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -21,12 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
-import com.gdgvitvellore.devfest.Control.Exceptions.BindingException;
 import com.gdgvitvellore.devfest.Entity.Actors.Phase;
 import com.gdgvitvellore.devfest.Entity.Actors.Timeline;
 import com.gdgvitvellore.devfest.Entity.Actors.TimelineResult;
@@ -37,9 +32,6 @@ import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import me.relex.circleindicator.CircleIndicator;
 
 /**
  * Created by Prince Bansal Local on 10/10/2016.
@@ -134,11 +126,11 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
                     if(position==0)
                     {
                         indicator1.setImageResource(R.drawable.white_indicator_circle);
-                        indicator2.setImageResource(R.drawable.blue_indicator_circle);
+                        indicator2.setImageResource(R.drawable.white_alpha_indicator_circle);
                     }
                     else if(position==1)
                     {
-                        indicator1.setImageResource(R.drawable.blue_indicator_circle);
+                        indicator1.setImageResource(R.drawable.white_alpha_indicator_circle);
                         indicator2.setImageResource(R.drawable.white_indicator_circle);
                     }
 

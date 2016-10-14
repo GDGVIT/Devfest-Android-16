@@ -96,7 +96,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/indicator2"
-                android:src="@drawable/blue_indicator_circle"
+                android:src="@drawable/white_alpha_indicator_circle"
                 />
 
 
