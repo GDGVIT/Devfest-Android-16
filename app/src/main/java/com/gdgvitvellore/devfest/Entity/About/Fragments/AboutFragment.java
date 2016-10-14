@@ -28,6 +28,7 @@ import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
 import com.gdgvitvellore.devfest.Control.DataGenerator.AboutDataGenerator;
 import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
 import com.gdgvitvellore.devfest.Entity.Actors.API;
+import com.gdgvitvellore.devfest.Entity.Actors.Child;
 import com.gdgvitvellore.devfest.Entity.Actors.Member;
 import com.gdgvitvellore.devfest.Entity.Actors.Speakers;
 import com.gdgvitvellore.devfest.Entity.Actors.SpeakersResult;
@@ -46,7 +47,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Prince Bansal Local on 10/11/2016.
  */
 
-public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenticateListener,ViewUtils {
+public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenticateListener, ViewUtils {
     private RecyclerView mRecyclerView;
     private RecyclerView speakersRecyclerView;
     private ProgressDialog progressDialog;
@@ -57,9 +58,9 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
     private User user;
 
 
-
     private ConnectAPI connectAPI;
     private SpeakersAdapter speakersAdapter;
+    private MyAdapter myAdapter;
 
     @Nullable
     @Override
@@ -72,17 +73,17 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
 
     private void init(View rootView) {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        progressDialog=new ProgressDialog(getContext());
-        connectAPI=new ConnectAPI(getContext());
-        root=(CoordinatorLayout)rootView.findViewById(R.id.root);
-        groupList=new ArrayList<>();
+        speakersRecyclerView = (RecyclerView) rootView.findViewById(R.id.speakers_recycler_view);
+        progressDialog = new ProgressDialog(getContext());
+        connectAPI = new ConnectAPI(getContext());
+        root = (CoordinatorLayout) rootView.findViewById(R.id.root);
+        groupList = new ArrayList<>();
         user = DataHandler.getInstance(getContext()).getUser();
         if (user == null) {
             startActivity(new Intent(getActivity(), AuthenticationActivity.class));
             getActivity().finish();
         }
     }
-
 
 
     private void setInit() {
@@ -99,18 +100,22 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
     }
 
     private void setSpeakers() {
-        speakersList=DataHandler.getInstance(getContext()).getSpeakers();
-        if(speakersList!=null){
-            speakersAdapter=new SpeakersAdapter(getContext());
+        speakersList = DataHandler.getInstance(getContext()).getSpeakers();
+        if (speakersList != null) {
+            speakersAdapter = new SpeakersAdapter(getContext());
             speakersRecyclerView.setAdapter(speakersAdapter);
-        }else{
-            connectAPI.speakers(user.getEmail(),user.getAuthToken());
+        } else {
+            connectAPI.speakers(user.getEmail(), user.getAuthToken());
         }
     }
 
     private void setAboutData() {
 
-        groupList.add(AboutDataGenerator.getPatrons());
+        groupList.add(AboutDataGenerator.getPatrons(this));
+        groupList.add(AboutDataGenerator.getSponsors(this));
+        groupList.add(AboutDataGenerator.getContacts(this));
+        myAdapter = new MyAdapter(getContext(), groupList);
+        mRecyclerView.setAdapter(myAdapter);
     }
 
 
@@ -122,7 +127,7 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
 
     @Override
     public void onRequestInitiated(int code) {
-        if(code==ConnectAPI.SPEAKERS_CODE){
+        if (code == ConnectAPI.SPEAKERS_CODE) {
             progressDialog.show();
         }
     }
@@ -130,17 +135,16 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
     @Override
     public void onRequestCompleted(int code, Object result) {
         progressDialog.cancel();
-        if(code==ConnectAPI.SPEAKERS_CODE){
-            SpeakersResult speakersResult=(SpeakersResult)result;
-            if(speakersResult!=null&&speakersResult.getStatus()== ErrorDefinitions.CODE_SUCCESS){
+        if (code == ConnectAPI.SPEAKERS_CODE) {
+            SpeakersResult speakersResult = (SpeakersResult) result;
+            if (speakersResult != null && speakersResult.getStatus() == ErrorDefinitions.CODE_SUCCESS) {
                 DataHandler.getInstance(getContext()).saveSpeakers(speakersResult.getSpeakers());
                 setSpeakers();
-            }else{
+            } else {
                 showMessage(speakersResult.getMessage());
             }
         }
     }
-
 
 
     @Override
@@ -151,7 +155,7 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
 
     @Override
     public void showMessage(String message) {
-        Snackbar.make(root,message,Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(root, message, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -189,13 +193,12 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         }
 
         public void setChildItemList(List members) {
-            mItems=members;
+            mItems = members;
         }
     }
 
 
-
-    public class MyAdapter extends ExpandableRecyclerAdapter<MyAdapter.GroupViewHolder,MyAdapter.ItemViewHolder> {
+    public class MyAdapter extends ExpandableRecyclerAdapter<MyAdapter.GroupViewHolder, MyAdapter.ItemViewHolder> {
 
         private LayoutInflater mInflator;
 
@@ -234,35 +237,48 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
 
             public GroupViewHolder(View itemView) {
                 super(itemView);
-                mGroupTextView = (TextView)itemView.findViewById(R.id.about_list_item_content);
+                mGroupTextView = (TextView) itemView.findViewById(R.id.about_list_item_content);
             }
 
             public void bind(Group group) {
                 mGroupTextView.setText(group.getName());
             }
         }
+
         public class ItemViewHolder extends ChildViewHolder {
 
-            private TextView mItemTextView;
-            private ImageView mImageView;
+            private TextView mItemTextView, desgination;
+            private ImageView info;
+            private CircleImageView mImageView;
 
             public ItemViewHolder(View itemView) {
                 super(itemView);
-                mImageView = (ImageView) itemView.findViewById(R.id.photo);
+                mImageView = (CircleImageView) itemView.findViewById(R.id.photo);
+                info = (ImageView) itemView.findViewById(R.id.info);
+                mItemTextView = (TextView) itemView.findViewById(R.id.name);
+                desgination = (TextView) itemView.findViewById(R.id.designation);
             }
 
             public void bind(Object item) {
-                if (item instanceof API)
-                    mItemTextView.setText(((API)item).getName());
-                else if(item instanceof Member){
-                    mItemTextView.setText(((Member)item).getName());
+                Child child = (Child) item;
+                if (child.getImageType() == Child.IMAGE_URL) {
+                    desgination.setVisibility(View.VISIBLE);
+                    mItemTextView.setText(child.getName());
+                    desgination.setText(child.getDesignation());
+                    Glide.with(getContext()).load(child.getImageUrl()).asBitmap().into(mImageView);
+                    info.setVisibility(View.GONE);
+                } else {
+                    mItemTextView.setText(child.getName());
+                    mImageView.setImageResource(child.getImageResource());
+                    desgination.setVisibility(View.GONE);
+                    info.setVisibility(View.GONE);
                 }
             }
         }
 
     }
 
-    public class SpeakersAdapter extends RecyclerView.Adapter<SpeakersAdapter.SpeakersViewHolder>{
+    public class SpeakersAdapter extends RecyclerView.Adapter<SpeakersAdapter.SpeakersViewHolder> {
 
 
         private LayoutInflater mInflator;
@@ -279,7 +295,7 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
 
         @Override
         public void onBindViewHolder(SpeakersViewHolder holder, int position) {
-            Speakers speakers=speakersList.get(position);
+            Speakers speakers = speakersList.get(position);
             holder.name.setText(speakers.getName());
             holder.designation.setText(speakers.getDesignation());
             Glide.with(getContext()).load(speakersList.get(position).getImageUrl()).asBitmap().into(holder.photo);
@@ -293,15 +309,15 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         public class SpeakersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
             private CircleImageView photo;
-            private TextView name ,designation;
+            private TextView name, designation;
             private ImageView info;
 
             public SpeakersViewHolder(View itemView) {
                 super(itemView);
-                name=(TextView)itemView.findViewById(R.id.name);
-                designation=(TextView)itemView.findViewById(R.id.designation);
-                info=(ImageView)itemView.findViewById(R.id.info);
-                photo=(CircleImageView)itemView.findViewById(R.id.photo);
+                name = (TextView) itemView.findViewById(R.id.name);
+                designation = (TextView) itemView.findViewById(R.id.designation);
+                info = (ImageView) itemView.findViewById(R.id.info);
+                photo = (CircleImageView) itemView.findViewById(R.id.photo);
                 info.setOnClickListener(this);
             }
 

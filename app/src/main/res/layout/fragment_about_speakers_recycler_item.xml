@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
     android:layout_width="match_parent"
-
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -60,6 +57,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.2dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginLeft="36dp"
             android:layout_marginRight="36dp"
             android:alpha="0.3"

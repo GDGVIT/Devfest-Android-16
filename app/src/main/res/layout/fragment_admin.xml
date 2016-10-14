@@ -5,12 +5,12 @@
     android:weightSum="10"
     android:layout_height="match_parent">
 
-    <com.dlazaro66.qrcodereaderview.QRCodeReaderView
+    <!--<com.dlazaro66.qrcodereaderview.QRCodeReaderView
         android:id="@+id/fragment_admin_qrcodereader_view"
         android:layout_width="match_parent"
         android:layout_weight="8"
         android:layout_height="0dp" />
-
+-->
     <FrameLayout
         android:background="@color/colorPrimary"
         android:layout_width="match_parent"

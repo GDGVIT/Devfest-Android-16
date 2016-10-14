@@ -224,8 +224,6 @@ public class ConnectAPI {
                         try {
                             if (validateResponse(response)) {
                                 SpeakersResult speakersResult = CustomTypeAdapter.typeRealmString().fromJson(response, SpeakersResult.class);
-                                DataHandler.getInstance(context).saveSpeakers(speakersResult.getSpeakers());
-
                                 mServerAuthenticateListener.onRequestCompleted(SPEAKERS_CODE, speakersResult);
                             } else {
                                 mServerAuthenticateListener.onRequestError(SPEAKERS_CODE, ErrorDefinitions.getMessage(ErrorDefinitions.CODE_WRONG_FORMAT));

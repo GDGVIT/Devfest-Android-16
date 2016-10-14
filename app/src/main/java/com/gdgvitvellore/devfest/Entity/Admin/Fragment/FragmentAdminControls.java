@@ -11,19 +11,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
+//import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class FragmentAdminControls extends Fragment  implements QRCodeReaderView.OnQRCodeReadListener, View.OnClickListener{
+public class FragmentAdminControls extends Fragment/*  implements QRCodeReaderView.OnQRCodeReadListener, View.OnClickListener*/{
 
     private static final String TAG = "TAG";
     private Button btnStartStop ;
     private TextView tvJsonView ;
-    private QRCodeReaderView qrCodeReaderView ;
+    //private QRCodeReaderView qrCodeReaderView ;
     private Boolean isCameraActive = false ;
 
     @Nullable
@@ -38,21 +38,21 @@ public class FragmentAdminControls extends Fragment  implements QRCodeReaderView
 
         btnStartStop = (Button) view.findViewById(R.id.fragment_admin_btn_qr_start_stop) ;
         tvJsonView  = (TextView) view.findViewById(R.id.fragment_admin_tv_json) ;
-        qrCodeReaderView = (QRCodeReaderView) view.findViewById(R.id.fragment_admin_qrcodereader_view) ;
+        //qrCodeReaderView = (QRCodeReaderView) view.findViewById(R.id.fragment_admin_qrcodereader_view) ;
         init() ;
     }
 
     private void init() {
-        qrCodeReaderView.setOnQRCodeReadListener(this);
+        /*qrCodeReaderView.setOnQRCodeReadListener(this);
         qrCodeReaderView.setQRDecodingEnabled(true) ;
         qrCodeReaderView.setAutofocusInterval(2000L);
 
         qrCodeReaderView.setTorchEnabled(false);
 
-        qrCodeReaderView.setBackCamera();
+        qrCodeReaderView.setBackCamera();*/
     }
 
-    @Override
+    /*@Override
     public void onQRCodeRead(String text, PointF[] points) {
         Log.i(TAG, "onQRCodeRead: " + text);
 
@@ -62,10 +62,10 @@ public class FragmentAdminControls extends Fragment  implements QRCodeReaderView
             String emailId = qrJson.getString("emailID") ;
             String data = qrJson.getString("data") ;
 
-            /**
+            *//**
              * Make API function call
              * @ConnectAPI.java#qrCodeScan method line number 185
-             * */
+             * *//*
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -84,5 +84,5 @@ public class FragmentAdminControls extends Fragment  implements QRCodeReaderView
             }
             isCameraActive = !isCameraActive ;
         }
-    }
+    }*/
 }
