@@ -45,6 +45,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.List;
 
+import io.realm.RealmList;
 import link.fls.swipestack.SwipeStack;
 
 import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
@@ -59,8 +60,7 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
 
     private SwipeStack swipeStack;
     private SwipeStackAdapter adapter;
-    private ArrayList<String> data;
-    private List<Coupon> couponsList = new ArrayList<>();
+    private List<Coupon> couponsList;
     private ImageView qrCodeImage;
     private ImageView apiImage;
     private TextView apiName;
@@ -96,7 +96,7 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         apiName = (TextView) root.findViewById(R.id.apiName);
         apiImage = (ImageView) root.findViewById(R.id.apiStatus);
         root = (LinearLayout) root.findViewById(R.id.root);
-
+        progressDialog = new ProgressDialog(getContext());
         connectApi = new ConnectAPI(getActivity());
     }
 
@@ -107,29 +107,23 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
     }
 
     private void setData() {
-        data = new ArrayList<String>();
-//        data.add("Dinner");
-//        data.add("Snacks");
-//        data.add("Breakfast");
-//        data.add("Lunch");
-        List<Coupon> coupons = DataHandler.getInstance(getContext()).getCoupons();
-        if (coupons != null) {
+        //List<Coupon> coupons = DataHandler.getInstance(getContext()).getCoupons();
+        /*if (coupons != null) {
             Log.i(TAG, "setData: ");
             couponsList = coupons;
             adapter=new SwipeStackAdapter(couponsList);
             swipeStack.setAdapter(adapter);
 
         } else {
-            connectApi.coupon(DataHandler.getInstance(getActivity()).getUser().getAuthToken());
-        }
+        */    connectApi.coupon(DataHandler.getInstance(getActivity()).getUser().getAuthToken());
+        //}
 
-        updateQrCode(0);
     }
 
     private void updateQrCode(int pos) {
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(data.get(pos), BarcodeFormat.QR_CODE,200,200);
+            BitMatrix bitMatrix = multiFormatWriter.encode(couponsList.get(pos).getCouponCode(), BarcodeFormat.QR_CODE,200,200);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
             qrCodeImage.setImageBitmap(bitmap);
@@ -145,9 +139,9 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
 
     @Override
     public void onViewSwipedToRight(int position) {
-        adapter.add(couponsList.get(position), data.size());
+        adapter.add(couponsList.get(position), couponsList.size());
         adapter.notifyDataSetChanged();
-        updateQrCode(position==data.size()-1?0:position+1);
+        updateQrCode(position==couponsList.size()-1?0:position+1);
     }
 
     @Override
@@ -173,8 +167,8 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
             CouponResult couponResult = (CouponResult) result;
             if (couponResult != null) {
                 if (couponResult.getStatus() == ErrorDefinitions.CODE_SUCCESS) {
-                    DataHandler.getInstance(getActivity()).saveCoupon(couponResult.getCoupons());
-                    setData();
+                    //DataHandler.getInstance(getActivity()).saveCoupon(couponResult.getCoupons());
+                    setData(couponResult.getCoupons());
                 } else {
                     showMessage(couponResult.getMessage());
                 }
@@ -182,6 +176,13 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         }
 
 
+    }
+
+    private void setData(RealmList<Coupon> coupons) {
+        couponsList=coupons;
+        adapter=new SwipeStackAdapter(coupons);
+        swipeStack.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -222,16 +223,18 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
             //View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.api_view,parent,false);
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_coupons_item, parent, false);
             TextView apiName = (TextView) convertView.findViewById(R.id.apiName);
-            ImageView apiImage = (ImageView) convertView.findViewById(R.id.apiLogo);
+            ImageView apiImage = (ImageView) convertView.findViewById(R.id.couponPicture);
             ImageView apiStatus = (ImageView) convertView.findViewById(R.id.apiStatus);
 
-            String url = mData.get(position).getCouponCode();
+            //String url = mData.get(position).getCouponCode();
 
             apiName.setText(mData.get(position).getCouponName());
-            Glide.with(getContext()).load(url).asBitmap().into(apiImage);
+            //Glide.with(getContext()).load(url).asBitmap().into(apiImage);
 
             if (mData.get(position).isUsed()){
-                apiStatus.setImageResource(R.drawable.ic_qrcode);
+                apiStatus.setVisibility(View.VISIBLE);
+            }else{
+                apiStatus.setVisibility(View.GONE);
             }
 
             return convertView;
@@ -244,6 +247,11 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
     @Override
     public void showMessage(String message) {
         Snackbar.make(root, message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showMessage(String message, boolean showAction) {
+
     }
 
     @Override
