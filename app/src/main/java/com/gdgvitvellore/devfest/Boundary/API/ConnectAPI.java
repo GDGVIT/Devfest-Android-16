@@ -24,6 +24,7 @@ import com.gdgvitvellore.devfest.Entity.Actors.API;
 import com.gdgvitvellore.devfest.Entity.Actors.APIAssignedResult;
 import com.gdgvitvellore.devfest.Entity.Actors.BaseAPI;
 import com.gdgvitvellore.devfest.Entity.Actors.ChatbotResult;
+import com.gdgvitvellore.devfest.Entity.Actors.CouponResult;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQResult;
 import com.gdgvitvellore.devfest.Entity.Actors.LoginResult;
 import com.gdgvitvellore.devfest.Entity.Actors.LogoutResult;
@@ -61,6 +62,7 @@ public class ConnectAPI {
     public static final int SLOTS_CODE = 7;
     public static final int CHATBOT_CODE = 8;
     public static final int ALL_APIS_CODE = 9;
+    public static final int COUPON_CODE = 10;
 
     private static final String TAG = ConnectAPI.class.getSimpleName();
     private long REQUEST_TIMEOUT = 30000;
@@ -337,6 +339,51 @@ public class ConnectAPI {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 return APIContract.getFAQParams(email, auth_token);
+            }
+        };
+
+        // Adding request to request queue
+        RetryPolicy policy = new DefaultRetryPolicy((int) REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        postRequest.setRetryPolicy(policy);
+        AppController.getInstance().addToRequestQueue(postRequest);
+    }
+
+    public void coupon(final String auth_token) {
+
+        String url = APIContract.getCouponUrl();
+        mServerAuthenticateListener.onRequestInitiated(COUPON_CODE);
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i(TAG, "CouponResult:onResponse: " + response);
+                        try {
+                            if (validateResponse(response)) {
+                                CouponResult couponResult = CustomTypeAdapter.typeRealmString().fromJson(response, CouponResult.class);
+                                DataHandler.getInstance(context).saveCoupon(couponResult.getCoupons());
+
+                                mServerAuthenticateListener.onRequestCompleted(COUPON_CODE, couponResult);
+                            } else {
+                                mServerAuthenticateListener.onRequestError(COUPON_CODE, ErrorDefinitions.getMessage(ErrorDefinitions.CODE_WRONG_FORMAT));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            mServerAuthenticateListener.onRequestError(COUPON_CODE, ErrorDefinitions.getMessage(ErrorDefinitions.CODE_WRONG_FORMAT));
+                        }
+
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                Log.v(TAG, "CouponResult:error:" + error.getMessage());
+                mServerAuthenticateListener.onRequestError(COUPON_CODE, error.getMessage());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                return APIContract.getCouponParams(auth_token);
             }
         };
 

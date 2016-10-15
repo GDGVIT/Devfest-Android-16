@@ -55,6 +55,10 @@ public class APIContract {
         return BASE_URL + "/logout";
     }
 
+    public static String getCouponUrl() {
+        return BASE_URL + "/coupons";
+    }
+
     public static String getAllAPIsUrl() {
         return BASE_URL + "/allapis";
     }
@@ -69,6 +73,12 @@ public class APIContract {
     public static Map<String, String> getTimelineParams(String email, String auth_token) {
         Map<String, String> map = new HashMap<>();
         map.put("email", email);
+        map.put("auth_token", auth_token);
+        return map;
+    }
+
+    public static Map<String, String> getCouponParams(String auth_token) {
+        Map<String, String> map = new HashMap<>();
         map.put("auth_token", auth_token);
         return map;
     }

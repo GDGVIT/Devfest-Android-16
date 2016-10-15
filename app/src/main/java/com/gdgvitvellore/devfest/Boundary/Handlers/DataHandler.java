@@ -12,6 +12,7 @@ import android.util.Log;
 import com.gdgvitvellore.devfest.Control.Contracts.PrivateContract;
 import com.gdgvitvellore.devfest.Entity.Actors.API;
 import com.gdgvitvellore.devfest.Entity.Actors.BaseAPI;
+import com.gdgvitvellore.devfest.Entity.Actors.Coupon;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
 import com.gdgvitvellore.devfest.Entity.Actors.LogoutResult;
 import com.gdgvitvellore.devfest.Entity.Actors.Phase;
@@ -276,6 +277,14 @@ public class DataHandler {
         }
     }
 
+    public void saveCoupon(RealmList<Coupon> Coupons) {
+        if (Coupons != null) {
+            mRealm.beginTransaction();
+            mRealm.copyToRealm(Coupons);
+            mRealm.commitTransaction();
+        }
+    }
+
     public void saveApi(RealmList<API> apis) {
 
         if (apis != null) {
@@ -424,6 +433,20 @@ public class DataHandler {
         if (realmList != null && realmList.size() > 0) {
             list = new ArrayList<>();
             Iterator<Speakers> iterator = realmList.iterator();
+            while (iterator.hasNext()) {
+                list.add(iterator.next());
+            }
+            return list;
+        }
+        return null;
+    }
+
+    public List<Coupon> getCoupons() {
+        List<Coupon> list = null;
+        RealmResults<Coupon> realmList = mRealm.where(Coupon.class).findAll();
+        if (realmList != null && realmList.size() > 0) {
+            list = new ArrayList<>();
+            Iterator<Coupon> iterator = realmList.iterator();
             while (iterator.hasNext()) {
                 list.add(iterator.next());
             }
