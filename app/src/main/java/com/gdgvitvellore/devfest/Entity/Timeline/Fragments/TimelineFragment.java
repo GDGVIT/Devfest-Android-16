@@ -43,7 +43,7 @@ import java.util.List;
  * Created by Prince Bansal Local on 10/10/2016.
  */
 
-public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthenticateListener, ViewUtils {
+public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthenticateListener, ViewUtils, ViewPager.OnPageChangeListener {
 
     private static final int NUM_PAGES = 2;
     private static final String TAG = TimelineFragment.class.getSimpleName();
@@ -92,14 +92,6 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     }
 
 
-    private void getCredentials() {
-        email = DataHandler.getInstance(getActivity()).getUser().getEmail();
-        Log.d("EMAIL", email);
-        auth = DataHandler.getInstance(getActivity()).getUser().getAuthToken();
-        Log.d("PASSWORD", auth);
-    }
-
-
     private void init(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.phases_list);
         timer = (TextView) view.findViewById(R.id.time);
@@ -114,6 +106,14 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         indicator1 = (ImageView)view.findViewById(R.id.indicator1);
         indicator2 = (ImageView)view.findViewById(R.id.indicator2);
         connectAPI = new ConnectAPI(getActivity());
+    }
+
+
+    private void getCredentials() {
+        email = DataHandler.getInstance(getActivity()).getUser().getEmail();
+        Log.d("EMAIL", email);
+        auth = DataHandler.getInstance(getActivity()).getUser().getAuthToken();
+        Log.d("PASSWORD", auth);
     }
 
     private void setInit() {
@@ -150,12 +150,11 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
             }
         });
-        startTimer();
+        //startTimer();
     }
 
     private void setData() {
         setupViewPager(viewPager);
-
         List<Phase> phases = DataHandler.getInstance(getContext()).getPhases();
         if (phases != null) {
             Log.i(TAG, "setData: ");
@@ -174,7 +173,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
     private void refreshCurrentEvent() {
         title.setText(currentPhase.getTitle());
-        timer.setText(currentPhase.getStartTime() + "-" + currentPhase.getEndTime());
+        timer.setText(TimelineAlgos.getTime(currentPhase.getStartTime()) + " - " + TimelineAlgos.getTime(currentPhase.getEndTime()));
 
         timelineAboutFragment.setTimelineAbout(currentPhase.getDescription());
         timelineDisplayFragment.setImage(currentPhase.getImageUrl());
@@ -182,6 +181,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
+        viewPager.addOnPageChangeListener(this);
         viewPager.setAdapter(adapter);
     }
 
@@ -247,7 +247,37 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     }
 
     @Override
+    public void showMessage(String message, boolean showAction) {
+
+    }
+
+    @Override
     public void showErrorDialog() {
+
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        if(position==0) {
+            if (currentPhase == null) {
+                currentPhase = phaseList.get(0);
+                timelineDisplayFragment.setImage(currentPhase.getImageUrl());
+            }
+        }else if(position==1){
+            if (currentPhase == null) {
+                currentPhase = phaseList.get(0);
+                timelineDisplayFragment.setImage(currentPhase.getImageUrl());
+            }
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
 
     }
 
@@ -261,9 +291,9 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new TimelineDisplayFragment();
+                return timelineDisplayFragment;
             } else if (position == 1) {
-                return new TimelineAboutFragment();
+                return timelineAboutFragment;
             } else return new EmptyFragment();
         }
 
@@ -296,11 +326,16 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
             Phase phase = phasesList.get(position);
             holder.name.setText(phase.getTitle());
-            holder.time.setText(phase.getStartTime() + "-" + phase.getEndTime());
+            holder.time.setText(TimelineAlgos.getTime(phase.getStartTime()) + "-" + TimelineAlgos.getTime(phase.getEndTime()));
 
             if (TimelineAlgos.calculateTime(phase.getStartTime(), phase.getEndTime())) {
+                Log.i(TAG, "onBindViewHolder: "+phase.getTitle());
                 currentPhase = phase;
+                refreshCurrentEvent();
                 holder.time.setActivated(true);
+                holder.time.setText("Now");
+            }else{
+                holder.time.setActivated(false);
             }
 
         }
@@ -325,6 +360,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
             public void onClick(View v) {
                 //phaseList.get(getAdapterPosition()).setRunning(true);
                 //notifyDataSetChanged();
+                currentPhase=phaseList.get(getAdapterPosition());
                 notifyDataSetChanged();
                 refreshCurrentEvent();
             }

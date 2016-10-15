@@ -7,5 +7,6 @@ package com.gdgvitvellore.devfest.Control.Utils;
 public interface ViewUtils {
 
     void showMessage(String message);
+    void showMessage(String message, boolean showAction);
     void showErrorDialog();
 }

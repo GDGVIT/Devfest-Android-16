@@ -337,14 +337,6 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
     @Override
     public void onRequestCompleted(int code, Object result) {
         if (code == ConnectAPI.ALL_APIS_CODE) {
-            progressDialog.cancel();
-            progressDialog = new ProgressDialog(getContext());
-            progressDialog.setMessage("Loading Slots...");
-            progressDialog.setCancelable(false);
-            progressDialog.setMax(100);
-            progressDialog.setIndeterminate(false);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.show();
             startDownloadingImages((List<BaseAPI>) result);
         } else if (code == ConnectAPI.SLOTS_CODE) {
             SlotsResult slotsResult = (SlotsResult) result;
@@ -362,6 +354,14 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
     }
 
     private void startDownloadingImages(List<BaseAPI> result) {
+        progressDialog.cancel();
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading Slots...");
+        progressDialog.setCancelable(false);
+        progressDialog.setMax(100);
+        progressDialog.setIndeterminate(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.show();
         apiList = result;
         Intent intent = new Intent(getActivity(), ImageDownloadService.class);
         String[] links = new String[result.size()];
@@ -386,6 +386,21 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
     @Override
     public void showMessage(String message) {
         Snackbar.make(root, message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showMessage(String message,boolean showRetry) {
+        if(showRetry){
+
+            Snackbar.make(root, message, Snackbar.LENGTH_SHORT).setAction("Retry", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startDownloadingImages(apiList);
+                }
+            }).show();
+        }else{
+            Snackbar.make(root, message, Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -418,9 +433,10 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
                         setData();
                     }
                 } else {
-                    showMessage("Error loading");
+                    showMessage("Error loading",true);
                     apiList = new ArrayList<>();
                     progressDialog.cancel();
+                    trigger.setEnabled(false);
                 }
             }
         }

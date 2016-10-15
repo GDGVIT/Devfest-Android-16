@@ -414,6 +414,11 @@ public class FAQFragment extends Fragment implements
     }
 
     @Override
+    public void showMessage(String message, boolean showAction) {
+
+    }
+
+    @Override
     public void showErrorDialog() {
 
     }

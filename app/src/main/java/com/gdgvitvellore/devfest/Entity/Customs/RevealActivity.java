@@ -56,7 +56,7 @@ public class RevealActivity extends AppCompatActivity {
 
         // create the animator for this view (the start radius is zero)
         Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootView, cx, cy, 0, finalRadius);
-        circularReveal.setDuration(700);
+        circularReveal.setDuration(500);
         circularReveal.setInterpolator(new AccelerateDecelerateInterpolator());
 
         // make the view visible and start the animation
@@ -112,7 +112,7 @@ public class RevealActivity extends AppCompatActivity {
 
         // create the animator for this view (the start radius is zero)
         Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootView, cx, cy, finalRadius, 0);
-        circularReveal.setDuration(700);
+        circularReveal.setDuration(500);
         circularReveal.setInterpolator(new AccelerateDecelerateInterpolator());
 
         circularReveal.addListener(new Animator.AnimatorListener() {

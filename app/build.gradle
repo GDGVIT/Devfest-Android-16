@@ -27,6 +27,15 @@ android {
             universalApk false
         }
     }
+    project.ext.versionCodes = [ 'armeabi-v7a': 2, 'arm64-v8a': 3, 'mips': 5, 'x86': 8, 'x86_64': 9]
+
+    android.applicationVariants.all { variant ->
+        // assign different version code for each output
+        variant.outputs.each { output ->
+            output.versionCodeOverride =
+                    project.ext.versionCodes.get(output.getFilter(com.android.build.OutputFile.ABI), 0) * 1000000 + android.defaultConfig.versionCode
+        }
+    }
 }
 
 
@@ -58,5 +67,6 @@ dependencies {
     compile 'com.google.zxing:core:3.2.1'
     compile 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
     compile 'com.github.bumptech.glide:glide:3.6.0'
+    compile 'com.caverock:androidsvg:1.2.1'
     //compile 'com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.1'
 }

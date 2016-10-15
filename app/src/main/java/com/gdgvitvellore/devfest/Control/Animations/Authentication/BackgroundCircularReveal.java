@@ -19,8 +19,8 @@ public class BackgroundCircularReveal {
         float finalRadius = Math.max(rootView.getWidth(), rootView.getHeight());
 
         Animator circularReveal = android.view.ViewAnimationUtils.createCircularReveal(rootView, cx, cy, 0, finalRadius);
-        circularReveal.setDuration(500);
-        circularReveal.setStartDelay(400);
+        circularReveal.setDuration(300);
+        circularReveal.setStartDelay(300);
         circularReveal.setInterpolator(new AccelerateInterpolator());
         return circularReveal;
     }

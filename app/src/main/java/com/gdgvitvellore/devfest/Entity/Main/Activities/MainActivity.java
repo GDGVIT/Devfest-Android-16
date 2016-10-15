@@ -234,6 +234,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public void showMessage(String message, boolean showAction) {
+
+    }
+
+    @Override
     public void showErrorDialog() {
 
     }
