@@ -161,6 +161,11 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
     }
 
     @Override
+    public void showMessage(String message, boolean showAction) {
+
+    }
+
+    @Override
     public void showErrorDialog() {
 
     }

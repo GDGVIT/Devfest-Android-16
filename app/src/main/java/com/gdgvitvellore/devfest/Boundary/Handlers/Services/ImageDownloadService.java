@@ -38,9 +38,10 @@ public class ImageDownloadService extends IntentService {
         ResultReceiver receiver = (ResultReceiver) intent.getParcelableExtra("receiver");
         for (int i = 0; i < links.length; i++) {
             try {
+                String correctLink=links[i].replace("htp","http");
                 RequestFuture<byte[]> future = RequestFuture.newFuture();
-                InputStreamVolleyRequest request = new InputStreamVolleyRequest(Request.Method.GET, links[i], future, future, null);
-                request.setRetryPolicy(new DefaultRetryPolicy(10000, 1, 1));
+                InputStreamVolleyRequest request = new InputStreamVolleyRequest(Request.Method.GET, correctLink, future, future, null);
+                request.setRetryPolicy(new DefaultRetryPolicy(10000, 2, 1));
                 AppController.getInstance().getRequestQueue().add(request);
 
                 byte[] response = future.get(180, TimeUnit.SECONDS); // Blocks for at most 10 seconds.
@@ -70,6 +71,14 @@ public class ImageDownloadService extends IntentService {
                 break;
             } catch (TimeoutException t) {
                 t.printStackTrace();
+                Bundle resultData = new Bundle();
+                resultData.putInt("progress", 100);
+                resultData.putInt("position", i);
+                resultData.putByteArray("result", null);
+                receiver.send(UPDATE_PROGRESS, resultData);
+                break;
+            } catch (Exception e) {
+                e.printStackTrace();
                 Bundle resultData = new Bundle();
                 resultData.putInt("progress", 100);
                 resultData.putInt("position", i);

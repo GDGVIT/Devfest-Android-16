@@ -3,7 +3,9 @@ package com.gdgvitvellore.devfest.Control.Algorithms;
 import android.util.Log;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -13,44 +15,37 @@ import java.util.Date;
 public class TimelineAlgos {
 
 
-    public static boolean calculateTime(String startTime, String endTime){
+    public static boolean calculateTime(String startTime, String endTime) {
 
-
-        String[] times = startTime.split(":");
-        int hour  = Integer.parseInt(times[0]);
-        int min = Integer.parseInt(times[1]);
-
-        Log.d("TIME SERVER: ", ""+hour+min);
-
-        String[] end = startTime.split(":");
-        int hour1  = Integer.parseInt(times[0]);
-        int min1 = Integer.parseInt(times[1]);
-        long s=hour*60*60*60;
-        long m=min1*60*60;
-        long s1=hour1*60*60*60;
-        long m1=min1*60*60;
-        long cur=System.currentTimeMillis();
-        if((s+m)<=cur&&(s1+m1)>=cur){
-            return true;
-        }else{
+        try {
+            startTime = startTime.replaceAll("T", "");
+            startTime = startTime.replaceAll("/", "");
+            endTime = endTime.replaceAll("T", "");
+            endTime = endTime.replaceAll("/", "");
+            endTime = endTime.replaceAll(":", "");
+            SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyHHmm");
+            long startDate = sdf.parse(startTime).getTime();
+            long endDate = sdf.parse(endTime).getTime();
+            long cur=System.currentTimeMillis();
+            if(startDate<=cur&&endDate>=cur){
+                return true;
+            }else{
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
             return false;
         }
 
     }
 
-//    public static String timeLeft(String startTime, String endTime){
-//
-//        String[] times = startTime.split(":");
-//        int hour  = Integer.parseInt(times[0]);
-//        int min = Integer.parseInt(times[1]);
-//
-//        String[] end = startTime.split(":");
-//        int hour1  = Integer.parseInt(times[0]);
-//        int min1 = Integer.parseInt(times[1]);
-//
-//        String duration = hour1 - hou
-//
-//        return
-//    }
+    public static String getTime(String time) {
+        String[] timeSplitted = time.split("T");
+        String sec = timeSplitted[1];
+        sec=sec.replaceAll(":","");
+        String result = sec.substring(0, 2) + ":" + sec.substring(2, 4);
+
+        return result;
+    }
 
 }
