@@ -1,6 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<<<<<<< HEAD
-<merger version="3"><dataSet config="main"><source path="E:\Prince\Projects\Devfest-Android-16\library\src\main\assets"/><source path="E:\Prince\Projects\Devfest-Android-16\library\build\generated\assets\shaders\release"/></dataSet><dataSet config="release"><source path="E:\Prince\Projects\Devfest-Android-16\library\src\release\assets"/></dataSet></merger>
-=======
-<merger version="3"><dataSet config="main"><source path="C:\Users\Aravind Raj\Desktop\Devfest-Android-16\library\src\main\assets"/><source path="C:\Users\Aravind Raj\Desktop\Devfest-Android-16\library\build\generated\assets\shaders\release"/></dataSet><dataSet config="release"><source path="C:\Users\Aravind Raj\Desktop\Devfest-Android-16\library\src\release\assets"/></dataSet></merger>
->>>>>>> e285e04ea84440e611a0bc329f1f2bb3d8387aca
+<merger version="3"><dataSet config="main"><source path="E:\Projects\Devfest-Android-16\library\src\main\assets"/><source path="E:\Projects\Devfest-Android-16\library\build\generated\assets\shaders\release"/></dataSet><dataSet config="release"><source path="E:\Projects\Devfest-Android-16\library\src\release\assets"/></dataSet></merger>
