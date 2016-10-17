@@ -1,6 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<<<<<<< HEAD
 <merger version="3"><dataSet config="main"><source path="E:\Projects\Devfest-Android-16\library\src\main\shaders"/></dataSet><dataSet config="debug"><source path="E:\Projects\Devfest-Android-16\library\src\debug\shaders"/></dataSet></merger>
-=======
-<merger version="3"><dataSet config="main"><source path="E:\Prince\Projects\Devfest-Android-16\library\src\main\shaders"/></dataSet><dataSet config="debug"><source path="E:\Prince\Projects\Devfest-Android-16\library\src\debug\shaders"/></dataSet></merger>
->>>>>>> cfe24299d6bac7b3dd61beb4aca4c5b89049bfcb
