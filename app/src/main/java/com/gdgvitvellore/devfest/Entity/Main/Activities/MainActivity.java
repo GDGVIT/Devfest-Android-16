@@ -14,17 +14,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Animations.Main.DrawerCircularReveal;
 import com.gdgvitvellore.devfest.Control.Animations.Main.ObjectAnimations;
+import com.gdgvitvellore.devfest.Control.Contracts.Status;
 import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
 import com.gdgvitvellore.devfest.Entity.About.Fragments.AboutFragment;
 import com.gdgvitvellore.devfest.Entity.Actors.DrawerItem;
@@ -43,22 +44,22 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, ViewUtils {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    public static boolean ISGUEST = false;
 
     private Toolbar toolbar;
     private TextView titleView;
     private RecyclerView drawerRecycler;
     private LinearLayout drawer, drawerTrigger;
     private LinearLayout fragmentHolder;
-    private ImageView arrowIcon;
 
+    private ImageView arrowIcon;
     private DrawerAdapter drawerAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private boolean isDrawerOpened = false;
 
+    private boolean isDrawerOpened = false;
     private List<DrawerItem> drawerItems;
     private int lastFragmentSelected = -1;
     private String[] toolbarTitles;
-    private int ISGUEST = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,10 +85,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (getIntent().hasExtra("status")) {
 
-            if (getIntent().getStringExtra("status").equals("Welcome Guest")) {
-                ISGUEST = 1;
+            if (getIntent().getStringExtra("status").equals(Status.GUEST_USER)) {
+                Log.i(TAG, "init: guest");
+                ISGUEST = true;
             }
-            // showMessage(getIntent().getStringExtra("status"));
         }
     }
 
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawerTrigger.setOnClickListener(this);
 
         TypedArray drawerIcons;
-        if (ISGUEST != 1) {
+        if (!ISGUEST) {
             drawerIcons = getResources().obtainTypedArray(R.array.drawer_icons);
             toolbarTitles = getResources().getStringArray(R.array.drawer_titles);
 
@@ -107,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             toolbarTitles = getResources().getStringArray(R.array.drawer_titles_guest);
         }
         for (int i = 0; i < toolbarTitles.length; i++) {
-            //TODO To change the default icon later
             drawerItems.add(new DrawerItem(toolbarTitles[i], drawerIcons.getResourceId(i, R.drawable.ic_default)));
         }
     }
@@ -128,51 +128,79 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         FragmentManager manager = getSupportFragmentManager();
         if (i == lastFragmentSelected) {
-            toggle();
             return;
         } else {
-            switch (i) {
-                case 0:
-                    Fragment timelineFragment = new TimelineFragment();
-                    manager.beginTransaction().replace(R.id.fragment_holder, timelineFragment, TimelineFragment.class.getSimpleName()).commit();
-                    break;
-                case 1:
-                    Fragment myTeamFragment = new MyTeamFragment();
-                    manager.beginTransaction().replace(R.id.fragment_holder, myTeamFragment, MyTeamFragment.class.getSimpleName()).commit();
-                    break;
-                case 2:
-                    Fragment slotMachineFragment = new SlotMachineFragment();
-                    manager.beginTransaction().replace(R.id.fragment_holder, slotMachineFragment, SlotMachineFragment.class.getSimpleName()).commit();
-                    break;
-                case 3:
-                    Fragment couponsFragment = new CouponsFragment();
-                    manager.beginTransaction().replace(R.id.fragment_holder, couponsFragment, CouponsFragment.class.getSimpleName()).commit();
-                    break;
-                case 4:
-                    Fragment faqFragment = new FAQFragment();
-                    manager.beginTransaction().replace(R.id.fragment_holder, faqFragment, FAQFragment.class.getSimpleName()).commit();
-                    break;
-                case 5:
-                    Fragment aboutFragment = new AboutFragment();
-                    manager.beginTransaction().replace(R.id.fragment_holder, aboutFragment, AboutFragment.class.getSimpleName()).commit();
-                    break;
-                case 6:
-                    DataHandler.getInstance(this).logout();
-                    DataHandler.getInstance(this).saveLoggedIn(false);
-                    startActivity(new Intent(MainActivity.this, AuthenticationActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                    break;
-                default:
-                    break;
+            lastFragmentSelected = i;
+            if (ISGUEST) {
+                switch (i) {
+                    case 0:
+                        Fragment timelineFragment = new TimelineFragment();
+                        manager.beginTransaction().replace(R.id.fragment_holder, timelineFragment, TimelineFragment.class.getSimpleName()).commit();
+                        break;
+                    case 1:
+                        Fragment slotMachineFragment = new SlotMachineFragment();
+                        manager.beginTransaction().replace(R.id.fragment_holder, slotMachineFragment, SlotMachineFragment.class.getSimpleName()).commit();
+                        break;
+                    case 2:
+                        Fragment faqFragment = new FAQFragment();
+                        manager.beginTransaction().replace(R.id.fragment_holder, faqFragment, FAQFragment.class.getSimpleName()).commit();
+                        break;
+                    case 3:
+                        Fragment aboutFragment = new AboutFragment();
+                        manager.beginTransaction().replace(R.id.fragment_holder, aboutFragment, AboutFragment.class.getSimpleName()).commit();
+                        break;
+                    case 4:
+                        startActivity(new Intent(MainActivity.this, AuthenticationActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                        finish();
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                switch (i) {
+                    case 0:
+                        Fragment timelineFragment = new TimelineFragment();
+                        manager.beginTransaction().replace(R.id.fragment_holder, timelineFragment, TimelineFragment.class.getSimpleName()).commit();
+                        break;
+                    case 1:
+                        Fragment myTeamFragment = new MyTeamFragment();
+                        manager.beginTransaction().replace(R.id.fragment_holder, myTeamFragment, MyTeamFragment.class.getSimpleName()).commit();
+                        break;
+                    case 2:
+                        Fragment slotMachineFragment = new SlotMachineFragment();
+                        manager.beginTransaction().replace(R.id.fragment_holder, slotMachineFragment, SlotMachineFragment.class.getSimpleName()).commit();
+                        break;
+                    case 3:
+                        Fragment couponsFragment = new CouponsFragment();
+                        manager.beginTransaction().replace(R.id.fragment_holder, couponsFragment, CouponsFragment.class.getSimpleName()).commit();
+                        break;
+                    case 4:
+                        Fragment faqFragment = new FAQFragment();
+                        manager.beginTransaction().replace(R.id.fragment_holder, faqFragment, FAQFragment.class.getSimpleName()).commit();
+                        break;
+                    case 5:
+                        Fragment aboutFragment = new AboutFragment();
+                        manager.beginTransaction().replace(R.id.fragment_holder, aboutFragment, AboutFragment.class.getSimpleName()).commit();
+                        break;
+                    case 6:
+                        DataHandler.getInstance(this).logout();
+                        DataHandler.getInstance(this).saveLoggedIn(false);
+                        startActivity(new Intent(MainActivity.this, AuthenticationActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                        finish();
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
 
 
-    private void setToolbarTitle(int position) {
+    public void setToolbarTitle(int position) {
         titleView.setText(toolbarTitles[position]);
     }
 
-    private void toggle() {
+    private void toggleDrawer() {
 
         if (isDrawerOpened) {
             if (Build.VERSION.SDK_INT >= 21) {
@@ -224,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.drawer_trigger:
-                toggle();
+                toggleDrawer();
         }
     }
 
@@ -295,11 +323,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onClick(View v) {
-                toggle();
+                toggleDrawer();
                 setFragment(getAdapterPosition());
                 setToolbarTitle(getAdapterPosition());
             }
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MainActivity.ISGUEST=false;
+    }
 }
