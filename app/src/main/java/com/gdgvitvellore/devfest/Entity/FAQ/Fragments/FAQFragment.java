@@ -41,6 +41,7 @@ import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
 import com.gdgvitvellore.devfest.Entity.Actors.ChatbotResult;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQ;
 import com.gdgvitvellore.devfest.Entity.Actors.FAQResult;
+import com.gdgvitvellore.devfest.Entity.Main.Activities.MainActivity;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.io.UnsupportedEncodingException;
@@ -52,7 +53,6 @@ public class FAQFragment extends Fragment implements
         RecognitionListener, View.OnClickListener, ConnectAPI.ServerAuthenticateListener, ViewUtils {
 
     private static final String TAG = FAQFragment.class.getSimpleName();
-
     private static final int REQUEST_AUDIO_PERMS = 1;
 
     private List<FAQ> faqList;
@@ -74,6 +74,7 @@ public class FAQFragment extends Fragment implements
     public String[] AUDIO_PERMS = {
             Manifest.permission.RECORD_AUDIO,
     };
+    private String email,auth;
 
     private FaqFragmentManager fragmentManager;
 
@@ -103,6 +104,11 @@ public class FAQFragment extends Fragment implements
         fragmentManager = new FaqFragmentManager();
         recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
+        if(!MainActivity.ISGUEST){
+            email=DataHandler.getInstance(getContext()).getUser().getEmail();
+            auth=DataHandler.getInstance(getContext()).getUser().getAuthToken();
+        }
+
     }
 
     private void setInit() {
@@ -118,10 +124,12 @@ public class FAQFragment extends Fragment implements
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 0) {
                     stateId = 201;
+                    voiceFab.setImageResource(R.drawable.ic_done);
                     //change button
                 } else {
                     stateId = 101;
                     //set it back to microphone
+                    voiceFab.setImageResource(R.drawable.ic_mic_black_24px);
                 }
             }
 
@@ -156,11 +164,11 @@ public class FAQFragment extends Fragment implements
 
     private void setData() {
         faqList = DataHandler.getInstance(getContext()).getFAQ();
-        if (faqList != null&&faqList.size()>0) {
+        if (faqList != null && faqList.size() > 0) {
             faqExpandableAdapter = new FAQExpandableAdapter(getContext(), faqList);
             rvExpanded.setAdapter(faqExpandableAdapter);
-        }else{
-            connectAPI.faq(DataHandler.getInstance(getContext()).getUser().getEmail(), DataHandler.getInstance(getContext()).getUser().getAuthToken());
+        } else {
+            connectAPI.faq(email, auth, MainActivity.ISGUEST);
         }
     }
 
@@ -173,17 +181,17 @@ public class FAQFragment extends Fragment implements
 
     @Override
     public void onReadyForSpeech(Bundle bundle) {
-
+        Log.i(TAG, "onReadyForSpeech: ");
     }
 
     @Override
     public void onBeginningOfSpeech() {
-
+        Log.i(TAG, "onBeginningOfSpeech: ");
     }
 
     @Override
     public void onRmsChanged(float v) {
-
+        Log.i(TAG, "onRmsChanged: ");
     }
 
     @Override
@@ -197,12 +205,12 @@ public class FAQFragment extends Fragment implements
 
     @Override
     public void onEndOfSpeech() {
-
+        Log.i(TAG, "onEndOfSpeech: ");
     }
 
     @Override
     public void onError(int i) {
-
+        Log.i(TAG, "onError: " + i);
     }
 
     @Override
@@ -215,7 +223,6 @@ public class FAQFragment extends Fragment implements
         /*TODO: Select the best text and make network call*/
 
         etQuestion.setText(matches.get(0));
-
     }
 
     public void displayChatbotResponse(ChatbotResult chatbotResult) {
@@ -242,7 +249,7 @@ public class FAQFragment extends Fragment implements
             dialogFailure.setCancelable(false);
             dialogFailure.setTitle("Error");
             dialogFailure.setMessage("Sorry we couldn't really get the answer for you.");
-            dialogFailure.setButton(DialogInterface.BUTTON_POSITIVE,"Try Again!", new DialogInterface.OnClickListener() {
+            dialogFailure.setButton(DialogInterface.BUTTON_POSITIVE, "Try Again!", new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -296,18 +303,20 @@ public class FAQFragment extends Fragment implements
                         if (!isOn || speechRecognizer != null) {
                             Log.i(TAG, "onClick: IS ON NOW");
                             speechRecognizer.startListening(recognizerIntent);
+                            voiceFab.setImageResource(R.drawable.ic_record_voice_over);
                         } else {
                             Log.i(TAG, "onClick: IS OFF NOW");
 
                             assert speechRecognizer != null;
                             speechRecognizer.stopListening();
+                            voiceFab.setImageResource(R.drawable.ic_mic_black_24px);
                         }
 
                         isOn = !isOn;
                     }
                 } else if (stateId == 201) {
                     try {
-                        connectAPI.chatBot(DataHandler.getInstance(getContext()).getUser().getEmail(), etQuestion.getText().toString());
+                        connectAPI.chatBot(email, etQuestion.getText().toString());
                     } catch (BindingException e) {
                         e.printStackTrace();
                     }
@@ -390,9 +399,9 @@ public class FAQFragment extends Fragment implements
                     showMessage(faqresult.getMessage());
                 }
             }
-        }else if(code==ConnectAPI.CHATBOT_CODE){
-            ChatbotResult chatbotResult=(ChatbotResult)result;
-            if(chatbotResult!=null) {
+        } else if (code == ConnectAPI.CHATBOT_CODE) {
+            ChatbotResult chatbotResult = (ChatbotResult) result;
+            if (chatbotResult != null) {
                 if (chatbotResult.getStatus() == ErrorDefinitions.CODE_SUCCESS) {
                     displayChatbotResponse(chatbotResult);
                 }

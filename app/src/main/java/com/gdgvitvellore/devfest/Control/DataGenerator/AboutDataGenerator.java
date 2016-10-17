@@ -1,5 +1,7 @@
 package com.gdgvitvellore.devfest.Control.DataGenerator;
 
+import android.net.Uri;
+
 import com.gdgvitvellore.devfest.Entity.About.Fragments.AboutFragment;
 import com.gdgvitvellore.devfest.Entity.About.Fragments.AboutFragment.Group;
 import com.gdgvitvellore.devfest.Entity.Actors.Child;
@@ -108,7 +110,7 @@ public class AboutDataGenerator {
         child2.setImageType(Child.IMAGE_RESOURCE);
         child2.setImageResource(R.drawable.ic_website);
         //child2.setImageResource(R.drawable.ic_gdg);
-        child2.setDesignation("http://gdgvitvellore.com/");
+        child2.setDesignation("http://www.gdgvitvellore.com");
 
         Child child3=new Child();
         child3.setName("Google+");
@@ -122,21 +124,28 @@ public class AboutDataGenerator {
         child4.setImageType(Child.IMAGE_RESOURCE);
         child4.setImageResource(R.drawable.ic_email);
        // child4.setImageResource(R.drawable.ic_gdg);
-        child4.setDesignation("gdgvitvellore@gmail.com");
+        child4.setDesignation("mailto:gdgvitvellore@gmail.com");
 
         Child child5=new Child();
         child5.setName("CALL");
         child5.setImageType(Child.IMAGE_RESOURCE);
         child5.setImageResource(R.drawable.ic_call);
         //child5.setImageResource(R.drawable.ic_gdg);
-        child5.setDesignation("+917708150636");
+        child5.setDesignation("tel:+917708150636");
 
         Child child6=new Child();
         child6.setName("FIND US");
         child6.setImageType(Child.IMAGE_RESOURCE);
         child6.setImageResource(R.drawable.ic_mappin);
         //child6.setImageResource(R.drawable.ic_gdg);
-        child6.setDesignation("http://facebook.com/gdgvitvellore");
+        double latitude = 12.970684;
+        double longitude =  79.163667;
+        String label = "GDG VIT Vellore";
+        String uriBegin = "geo:" + latitude + "," + longitude;
+        String query = latitude + "," + longitude + "(" + label + ")";
+        String encodedQuery = Uri.encode(query);
+        String uriString = uriBegin + "?q=" + encodedQuery + "&z=16";
+        child6.setDesignation(uriString);
 
         childList.add(child1);
         childList.add(child2);

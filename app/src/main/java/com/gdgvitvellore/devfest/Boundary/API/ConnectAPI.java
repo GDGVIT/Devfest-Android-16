@@ -137,7 +137,7 @@ public class ConnectAPI {
     }
 
 
-    public void timeline(final String email, final String auth_token) {
+    public void timeline(final String email, final String auth_token, final boolean isGuest) {
 
         String url = APIContract.getTimelineUrl();
         mServerAuthenticateListener.onRequestInitiated(TIMELINE_CODE);
@@ -170,7 +170,11 @@ public class ConnectAPI {
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                return APIContract.getTimelineParams(email, auth_token);
+                if (!isGuest) {
+                    return APIContract.getTimelineParams(email, auth_token);
+                } else {
+                    return APIContract.getGuestParams();
+                }
             }
         };
 
@@ -181,9 +185,9 @@ public class ConnectAPI {
     }
 
 
-    public void qrCodeScan(final String email, final String authToken, final String codeData){
+    public void qrCodeScan(final String email, final String authToken, final String codeData) {
 
-        String urlQrAdmin = " " ;
+        String urlQrAdmin = " ";
 
         StringRequest qrAdminRequest = new StringRequest(Request.Method.POST, urlQrAdmin,
                 new Response.Listener<String>() {
@@ -198,23 +202,23 @@ public class ConnectAPI {
                 Log.e(TAG, "onErrorResponse: " + error.getMessage());
                 /*Back to UI*/
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getPostParams() throws AuthFailureError {
-                HashMap<String, String> mapBody = new HashMap<>() ;
-                mapBody.put("email", email) ;
-                mapBody.put("authToken", authToken) ;
-                mapBody.put("data", codeData) ;
-                return mapBody ;
+                HashMap<String, String> mapBody = new HashMap<>();
+                mapBody.put("email", email);
+                mapBody.put("authToken", authToken);
+                mapBody.put("data", codeData);
+                return mapBody;
             }
-        } ;
+        };
 
         AppController.getInstance().addToRequestQueue(qrAdminRequest);
 
     }
 
 
-    public void speakers(final String email, final String auth_token) {
+    public void speakers(final String email, final String auth_token, final boolean isGuest) {
 
         String url = APIContract.getSpeakersUrl();
         mServerAuthenticateListener.onRequestInitiated(SPEAKERS_CODE);
@@ -247,7 +251,11 @@ public class ConnectAPI {
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                return APIContract.getSpeakersParams(email, auth_token);
+                if (!isGuest)
+                    return APIContract.getSpeakersParams(email, auth_token);
+                else {
+                    return APIContract.getGuestParams();
+                }
             }
         };
 
@@ -303,7 +311,7 @@ public class ConnectAPI {
     }
 
 
-    public void faq(final String email, final String auth_token) {
+    public void faq(final String email, final String auth_token, final boolean isGuest) {
 
         String url = APIContract.getFAQUrl();
         mServerAuthenticateListener.onRequestInitiated(FAQ_CODE);
@@ -338,7 +346,10 @@ public class ConnectAPI {
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                return APIContract.getFAQParams(email, auth_token);
+                if (!isGuest)
+                    return APIContract.getFAQParams(email, auth_token);
+                else
+                    return APIContract.getGuestParams();
             }
         };
 
@@ -438,7 +449,7 @@ public class ConnectAPI {
     }
 
 
-    public void allApis(final String email, final String auth_token) {
+    public void allApis(final String email, final String auth_token, boolean isGuest) {
 
         String url = APIContract.getAllAPIsUrl();
         mServerAuthenticateListener.onRequestInitiated(ALL_APIS_CODE);
@@ -449,8 +460,9 @@ public class ConnectAPI {
                         Log.i(TAG, "APIResult:onResponse: " + response);
                         try {
                             //TODO Change response format in backend. Its returning Json Array now. change to JsonObject
-                            if (validateResponse("{ "+"\"response\""+":"+response+"}")) {
-                                List<BaseAPI> apiList = CustomTypeAdapter.typeRealmString().fromJson(response, new TypeToken<List<BaseAPI>>(){}.getType());
+                            if (validateResponse("{ " + "\"response\"" + ":" + response + "}")) {
+                                List<BaseAPI> apiList = CustomTypeAdapter.typeRealmString().fromJson(response, new TypeToken<List<BaseAPI>>() {
+                                }.getType());
                                 mServerAuthenticateListener.onRequestCompleted(ALL_APIS_CODE, apiList);
                             } else {
                                 mServerAuthenticateListener.onRequestError(ALL_APIS_CODE, ErrorDefinitions.getMessage(ErrorDefinitions.CODE_WRONG_FORMAT));
@@ -509,7 +521,7 @@ public class ConnectAPI {
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                return APIContract.getSlotParams(email, auth_token,isWinner, slots);
+                return APIContract.getSlotParams(email, auth_token, isWinner, slots);
             }
         };
 

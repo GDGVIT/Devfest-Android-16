@@ -85,7 +85,7 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
                     @Override
                     public void onGlobalLayout() {
 
-                        Animator reveal=BackgroundCircularReveal.circularRevealSplash(bgSplash, 0, 0);
+                        Animator reveal = BackgroundCircularReveal.circularRevealSplash(bgSplash, 0, 0);
                         reveal.addListener(new Animator.AnimatorListener() {
                             @Override
                             public void onAnimationStart(Animator animation) {
@@ -109,7 +109,7 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
                         });
                         reveal.start();
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                            bgSplash.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                            bgSplash.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         } else {
                             bgSplash.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         }
@@ -143,21 +143,23 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
     public void onRequestCompleted(int code, Object result) {
 
         if (code == ConnectAPI.LOGIN_CODE) {
-            LoginResult loginResult=(LoginResult)result;
-            Log.d("LOGIN RESPONSE",result.toString());
-            if(loginResult!=null){
-                if (loginResult.getStatus()== ErrorDefinitions.CODE_SUCCESS){
-                    Log.d("LOGIN","SUCCESS");
+            LoginResult loginResult = (LoginResult) result;
+            Log.d("LOGIN RESPONSE", result.toString());
+            if (loginResult != null) {
+                if (loginResult.getStatus() == ErrorDefinitions.CODE_SUCCESS) {
+                    Log.d("LOGIN", "SUCCESS");
                     DataHandler.getInstance(this).saveUser(loginResult.getUser());
                     DataHandler.getInstance(this).saveTeam(loginResult.getTeam());
                     DataHandler.getInstance(this).saveSlotLastUsed(loginResult.getUser().getSlotLastTime());
-                    Intent intent=new Intent(this, MainActivity.class);
+                    Intent intent = new Intent(this, MainActivity.class);
                     intent.putExtra("status", Status.LOGGED_IN);
                     startActivity(intent);
                     DataHandler.getInstance(this).saveLoggedIn(true);
                     finish();
-                }else{
+                } else {
                     showMessage(ErrorDefinitions.getMessage(loginResult.getStatus()));
+                    signin.setText("Sign in");
+                    signin.setClickable(true);
                 }
             }
         }
@@ -204,7 +206,7 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
     }
 
     private void guestLogin() {
-        Intent intent=new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("status", Status.GUEST_USER);
         startActivity(intent);
         finish();
@@ -215,7 +217,7 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
         getCredentials();
         disable();
         try {
-            connectAPI.login(emailInput,passInput);
+            connectAPI.login(emailInput, passInput);
         } catch (BindingException e) {
             e.printStackTrace();
         }
@@ -229,9 +231,8 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
 
     @Override
     public void showMessage(String message) {
-        Snackbar.make(bgSplash,message,Snackbar.LENGTH_SHORT).show();
-        signin.setText("Sign in");
-        signin.setClickable(true);
+        Snackbar.make(bgSplash, message, Snackbar.LENGTH_SHORT).show();
+
     }
 
     @Override

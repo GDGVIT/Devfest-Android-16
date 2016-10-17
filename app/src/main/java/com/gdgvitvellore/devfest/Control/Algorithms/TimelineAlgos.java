@@ -20,6 +20,7 @@ public class TimelineAlgos {
         try {
             startTime = startTime.replaceAll("T", "");
             startTime = startTime.replaceAll("/", "");
+            startTime = startTime.replaceAll(":", "");
             endTime = endTime.replaceAll("T", "");
             endTime = endTime.replaceAll("/", "");
             endTime = endTime.replaceAll(":", "");
@@ -27,6 +28,7 @@ public class TimelineAlgos {
             long startDate = sdf.parse(startTime).getTime();
             long endDate = sdf.parse(endTime).getTime();
             long cur=System.currentTimeMillis();
+            Log.i("assa", "calculateTime: "+startDate+":"+endDate+":"+cur);
             if(startDate<=cur&&endDate>=cur){
                 return true;
             }else{

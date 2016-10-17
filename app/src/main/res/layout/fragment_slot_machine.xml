@@ -5,7 +5,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#272739"
+    android:background="@color/window_bg"
     tools:context="com.gdgvitvellore.devfest.Entity.SlotMachine.Fragments.SlotMachineFragment">
 
     <LinearLayout
@@ -24,8 +24,7 @@
             android:paddingBottom="10dp"
             android:weightSum="3"
             android:layout_margin="20dp"
-            android:layout_gravity="center"
-            >
+            android:layout_gravity="center">
 
 
             <ImageView
@@ -139,11 +138,11 @@
             android:background="@drawable/roundrect">
             <ImageView
                 android:layout_gravity="center_horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:id="@+id/imageView"
                 android:layout_marginTop="10dp"
-                app:srcCompat="@drawable/ic_gbutton" />
+                app:srcCompat="@mipmap/ic_launcher" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"

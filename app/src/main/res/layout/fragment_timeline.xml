@@ -40,7 +40,6 @@
             android:gravity="end"
             android:textStyle="bold"
             android:maxLines="1"
-            android:text="@string/time"
             android:textColor="@color/white"
             android:textSize="14sp" />
 

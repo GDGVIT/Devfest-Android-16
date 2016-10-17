@@ -39,6 +39,7 @@ import com.gdgvitvellore.devfest.Entity.Actors.BaseAPI;
 import com.gdgvitvellore.devfest.Entity.Actors.SlotsResult;
 import com.gdgvitvellore.devfest.Entity.Actors.User;
 import com.gdgvitvellore.devfest.Entity.Authentication.Activities.AuthenticationActivity;
+import com.gdgvitvellore.devfest.Entity.Main.Activities.MainActivity;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
@@ -55,9 +56,9 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
 
     private ImageView trigger;
     private ImageView slot1, slot2, slot3;
-    private LinearLayout triggerHolder, arrowLayout,apiNamesHolder;
+    private LinearLayout triggerHolder, arrowLayout, apiNamesHolder;
     private DigitalClockView digitalClockView;
-    private TextView apiName1,apiName2,apiName3;
+    private TextView apiName1, apiName2, apiName3;
     private FrameLayout root;
     private ProgressDialog progressDialog;
 
@@ -95,19 +96,20 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
         root = (FrameLayout) rootView.findViewById(R.id.root);
         progressDialog = new ProgressDialog(getContext());
 
-        apiNamesHolder=(LinearLayout)rootView.findViewById(R.id.api_names_holder);
-        apiName1=(TextView)rootView.findViewById(R.id.api_name_1);
-        apiName2=(TextView)rootView.findViewById(R.id.api_name_2);
-        apiName3=(TextView)rootView.findViewById(R.id.api_name_3);
+        apiNamesHolder = (LinearLayout) rootView.findViewById(R.id.api_names_holder);
+        apiName1 = (TextView) rootView.findViewById(R.id.api_name_1);
+        apiName2 = (TextView) rootView.findViewById(R.id.api_name_2);
+        apiName3 = (TextView) rootView.findViewById(R.id.api_name_3);
 
         digitalClockView = (DigitalClockView) rootView.findViewById(R.id.digitalClock);
-        user = DataHandler.getInstance(getContext()).getUser();
-        if (user == null) {
-            startActivity(new Intent(getActivity(), AuthenticationActivity.class));
-            getActivity().finish();
+
+        if (!MainActivity.ISGUEST) {
+            user = DataHandler.getInstance(getContext()).getUser();
+            if (user == null) {
+                startActivity(new Intent(getActivity(), AuthenticationActivity.class));
+                getActivity().finish();
+            }
         }
-
-
         connectAPI = new ConnectAPI(getContext());
     }
 
@@ -132,16 +134,20 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
 
     private void setData() {
         apiList = DataHandler.getInstance(getContext()).getAllApis();
+
         if (apiList != null && apiList.size() > 0) {
             prepareBitmaps();
             if (!(System.currentTimeMillis() - DataHandler.getInstance(getContext()).getSlotLastUsed() > PrivateContract.SLOT_WAIT_TIME)) {
                 trigger.setEnabled(false);
                 startWaitTimer(PrivateContract.SLOT_WAIT_TIME - (System.currentTimeMillis() - DataHandler.getInstance(getContext()).getSlotLastUsed()));
-            }else {
+            } else {
                 trigger.setEnabled(true);
             }
         } else {
-            connectAPI.allApis(user.getEmail(), user.getAuthToken());
+            if (!MainActivity.ISGUEST)
+                connectAPI.allApis(user.getEmail(), user.getAuthToken(), false);
+            else
+                connectAPI.allApis(null, null, true);
         }
     }
 
@@ -205,7 +211,8 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
             public void onFinish() {
                 startWaitTimer(PrivateContract.SLOT_WAIT_TIME);
                 DataHandler.getInstance(getContext()).saveSlotLastUsed(System.currentTimeMillis());
-                connectAPI.slots(user.getEmail(), user.getAuthToken(), i == j + 1 && j + 1 == k + 1 ? true : false, "" + i + j + k);
+                if (!MainActivity.ISGUEST)
+                    connectAPI.slots(user.getEmail(), user.getAuthToken(), i == j + 1 && j + 1 == k + 1 ? true : false, "" + i + j + k);
                 Log.i(TAG, "onFinish: " + i + ":" + j + ":" + k);
                 apiName1.setText(apiList.get(i).getName());
                 apiName2.setText(apiList.get(j).getName());
@@ -261,6 +268,13 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
 
         int eid = event.getAction();
         switch (eid) {
+            case MotionEvent.ACTION_DOWN:
+                ObjectAnimations.fadeOutAnimation(apiNamesHolder).start();
+                ObjectAnimations.fadeOutAnimation(arrowLayout).start();
+                downPT.x = event.getX();
+                downPT.y = event.getY();
+                startPT = new PointF(trigger.getX(), trigger.getY());
+                break;
             case MotionEvent.ACTION_MOVE:
                 PointF mv = new PointF(event.getX() - downPT.x, event.getY() - downPT.y);
                 Rect rec = new Rect();
@@ -271,13 +285,6 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
                     trigger.setY((int) (startPT.y + mv.y));
                     startPT = new PointF(trigger.getX(), trigger.getY());
                 }
-                break;
-            case MotionEvent.ACTION_DOWN:
-                ObjectAnimations.fadeOutAnimation(apiNamesHolder).start();
-                ObjectAnimations.fadeOutAnimation(arrowLayout).start();
-                downPT.x = event.getX();
-                downPT.y = event.getY();
-                startPT = new PointF(trigger.getX(), trigger.getY());
                 break;
             case MotionEvent.ACTION_UP:
                 Animator animator = ObjectAnimations.flickerAnimation(trigger);
@@ -318,7 +325,7 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
         super.onResume();
         if (NetworkUtils.hasConnectivity(getContext()) && !digitalClockView.isMorphingAnimationRunning()) {
             trigger.setEnabled(true);
-        } else if (!digitalClockView.isMorphingAnimationRunning()) {
+        } else {
             trigger.setEnabled(false);
             showMessage("Connect to internet");
         }
@@ -354,15 +361,9 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
     }
 
     private void startDownloadingImages(List<BaseAPI> result) {
-        progressDialog.cancel();
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Loading Slots...");
-        progressDialog.setCancelable(false);
-        progressDialog.setMax(100);
-        progressDialog.setIndeterminate(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.show();
         apiList = result;
+        showDownloadProgress();
+
         Intent intent = new Intent(getActivity(), ImageDownloadService.class);
         String[] links = new String[result.size()];
         for (int i = 0; i < result.size(); i++) {
@@ -371,6 +372,17 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
         intent.putExtra("links", links);
         intent.putExtra("receiver", new DownloadReceiver(new Handler()));
         getActivity().startService(intent);
+    }
+
+    private void showDownloadProgress() {
+        progressDialog.cancel();
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading Slots...");
+        progressDialog.setCancelable(false);
+        progressDialog.setMax(100);
+        progressDialog.setIndeterminate(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.show();
     }
 
     @Override
@@ -389,8 +401,8 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
     }
 
     @Override
-    public void showMessage(String message,boolean showRetry) {
-        if(showRetry){
+    public void showMessage(String message, boolean showRetry) {
+        if (showRetry) {
 
             Snackbar.make(root, message, Snackbar.LENGTH_SHORT).setAction("Retry", new View.OnClickListener() {
                 @Override
@@ -398,7 +410,7 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
                     startDownloadingImages(apiList);
                 }
             }).show();
-        }else{
+        } else {
             Snackbar.make(root, message, Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -433,7 +445,7 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
                         setData();
                     }
                 } else {
-                    showMessage("Error loading",true);
+                    showMessage("Error loading", true);
                     apiList = new ArrayList<>();
                     progressDialog.cancel();
                     trigger.setEnabled(false);

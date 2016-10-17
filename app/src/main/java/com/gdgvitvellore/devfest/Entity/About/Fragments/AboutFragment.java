@@ -3,6 +3,7 @@ package com.gdgvitvellore.devfest.Entity.About.Fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,6 +36,7 @@ import com.gdgvitvellore.devfest.Entity.Actors.Speakers;
 import com.gdgvitvellore.devfest.Entity.Actors.SpeakersResult;
 import com.gdgvitvellore.devfest.Entity.Actors.User;
 import com.gdgvitvellore.devfest.Entity.Authentication.Activities.AuthenticationActivity;
+import com.gdgvitvellore.devfest.Entity.Main.Activities.MainActivity;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
@@ -76,13 +78,16 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         speakersRecyclerView = (RecyclerView) rootView.findViewById(R.id.speakers_recycler_view);
         progressDialog = new ProgressDialog(getContext());
-        connectAPI = new ConnectAPI(getContext());
         root = (CoordinatorLayout) rootView.findViewById(R.id.root);
+
+        connectAPI = new ConnectAPI(getContext());
         groupList = new ArrayList<>();
         user = DataHandler.getInstance(getContext()).getUser();
-        if (user == null) {
-            startActivity(new Intent(getActivity(), AuthenticationActivity.class));
-            getActivity().finish();
+        if (!MainActivity.ISGUEST) {
+            if (user == null) {
+                startActivity(new Intent(getActivity(), AuthenticationActivity.class));
+                getActivity().finish();
+            }
         }
     }
 
@@ -107,7 +112,10 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
             speakersAdapter = new SpeakersAdapter(getContext());
             speakersRecyclerView.setAdapter(speakersAdapter);
         } else {
-            connectAPI.speakers(user.getEmail(), user.getAuthToken());
+            if (!MainActivity.ISGUEST)
+                connectAPI.speakers(user.getEmail(), user.getAuthToken(), false);
+            else
+                connectAPI.speakers(null, null, true);
         }
     }
 
@@ -257,9 +265,11 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
             private TextView mItemTextView, desgination;
             private ImageView info;
             private CircleImageView mImageView;
+            private View holder;
 
             public ItemViewHolder(View itemView) {
                 super(itemView);
+                holder = itemView;
                 mImageView = (CircleImageView) itemView.findViewById(R.id.photo);
                 info = (ImageView) itemView.findViewById(R.id.info);
                 mItemTextView = (TextView) itemView.findViewById(R.id.name);
@@ -267,7 +277,7 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
             }
 
             public void bind(Object item) {
-                Child child = (Child) item;
+                final Child child = (Child) item;
                 if (child.getImageType() == Child.IMAGE_URL) {
                     desgination.setVisibility(View.VISIBLE);
                     mItemTextView.setText(child.getName());
@@ -279,6 +289,28 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
                     mImageView.setImageResource(child.getImageResource());
                     desgination.setVisibility(View.GONE);
                     info.setVisibility(View.GONE);
+                    holder.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (getAdapterPosition() == 4) {
+                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(child.getDesignation()));
+                                if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+                                    startActivity(intent);
+                                }
+                            } else if(getAdapterPosition()==3){
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(child.getDesignation()));
+                                if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+                                    startActivity(intent);
+                                }
+                            } else{
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(child.getDesignation()));
+                                if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+                                    startActivity(intent);
+                                }
+
+                            }
+                        }
+                    });
                 }
             }
         }

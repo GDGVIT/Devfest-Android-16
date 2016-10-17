@@ -136,4 +136,10 @@ public class APIContract {
         }
         return "";
     }
+
+    public static Map<String, String> getGuestParams() {
+        Map<String, String> map = new HashMap<>();
+        map.put("isGuest", "true");
+        return map;
+    }
 }
