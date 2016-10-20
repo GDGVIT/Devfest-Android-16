@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 
 public class Phase extends RealmObject {
 
@@ -32,11 +33,11 @@ public class Phase extends RealmObject {
     @SerializedName("image_url")
     @Expose
     private String imageUrl;
-    @SerializedName("isRunning")
-    @Expose
+    @Ignore
     private boolean isRunning;
 
     private int hour, min, sec;
+
 
     /**
      * @return The title

@@ -9,6 +9,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class AppController extends Application {
 
@@ -27,6 +28,10 @@ public class AppController extends Application {
 
     private void initRealm() {
         Realm.init(this);
+        RealmConfiguration realmConfiguration=new RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(realmConfiguration);
     }
 
     public static synchronized AppController getInstance() {

@@ -28,7 +28,7 @@
 
         <activity android:name="com.gdgvitvellore.devfest.Entity.Main.Activities.MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait"></activity>
+            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
 
         <activity android:name="com.gdgvitvellore.devfest.Entity.Authentication.Activities.AuthenticationActivity"
             android:exported="true"

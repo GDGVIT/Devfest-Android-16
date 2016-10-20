@@ -9,7 +9,8 @@
     android:layout_marginBottom="20dp"
     card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="5dp"
-    card_view:cardElevation="5dp">
+    card_view:cardElevation="5dp"
+    android:id="@+id/holder">
 
 
     <TextView

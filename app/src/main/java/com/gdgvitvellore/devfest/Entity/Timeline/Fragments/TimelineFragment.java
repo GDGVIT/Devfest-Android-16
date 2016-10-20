@@ -11,10 +11,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ import android.widget.TextView;
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Algorithms.TimelineAlgos;
+import com.gdgvitvellore.devfest.Control.Animations.Timeline.ObjectAnimations;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
 import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
 import com.gdgvitvellore.devfest.Entity.Actors.Phase;
@@ -54,12 +57,13 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     private ProgressDialog progressDialog;
     private ImageView indicator1;
     private ImageView indicator2;
-
     private LinearLayout root;
-    private TimelineDisplayFragment timelineDisplayFragment;
 
+    private TimelineDisplayFragment timelineDisplayFragment;
     private TimelineAboutFragment timelineAboutFragment;
+
     private PhasesAdapter mAdapter;
+    private ViewPagerAdapter phasePagerAdapter;
 
     private List<Phase> phaseList = new ArrayList<>();
     private Handler customHandler = new Handler();
@@ -73,7 +77,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
     private String email, auth;
     private Phase currentPhase;
-    private ViewPagerAdapter phasePagerAdapter;
+    private int currentPhasePosition = -1;
 
 
     @Nullable
@@ -96,12 +100,12 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         recyclerView = (RecyclerView) view.findViewById(R.id.phases_list);
         timer = (TextView) view.findViewById(R.id.time);
         title = (TextView) view.findViewById(R.id.title);
-        phaseDisplayPager = (VerticalViewPager) view.findViewById(R.id.pager);
         progressDialog = new ProgressDialog(getContext());
         root = (LinearLayout) view.findViewById(R.id.root);
+        phaseDisplayPager = (VerticalViewPager) view.findViewById(R.id.pager);
 
-        timelineDisplayFragment = new TimelineDisplayFragment();
-        timelineAboutFragment = new TimelineAboutFragment();
+        timelineDisplayFragment = TimelineDisplayFragment.getNewInstance();
+        timelineAboutFragment = TimelineAboutFragment.getNewInstance();
 
         indicator1 = (ImageView) view.findViewById(R.id.indicator1);
         indicator2 = (ImageView) view.findViewById(R.id.indicator2);
@@ -122,7 +126,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.getItemAnimator().setChangeDuration(0);
 
         phaseDisplayPager.setPageTransformer(false, new VerticalPageTransformer());
         phaseDisplayPager.addOnPageChangeListener(this);
@@ -133,31 +137,43 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         phaseList = DataHandler.getInstance(getContext()).getPhases();
 
         if (phaseList != null) {
+            refreshPhases();
             mAdapter = new PhasesAdapter(phaseList);
             recyclerView.setAdapter(mAdapter);
-            mAdapter.notifyDataSetChanged();
-            phaseDisplayPager.setAdapter(phasePagerAdapter);
-            phaseDisplayPager.setCurrentItem(0);
-            if (phaseList.size() > 0) {
-                if (currentPhase != null) {
-                    refreshCurrentEvent(0);
-                } else {
-                    currentPhase = phaseList.get(0);
-                }
+            if (currentPhase != null) {
+                recyclerView.scrollToPosition(currentPhasePosition);
+            } else {
+                currentPhase = phaseList.get(0);
             }
+            phaseDisplayPager.setAdapter(phasePagerAdapter);
+            refreshCurrentEventTitles();
         } else {
             connectAPI.timeline(email, auth, MainActivity.ISGUEST);
         }
     }
 
-    private void refreshCurrentEvent(int position) {
+    private void refreshPhases() {
+        for (int i = 0; i < phaseList.size(); i++) {
+            Phase p = phaseList.get(i);
+            if (TimelineAlgos.isRunningNow(p.getStartTime(), p.getEndTime())) {
+                p.setRunning(true);
+                currentPhase = p;
+                currentPhasePosition = i;
+            } else {
+                p.setRunning(false);
+            }
+        }
+    }
+
+    private void refreshPages() {
+        timelineDisplayFragment.setImage(currentPhase.getImageUrl());
+        timelineAboutFragment.setAboutText(currentPhase.getDescription());
+    }
+
+
+    private void refreshCurrentEventTitles() {
         title.setText(currentPhase.getTitle());
         timer.setText(TimelineAlgos.getTime(currentPhase.getStartTime()) + " - " + TimelineAlgos.getTime(currentPhase.getEndTime()));
-
-        if (position == 1)
-            timelineAboutFragment.setTimelineAbout(currentPhase.getDescription());
-        else if (position == 0)
-            timelineDisplayFragment.setImage(currentPhase.getImageUrl());
     }
 
     @Override
@@ -217,18 +233,13 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
     @Override
     public void onPageSelected(int position) {
+        Log.i(TAG, "onPageSelected: " + position);
         if (position == 0) {
             indicator1.setImageResource(R.drawable.white_indicator_circle);
             indicator2.setImageResource(R.drawable.white_alpha_indicator_circle);
-            if (currentPhase == null) {
-                refreshCurrentEvent(position);
-            }
         } else if (position == 1) {
             indicator1.setImageResource(R.drawable.white_alpha_indicator_circle);
             indicator2.setImageResource(R.drawable.white_indicator_circle);
-            if (currentPhase != null) {
-                refreshCurrentEvent(position);
-            }
         }
     }
 
@@ -237,8 +248,8 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
     }
 
-    class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
+    class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
         public ViewPagerAdapter(FragmentManager manager) {
             super(manager);
@@ -247,8 +258,14 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
+                if (currentPhase != null) {
+                    timelineDisplayFragment.setImageUrl(currentPhase.getImageUrl());
+                }
                 return timelineDisplayFragment;
             } else if (position == 1) {
+                if (currentPhase != null) {
+                    timelineAboutFragment.setAboutText(currentPhase.getDescription());
+                }
                 return timelineAboutFragment;
             } else return new EmptyFragment();
         }
@@ -261,19 +278,21 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     }
 
     public class PhasesAdapter extends RecyclerView.Adapter<PhasesAdapter.MyViewHolder> {
-
         private List<Phase> phasesList;
-        private View lastViewClicked=null;
-        private int lastClicked=-1;
+        private SparseBooleanArray selectedItems;
+        private View lastViewClicked = null;
+        private int lastSelected=0;
+        private int lastDeSelected=-1;
 
         public PhasesAdapter(List<Phase> phasesList) {
             this.phasesList = phasesList;
+            selectedItems=new SparseBooleanArray();
         }
 
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.fragment_timeline_card, parent, false);
+                    .inflate(R.layout.fragment_timeline_recycler_item, parent, false);
 
             return new MyViewHolder(itemView);
         }
@@ -285,73 +304,70 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
             holder.name.setText(phase.getTitle());
             holder.time.setText(TimelineAlgos.getTime(phase.getStartTime()) + "-" + TimelineAlgos.getTime(phase.getEndTime()));
 
-            if (TimelineAlgos.calculateTime(phase.getStartTime(), phase.getEndTime())) {
+            if (phase.isRunning()) {
                 Log.i(TAG, "onBindViewHolder: " + phase.getTitle());
-                currentPhase = phase;
-                refreshCurrentEvent(position);
                 holder.time.setActivated(true);
                 holder.time.setText("Now");
+                if(lastSelected==-1){
+                    lastSelected=position;
+                }
             } else {
                 holder.time.setActivated(false);
             }
+            ObjectAnimations.reset(holder.holder).start();
+            if(position==lastSelected){
+                ObjectAnimations.scaleUp(holder.holder).start();
+                Log.i(TAG, "onBindViewHolder: scaleUP:pos:"+position+":sel:"+lastSelected+":des:"+lastDeSelected);
+            }else if(position==lastDeSelected){
+                Log.i(TAG, "onBindViewHolder: scaleDown:pos:"+position+":sel:"+lastSelected+":des:"+lastDeSelected);
+                ObjectAnimations.scaleDown(holder.holder).start();
+            }
 
         }
-
 
         @Override
         public int getItemCount() {
             return phasesList.size();
         }
 
+
+
         public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
             public TextView name, time;
+            public CardView holder;
 
             public MyViewHolder(View view) {
                 super(view);
                 name = (TextView) view.findViewById(R.id.phase_name);
                 time = (TextView) view.findViewById(R.id.phase_time);
-                itemView.setOnClickListener(this);
+                holder =(CardView)view.findViewById(R.id.holder);
+                holder.setOnClickListener(this);
             }
-
             @Override
             public void onClick(View v) {
-                //phaseList.get(getAdapterPosition()).setRunning(true);
-                //notifyDataSetChanged();
+                phaseDisplayPager.setCurrentItem(0);
                 currentPhase = phaseList.get(getAdapterPosition());
-                notifyDataSetChanged();
-                refreshCurrentEvent(0);
-
-                if(lastViewClicked==null) {
-                    ObjectAnimator animator = ObjectAnimator.ofFloat(v, "scaleX", 1f, 1.1f);
-                    ObjectAnimator animator2 = ObjectAnimator.ofFloat(v, "scaleY", 1f, 1.1f);
-                    animator.setDuration(500);
-                    animator2.setDuration(500);
-                    animator.start();
-                    animator2.start();
-                    lastViewClicked=v;
-                }else if(lastViewClicked!=v){
-                    ObjectAnimator animator = ObjectAnimator.ofFloat(lastViewClicked, "scaleX", 1.1f, 1f);
-                    ObjectAnimator animator2 = ObjectAnimator.ofFloat(lastViewClicked, "scaleY", 1.1f, 1f);
-                    ObjectAnimator animator3 = ObjectAnimator.ofFloat(v, "scaleX", 1f, 1.1f);
-                    ObjectAnimator animator4 = ObjectAnimator.ofFloat(v, "scaleY", 1f, 1.1f);
-                    animator3.setDuration(500);
-                    animator4.setDuration(500);
-                    animator.start();
-                    animator2.start();
-                    animator3.start();
-                    animator4.start();
-                    lastViewClicked=v;
+                refreshCurrentEventTitles();
+                refreshPages();
+                if(lastSelected==getAdapterPosition()&&lastDeSelected==-2){
+                    lastDeSelected=getAdapterPosition();
+                    lastSelected=-2;
+                    notifyItemChanged(lastDeSelected);
+                }else if(lastDeSelected==getAdapterPosition()&&lastSelected==-2){
+                    lastSelected=getAdapterPosition();
+                    lastDeSelected=-2;
+                    notifyItemChanged(lastSelected);
                 }else{
-                    ObjectAnimator animator = ObjectAnimator.ofFloat(v, "scaleX", 1.1f, 1f);
-                    ObjectAnimator animator2 = ObjectAnimator.ofFloat(v, "scaleY", 1.1f, 1f);
-                    animator.setDuration(500);
-                    animator2.setDuration(500);
-                    animator.start();
-                    animator2.start();
-                    lastViewClicked=null;
+                    lastDeSelected=lastSelected;
+                    lastSelected=getAdapterPosition();
+                    notifyItemChanged(lastDeSelected);
+                    notifyItemChanged(lastSelected);
                 }
             }
+
         }
+
 
     }
 

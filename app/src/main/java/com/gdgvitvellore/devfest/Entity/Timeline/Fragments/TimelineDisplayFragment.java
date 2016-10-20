@@ -33,6 +33,11 @@ public class TimelineDisplayFragment extends Fragment {
 
     private static final String TAG = TimelineDisplayFragment.class.getSimpleName();
     private ImageView displayImage;
+    private String imageURL;
+
+    public static TimelineDisplayFragment getNewInstance(){
+        return new TimelineDisplayFragment();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +50,9 @@ public class TimelineDisplayFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_timeline_display,container, false);
         displayImage = (ImageView) view.findViewById(R.id.pagerImage);
+        if(displayImage!=null){
+            setImage(imageURL);
+        }
         return view;
     }
 
@@ -66,9 +74,12 @@ public class TimelineDisplayFragment extends Fragment {
         Uri uri = Uri.parse(url);
         requestBuilder
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                // SVG cannot be serialized so it's not worth to cache it
                 .load(uri)
                 .into(displayImage);
+    }
+
+    public void setImageUrl(String url){
+        this.imageURL=url;
     }
 
 }
