@@ -76,6 +76,8 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/emailHint"
                     android:maxLines="1"
+                    android:singleLine="true"
+                    android:inputType="textEmailAddress"
                     android:paddingBottom="15dp"
                     android:textColor="@color/white"
                     android:textColorHint="@color/fade_white" />
@@ -95,6 +97,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/passwordHint"
                     android:maxLines="1"
+                    android:singleLine="true"
                     android:inputType="textPassword"
                     android:paddingBottom="15dp"
                     android:textColor="@color/white"
