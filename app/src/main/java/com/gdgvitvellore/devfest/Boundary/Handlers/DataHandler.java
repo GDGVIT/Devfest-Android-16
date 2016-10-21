@@ -37,6 +37,7 @@ import io.realm.RealmResults;
 
 public class DataHandler {
 
+
     private static final String TAG = DataHandler.class.getSimpleName();
     //Singleton reference
     public static DataHandler myInstance;
@@ -325,7 +326,8 @@ public class DataHandler {
     }
 
 
-    public boolean isLoggedIn() {
+    public boolean isLoggedIn()
+    {
         return getPreference("loggedIn", false);
     }
 

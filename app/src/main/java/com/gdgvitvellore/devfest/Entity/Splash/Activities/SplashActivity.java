@@ -36,15 +36,20 @@ public class SplashActivity extends RevealActivity {
     }
 
     private void init(Bundle savedInstanceState) {
+
         im1 = (ImageView) findViewById(R.id.im1);
         im2 = (ImageView) findViewById(R.id.im2);
         this.mSavedInstanceState = savedInstanceState;
     }
 
-    private void setInit() {
-        if (!DataHandler.getInstance(getApplicationContext()).isLoggedIn()) {
+    private void setInit()
+    {
+        if (!DataHandler.getInstance(getApplicationContext()).isLoggedIn())
+        {
             showOnboarding();
-        } else {
+        }
+        else
+        {
             showRevealEffect(mSavedInstanceState, findViewById(R.id.root));
         }
     }
