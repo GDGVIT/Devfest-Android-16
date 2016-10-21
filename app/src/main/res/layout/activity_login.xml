@@ -105,13 +105,34 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:id="@+id/login"
+            <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/email_login_button"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:text="@string/SignIn"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_marginRight="10dp"
+                android:elevation="3dp"
                 android:textColor="@color/white" />
+
+                <Button
+                    android:id="@+id/gplus_login_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/gplus_red"
+                    android:textColor="@color/white"
+                    android:elevation="3dp"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:text="@string/gplus_label"/>
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/guest_login"

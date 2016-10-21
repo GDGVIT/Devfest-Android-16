@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    android:layout_width="match_parent"
+<android.support.v7.widget.CardView android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    card_view:cardBackgroundColor="@color/white">
 
     <LinearLayout
-        android:background="@drawable/box_bottom_line"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/list_item_faq_general_child_tv_answer"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/textColorPrimary"
             android:padding="15dp"
             android:text="You are allowed to have at max 5 members."
             android:layout_width="match_parent"

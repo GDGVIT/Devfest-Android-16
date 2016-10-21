@@ -87,6 +87,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             if (getIntent().getStringExtra("status").equals(Status.GUEST_USER)) {
                 Log.i(TAG, "init: guest");
+                showMessage(Status.GUEST_USER);
+                ISGUEST = true;
+            }
+            //TODO Currently treating gplus user as guest. Later will connect to server
+            if (getIntent().getStringExtra("status").contains(Status.GUEST_USER_GPLUS)) {
+                Log.i(TAG, "init: guest");
+                showMessage(getIntent().getStringExtra("status"));
                 ISGUEST = true;
             }
         }

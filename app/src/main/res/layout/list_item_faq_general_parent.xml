@@ -2,8 +2,12 @@
 <android.support.v7.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="@color/white"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="15dp"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:background="@drawable/box_bottom_line"
@@ -15,21 +19,21 @@
 
         <TextView
             android:id="@+id/card_list_parent_question_title"
-            android:textColor="@android:color/black"
+            android:textColor="@color/textColorPrimary"
             android:padding="15dp"
             android:text="How many members can be in a team?"
             android:layout_width="0dp"
             android:layout_weight="19"
             android:layout_height="wrap_content" />
 
-        <ImageButton
+
+        <ImageView
+            android:layout_width="@dimen/expandable_arrow_size"
+            android:layout_height="@dimen/expandable_arrow_size"
             android:id="@+id/card_list_parent_question_answer"
-            android:layout_weight="1"
             android:layout_gravity="center_vertical"
-            android:background="@android:color/transparent"
-            app:srcCompat="@drawable/ic_add_24px"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            app:srcCompat="@drawable/ic_arrow_expandable_24dp"
+            android:layout_weight="0.2"/>
 
     </LinearLayout>
 

@@ -26,5 +26,6 @@
     <color name="textColorPrimary">#212121</color>
     <color name="textColorSecondary">#757575</color>
     <color name="active_green">#64dd17</color>
+    <color name="gplus_red">#d34836</color>
 </resources>
 

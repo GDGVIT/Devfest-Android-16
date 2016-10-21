@@ -17,13 +17,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Animations.Authentication.BackgroundCircularReveal;
-import com.gdgvitvellore.devfest.Control.Animations.Main.DrawerCircularReveal;
-import com.gdgvitvellore.devfest.Control.Animations.Main.ObjectAnimations;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
 import com.gdgvitvellore.devfest.Control.Contracts.Status;
 import com.gdgvitvellore.devfest.Control.Exceptions.BindingException;
@@ -51,7 +48,7 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
     private TextInputEditText email, password;
     private TextInputLayout emailLayout, passwordLayout;
     private LinearLayout bgSplash;
-    private Button signin;
+    private Button signin,gPlusSignIn;
     private TextView guestLogin;
     private String emailInput, passInput;
 
@@ -82,7 +79,8 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
 
         bgSplash = (LinearLayout) findViewById(R.id.bg_splash);
 
-        signin = (Button) findViewById(R.id.login);
+        signin = (Button) findViewById(R.id.email_login_button);
+        gPlusSignIn = (Button) findViewById(R.id.gplus_login_button);
 
         connectAPI = new ConnectAPI(this);
     }
@@ -102,6 +100,7 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
     private void setInit() {
         signin.setOnClickListener(this);
         guestLogin.setOnClickListener(this);
+        gPlusSignIn.setOnClickListener(this);
         connectAPI.setServerAuthenticateListener(this);
         if (Build.VERSION.SDK_INT >= 21) {
             ViewTreeObserver viewTreeObserver = bgSplash.getViewTreeObserver();
@@ -219,22 +218,19 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             gPlusResult = result;
             if (result.isSuccess()) {
-                // Signed in successfully, show authenticated UI.
-               /* GoogleSignInAccount acct = result.getSignInAccount();
-                try {
-                    Bundle requestParams = new Bundle();
-                    requestParams.putString(AccountGeneral.ACCOUNT_EMAIL, acct.getEmail());
-                    requestParams.putString(AccountGeneral.ACCOUNT_AUTHTYPE, mAuthTokenType);
-                    sServerAuthenticate.getCsrfAndMakeRequest(requestParams, ConnectAPI.LOGIN_GPLUS_CODE);
-                } catch (AuthenticationException e) {
-                    Log.d("Exception:", e.getMessage());
-                }
-               */
-                //updateUI(true);
-            } else {
-                // Signed out, show unauthenticated UI.
-                //  updateUI(false);
-            }
+                GoogleSignInAccount acct = result.getSignInAccount();
+                Bundle requestParams = new Bundle();
+                //TODO Connect to server
+                /**Google plus details can be stored on server and used for other purposes
+                 * Right now just logging out details and starting MainActivity as GUEST USER.
+                 */
+                Log.i(TAG, "onActivityResult: Gplus Email:"+acct.getEmail());
+                Log.i(TAG, "onActivityResult: Gplus AuthType:"+acct.getDisplayName());
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra("status", Status.GUEST_USER_GPLUS+acct.getDisplayName());
+                startActivity(intent);
+                finish();
+            } 
         } else
             super.onActivityResult(requestCode, resultCode, data);
     }
@@ -251,11 +247,14 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
         int id = v.getId();
 
         switch (id) {
-            case R.id.login:
+            case R.id.email_login_button:
                 login();
                 break;
             case R.id.guest_login:
                 guestLogin();
+                break;
+            case R.id.gplus_login_button:
+                signInWithGPlus();
                 break;
             default:
                 break;
@@ -305,6 +304,9 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.i(TAG, "onConnectionFailed: "+connectionResult.getErrorMessage());
+        if(connectionResult.getResolution()!=null){
 
+        }
     }
 }

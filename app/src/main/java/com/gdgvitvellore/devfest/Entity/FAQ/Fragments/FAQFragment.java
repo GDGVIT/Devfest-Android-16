@@ -340,6 +340,10 @@ public class FAQFragment extends Fragment implements
                     }
                     flag++;
                 }
+                speechRecognizer.cancel();
+                speechRecognizer.stopListening();
+                speechRecognizer.setRecognitionListener(this);
+                voiceFab.performClick();
             } else {
                 ErrorDialog.newInstance(getString(R.string.permission_request))
                         .show(fragmentManager, TAG);
