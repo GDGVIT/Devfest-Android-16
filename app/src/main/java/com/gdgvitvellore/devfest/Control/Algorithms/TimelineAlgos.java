@@ -15,7 +15,7 @@ import java.util.Date;
 public class TimelineAlgos {
 
 
-    public static boolean calculateTime(String startTime, String endTime) {
+    public static boolean isRunningNow(String startTime, String endTime) {
 
         try {
             startTime = startTime.replaceAll("T", "");
@@ -28,7 +28,7 @@ public class TimelineAlgos {
             long startDate = sdf.parse(startTime).getTime();
             long endDate = sdf.parse(endTime).getTime();
             long cur=System.currentTimeMillis();
-            Log.i("assa", "calculateTime: "+startDate+":"+endDate+":"+cur);
+            Log.i("assa", "isRunningNow: "+startDate+":"+endDate+":"+cur);
             if(startDate<=cur&&endDate>=cur){
                 return true;
             }else{

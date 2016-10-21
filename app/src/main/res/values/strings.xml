@@ -25,11 +25,12 @@
     <string name="emailHint">Email Address</string>
     <string name="passwordHint">Password</string>
     <string name="SignIn">Sign In</string>
-    <string name="GuestContinue">Continue as guest</string>
+    <string name="GuestContinue">Continue as a guest</string>
     <string name="team_members">Team members</string>
     <string name="hackathon_phase_1">Hackathon Phase 1</string>
     <string name="time">23:54:21</string>
     <string name="permission_request">You need audio permissions to ask questions from Mr Mojo</string>
+    <string name="gplus_label">Google</string>
 
 
     <string-array name="drawer_titles">

@@ -8,5 +8,7 @@ public class Status {
 
     public final static String LOGGED_IN="Logged In";
     public final static String GUEST_USER="Welcome Guest";
+    //Temporary until GPLUS connected to private server
+    public final static String GUEST_USER_GPLUS="Google: Welcome ";
 
 }

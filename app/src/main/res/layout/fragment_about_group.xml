@@ -4,6 +4,8 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    card_view:cardBackgroundColor="@color/white"
     android:layout_marginTop="@dimen/card_vertical_margin"
     card_view:contentPadding="@dimen/expandable_recycler_padding">
 
@@ -26,7 +28,7 @@
             android:layout_width="@dimen/expandable_arrow_size"
             android:layout_height="@dimen/expandable_arrow_size"
             android:id="@+id/down_arrow"
-            card_view:srcCompat="@drawable/ic_arrow_expandable_24dp"
+            app:srcCompat="@drawable/ic_arrow_expandable_24dp"
             android:layout_weight="0.2"/>
 
     </LinearLayout>

@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/fragment_faq_root"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.gdgvitvellore.devfest.Entity.FAQ.Fragments.FAQFragment">
 
     <android.support.design.widget.AppBarLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="280dp"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:focusable="true"
+        android:background="@color/transparent"
+        android:focusableInTouchMode="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
-            android:background="@color/window_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
@@ -26,43 +27,41 @@
 
 
             <android.support.v7.widget.CardView
-                app:cardBackgroundColor="@color/colorPrimary"
-                android:elevation="5dp"
-                android:layout_gravity="top"
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
+                android:layout_height="200dp"
+                android:layout_gravity="top"
+                android:elevation="5dp"
+                app:cardBackgroundColor="@color/colorPrimary">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
 
-
-
                     <TextView
-                        android:layout_marginTop="10dp"
-                        android:text="Got any question? Ask the chatbot Mr Mojo."
-                        android:textColor="@android:color/white"
                         android:layout_width="match_parent"
-                        android:textAlignment="center"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="10dp"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
-                        android:layout_centerInParent="true"
+                        android:text="Got any question? Ask the chatbot Mr Mojo."
+                        android:textAlignment="center"
+                        android:textColor="@android:color/white"
                         android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_height="wrap_content" />
+                        android:textStyle="bold" />
 
                 </RelativeLayout>
 
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="40dp"
-                app:cardBackgroundColor="@android:color/white"
-                android:layout_gravity="end|bottom"
                 android:layout_width="match_parent"
-                android:layout_height="140dp">
+                android:layout_height="140dp"
+                android:layout_gravity="end|bottom"
+                android:layout_marginEnd="40dp"
+                android:layout_marginStart="40dp"
+                app:cardBackgroundColor="@android:color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -70,18 +69,18 @@
 
                     <EditText
                         android:id="@+id/fragment_faq_et_question"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
-                        android:padding="20dp"
-                        android:textSize="15dp"
-                        android:maxLines="1"
-                        android:textColor="@color/colorBackground"
-                        android:hint="Ask your question here"
-                        android:background="@drawable/box_bottom_line"
-                        android:textColorHint="@color/textColorSecondary"
-                        android:textAlignment="center"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginStart="20dp"
+                        android:background="@drawable/box_bottom_line"
+                        android:hint="Ask your question here"
+                        android:maxLines="1"
+                        android:padding="20dp"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorBackground"
+                        android:textColorHint="@color/textColorSecondary"
+                        android:textSize="15dp" />
 
                 </LinearLayout>
 
@@ -95,11 +94,11 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/activity_faq_fab_voice"
-        app:backgroundTint="@android:color/white"
-        app:fabSize="normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@android:color/white"
+        app:fabSize="normal"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|center"
         app:srcCompat="@drawable/ic_mic_black_24px" />

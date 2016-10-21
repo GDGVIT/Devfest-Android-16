@@ -18,6 +18,11 @@ public class TimelineAboutFragment extends Fragment {
 
 
     private TextView timelineAbout;
+    private String aboutText;
+
+    public static TimelineAboutFragment getNewInstance(){
+        return new TimelineAboutFragment();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,10 +35,17 @@ public class TimelineAboutFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_timeline_about, container, false);
         timelineAbout = (TextView)view.findViewById(R.id.timeline_about);
+        if(aboutText!=null){
+            setTimelineAbout(aboutText);
+        }
         return view;
     }
 
     public void setTimelineAbout(String text){
         timelineAbout.setText(text);
+    }
+
+    public void setAboutText(String text){
+        this.aboutText=text;
     }
 }
