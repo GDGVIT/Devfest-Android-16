@@ -61,7 +61,7 @@ public class DataHandler {
 
     /**
      * Private constructor. This class cannot be instantiated outside this class.
-     * All class attrbutes should be initialised here
+     * All class attributes should be initialised here
      *
      * @param context The context reference passed while instantiating
      */
