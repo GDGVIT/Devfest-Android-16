@@ -85,7 +85,6 @@ public class ConnectAPI {
 
     /**
      * Used for login through the API
-     *
      * @param email    The email address of the user
      * @param password Password of the user
      */
@@ -137,6 +136,13 @@ public class ConnectAPI {
     }
 
 
+    /**
+     * Used for fetching data for the timeline section through the API
+     * @param email The email address of the user
+     * @param auth_token The authentication token to be sent every time a request is sent to the server
+     */
+
+
     public void timeline(final String email, final String auth_token, final boolean isGuest) {
 
         String url = APIContract.getTimelineUrl();
@@ -184,6 +190,12 @@ public class ConnectAPI {
         AppController.getInstance().addToRequestQueue(postRequest);
     }
 
+    /**
+     * Used for fetching data for QR code through the API
+     * @param email The email address of the user
+     * @param authToken The authentication token to be sent every time a request is sent to the server
+     * @param codeData The data stored in the QR code
+     */
 
     public void qrCodeScan(final String email, final String authToken, final String codeData) {
 
@@ -216,6 +228,15 @@ public class ConnectAPI {
         AppController.getInstance().addToRequestQueue(qrAdminRequest);
 
     }
+
+
+    /**
+     * Used for fetching data for the speakers section through the API
+     * @param email    The email address of the user
+     * @param auth_token The authentication token to be sent every time a request is sent to the server
+     * @param isGuest true, if the user is logged in through the guest login
+     */
+
 
 
     public void speakers(final String email, final String auth_token, final boolean isGuest) {
@@ -266,6 +287,12 @@ public class ConnectAPI {
     }
 
 
+    /**
+     * Used for fetching data for the chatbot section through the API
+     * @param emailId    The email address of the user
+     * @param queryText The question asked
+     */
+
     public void chatBot(final String emailId, final String queryText) throws BindingException {
 
         if (mServerAuthenticateListener != null) {
@@ -311,6 +338,12 @@ public class ConnectAPI {
     }
 
 
+    /**
+     * Used for fetching data for the FAQ section through the API
+     * @param email    The email address of the user
+     * @param auth_token The authentication token to be sent every time a request is sent to the server
+     * @param isGuest true, if the user is logged in through the guest login
+     */
     public void faq(final String email, final String auth_token, final boolean isGuest) {
 
         String url = APIContract.getFAQUrl();
@@ -359,6 +392,11 @@ public class ConnectAPI {
         AppController.getInstance().addToRequestQueue(postRequest);
     }
 
+
+    /**
+     * Used for fetching data for the coupon section through the API
+     * @param auth_token The authentication token to be sent every time a request is sent to the server
+     */
     public void coupon(final String auth_token) {
 
         String url = APIContract.getCouponUrl();
@@ -405,6 +443,11 @@ public class ConnectAPI {
     }
 
 
+    /**
+     * Used for fetching data for the API's Assigned section through the API
+     * @param email    The email address of the user
+     * @param auth_token The authentication token to be sent every time a request is sent to the server
+     */
     public void apis(final String email, final String auth_token) {
 
         String url = APIContract.getAPIAssignedUrl();
@@ -448,6 +491,12 @@ public class ConnectAPI {
         AppController.getInstance().addToRequestQueue(postRequest);
     }
 
+    /**
+     * Used for fetching data for the APIs in the slot machine section
+     * @param email    The email address of the user
+     * @param auth_token The authentication token to be sent everytime a request is sent to the server
+     * @param isGuest true, if the user is logged in through the guest login
+     */
 
     public void allApis(final String email, final String auth_token, boolean isGuest) {
 
@@ -486,6 +535,14 @@ public class ConnectAPI {
         postRequest.setRetryPolicy(policy);
         AppController.getInstance().addToRequestQueue(postRequest);
     }
+
+    /**
+     * Used for fetching data for the slots section through the API
+     * @param email    The email address of the user
+     * @param auth_token The authentication token to be sent everytime a request is sent to the server
+     * @param slots slot1,slot2,slot3 (separated by comma)
+     * @param isWinner true, if the user has already won before
+     */
 
 
     public void slots(final String email, final String auth_token, final boolean isWinner, final String slots) {
@@ -531,7 +588,11 @@ public class ConnectAPI {
         AppController.getInstance().addToRequestQueue(postRequest);
     }
 
-
+    /**
+     * Used for using the logout functionality through the API
+     * @param email The email address of the user
+     * @param auth_token The authentication token to be sent every time a request is sent to the server
+     */
     public void logout(final String email, final String auth_token) {
 
         String url = APIContract.getLogoutUrl();
