@@ -49,6 +49,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * This Java class handles the FAQ Fragment. ChatBot UI and General FAQ code is present here.
+ *
+ * */
+
+
 public class FAQFragment extends Fragment implements
         RecognitionListener, View.OnClickListener, ConnectAPI.ServerAuthenticateListener, ViewUtils {
 
@@ -90,6 +96,11 @@ public class FAQFragment extends Fragment implements
         return rootView;
     }
 
+    /**
+     * Initializes all the views in the layout and {@link SpeechRecognizer} Class which is used to
+     * to record audio for speech to text conversions.
+     *
+     * */
     private void init(View rootView) {
         voiceFab = (FloatingActionButton) rootView.findViewById(R.id.activity_faq_fab_voice);
         rvExpanded = (RecyclerView) rootView.findViewById(R.id.content_scrolling_recyclerView);
@@ -111,6 +122,10 @@ public class FAQFragment extends Fragment implements
 
     }
 
+    /**
+     * This method is used to change icons on textchange for Chatbot and to add basic speech to text
+     * constraints to SpeechRecogniser instance.
+     * */
     private void setInit() {
 
         connectAPI.setServerAuthenticateListener(this);
@@ -162,6 +177,10 @@ public class FAQFragment extends Fragment implements
         });
     }
 
+    /**
+     * This method sets the adapter to the recyclerView if the data is available or calls the API
+     * in {@link ConnectAPI}
+     * */
     private void setData() {
         faqList = DataHandler.getInstance(getContext()).getFAQ();
         if (faqList != null && faqList.size() > 0) {
@@ -178,6 +197,10 @@ public class FAQFragment extends Fragment implements
         setData();
     }
 
+
+    /**
+     * The following methods are implemented when RecognitionListener is implemented.
+     * */
 
     @Override
     public void onReadyForSpeech(Bundle bundle) {
@@ -213,6 +236,9 @@ public class FAQFragment extends Fragment implements
         Log.i(TAG, "onError: " + i);
     }
 
+    /**
+     * We get an array of possible sentences framed from which only the first String is considered
+     * */
     @Override
     public void onResults(Bundle bundle) {
         ArrayList<String> matches = bundle
@@ -225,6 +251,10 @@ public class FAQFragment extends Fragment implements
         etQuestion.setText(matches.get(0));
     }
 
+    /**
+     * Method which creates the AlertDialog to display the chatbot response from our APIs.
+     * @param chatbotResult instance of ChatbotResult which contains the question and answer
+     * */
     public void displayChatbotResponse(ChatbotResult chatbotResult) {
 
         if (chatbotResult.getStatus() == ErrorDefinitions.CODE_SUCCESS) {
@@ -353,6 +383,10 @@ public class FAQFragment extends Fragment implements
         }
     }
 
+    /**
+     * checks whether permission is granted or not.
+     * @param permissions String array of all the permissions required in this context
+     * */
     private boolean hasPermissionsGranted(String[] permissions) {
         for (String permission : permissions) {
             if (ActivityCompat.checkSelfPermission(this.getActivity(), permission)
@@ -363,6 +397,11 @@ public class FAQFragment extends Fragment implements
         return true;
     }
 
+    /**
+     * This method creates an alert which explains the need for the audio permissions, only when the
+     * user has denied permission once in history. Otherwise, it simply requests the permission.
+     *
+     * */
     private void requestAudioPermissions() {
         if (shouldShowRequestPermissionRationale(AUDIO_PERMS)) {
             new ConfirmationDialog().show(fragmentManager, TAG);
@@ -371,6 +410,10 @@ public class FAQFragment extends Fragment implements
         }
     }
 
+
+    /**
+     * This returns whether a permission has been requested in the past or not.
+     * */
     private boolean shouldShowRequestPermissionRationale(String[] permissions) {
         for (String permission : permissions) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(), permission)) {
@@ -378,7 +421,6 @@ public class FAQFragment extends Fragment implements
             }
         }
         return false;
-    }
 
     @Override
     public void onRequestInitiated(int code) {
@@ -464,7 +506,11 @@ public class FAQFragment extends Fragment implements
 
     }
 
-    public static class ConfirmationDialog extends DialogFragment {
+        /**
+         * This is the custom dialog which will be used to explain the actual need of the permission
+         * when the user does not grant permission.
+         * */
+        public static class ConfirmationDialog extends DialogFragment {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
