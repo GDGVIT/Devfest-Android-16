@@ -28,6 +28,10 @@ import java.io.InputStream;
  * Created by AravindRaj on 10-10-2016.
  */
 
+/**
+ * This fragment displays image about a particular Phase in DevFest Timeline.
+ */
+
 public class TimelineDisplayFragment extends Fragment {
 
 
@@ -44,6 +48,14 @@ public class TimelineDisplayFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * View is created for the Fragment and Image is set.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,6 +67,11 @@ public class TimelineDisplayFragment extends Fragment {
         }
         return view;
     }
+
+    /**
+     * Used to set the image from url received from the server to ImageView using Glide library.
+     * @param url resource from where image can be fetched.
+     */
 
     public void setImage(String url){
         Log.i(TAG, "setImage: "+url);

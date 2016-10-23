@@ -53,6 +53,11 @@ public class TimelineAboutFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Set description to TextView.
+     * @param text description about the Phase.
+     */
+
     public void setTimelineAbout(String text){
         timelineAbout.setText(text);
     }
