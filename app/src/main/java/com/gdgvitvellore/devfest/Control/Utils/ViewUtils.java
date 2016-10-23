@@ -8,5 +8,5 @@ public interface ViewUtils {
 
     void showMessage(String message);
     void showMessage(String message, boolean showAction);
-    void showErrorDialog();
+    void showErrorDialog(String message);
 }

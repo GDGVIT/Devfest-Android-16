@@ -298,7 +298,7 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
     }
 
     @Override
-    public void showErrorDialog() {
+    public void showErrorDialog(String message) {
 
     }
 

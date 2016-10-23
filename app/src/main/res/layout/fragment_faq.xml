@@ -76,6 +76,7 @@
                         android:background="@drawable/box_bottom_line"
                         android:hint="Ask your question here"
                         android:maxLines="1"
+                        android:singleLine="true"
                         android:padding="20dp"
                         android:textAlignment="center"
                         android:textColor="@color/colorBackground"

@@ -260,6 +260,11 @@ public class DataHandler {
         }
     }
 
+    /**
+     * This function is used to save speakers data in realm database.
+     * @param speakers List of speakers in form {@link RealmList<Speakers}
+     */
+
     public void saveSpeakers(RealmList<Speakers> speakers) {
 
         if (speakers != null) {

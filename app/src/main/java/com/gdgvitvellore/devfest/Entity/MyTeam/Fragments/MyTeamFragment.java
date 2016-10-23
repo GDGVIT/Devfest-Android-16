@@ -162,7 +162,7 @@ public class MyTeamFragment extends Fragment implements ConnectAPI.ServerAuthent
     }
 
     @Override
-    public void showErrorDialog() {
+    public void showErrorDialog(String message) {
 
     }
 

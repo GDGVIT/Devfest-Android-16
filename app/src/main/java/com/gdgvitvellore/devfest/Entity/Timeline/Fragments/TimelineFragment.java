@@ -1,7 +1,6 @@
 package com.gdgvitvellore.devfest.Entity.Timeline.Fragments;
 
 
-import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -222,7 +220,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     }
 
     @Override
-    public void showErrorDialog() {
+    public void showErrorDialog(String message) {
 
     }
 

@@ -1,13 +1,11 @@
 package com.gdgvitvellore.devfest.Entity.Coupons.Fragment;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,27 +13,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
 
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
-import com.bumptech.glide.Glide;
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
 import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
 import com.gdgvitvellore.devfest.Entity.Actors.Coupon;
 import com.gdgvitvellore.devfest.Entity.Actors.CouponResult;
-import com.gdgvitvellore.devfest.Entity.Actors.Phase;
-import com.gdgvitvellore.devfest.Entity.Actors.TimelineResult;
-import com.gdgvitvellore.devfest.Entity.Timeline.Fragments.TimelineFragment;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -43,13 +29,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import java.util.List;
-
 import io.realm.RealmList;
 import link.fls.swipestack.SwipeStack;
-
-import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
-import static com.gdgvitvellore.devfest.gdgdevfest.R.id.root;
 
 /**
  * Created by Shuvam Ghosh on 10/12/2016.
@@ -255,7 +236,7 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
     }
 
     @Override
-    public void showErrorDialog() {
+    public void showErrorDialog(String message) {
 
     }
 

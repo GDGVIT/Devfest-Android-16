@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -29,9 +28,7 @@ import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
 import com.gdgvitvellore.devfest.Control.DataGenerator.AboutDataGenerator;
 import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
-import com.gdgvitvellore.devfest.Entity.Actors.API;
 import com.gdgvitvellore.devfest.Entity.Actors.Child;
-import com.gdgvitvellore.devfest.Entity.Actors.Member;
 import com.gdgvitvellore.devfest.Entity.Actors.Speakers;
 import com.gdgvitvellore.devfest.Entity.Actors.SpeakersResult;
 import com.gdgvitvellore.devfest.Entity.Actors.User;
@@ -40,8 +37,6 @@ import com.gdgvitvellore.devfest.Entity.Main.Activities.MainActivity;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -174,7 +169,7 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
     }
 
     @Override
-    public void showErrorDialog() {
+    public void showErrorDialog(String message) {
 
     }
 

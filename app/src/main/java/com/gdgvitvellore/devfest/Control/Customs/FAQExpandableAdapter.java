@@ -27,13 +27,13 @@ public class FAQExpandableAdapter extends ExpandableRecyclerAdapter<FAQQuestionV
 
     @Override
     public FAQQuestionViewHolder onCreateParentViewHolder(ViewGroup parentViewGroup) {
-        View questionView = layoutInflater.inflate(R.layout.list_item_faq_general_parent, parentViewGroup, false);
+        View questionView = layoutInflater.inflate(R.layout.fragment_faq_group, parentViewGroup, false);
         return new FAQQuestionViewHolder(questionView);
     }
 
     @Override
     public FAQAnswerViewHolder onCreateChildViewHolder(ViewGroup childViewGroup) {
-        View answerView = layoutInflater.inflate(R.layout.list_item_faq_general_child, childViewGroup, false);
+        View answerView = layoutInflater.inflate(R.layout.fragment_faq_group_item, childViewGroup, false);
         return new FAQAnswerViewHolder(answerView);
     }
 

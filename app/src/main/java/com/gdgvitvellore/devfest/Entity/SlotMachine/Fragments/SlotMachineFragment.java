@@ -416,7 +416,7 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
     }
 
     @Override
-    public void showErrorDialog() {
+    public void showErrorDialog(String message) {
 
     }
 
