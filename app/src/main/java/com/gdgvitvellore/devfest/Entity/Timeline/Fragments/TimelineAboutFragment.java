@@ -14,6 +14,10 @@ import com.gdgvitvellore.devfest.gdgdevfest.R;
  * Created by AravindRaj on 11-10-2016.
  */
 
+/**
+ * This fragment displays description about a particular Phase in DevFest Timeline.
+ */
+
 public class TimelineAboutFragment extends Fragment {
 
 
@@ -28,6 +32,14 @@ public class TimelineAboutFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
+    /**
+     * View for the fragment is created and description is set to TextView.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
 
     @Nullable
     @Override
