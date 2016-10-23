@@ -39,6 +39,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
  * Created by AravindRaj on 11-10-2016.
  */
 
+/**
+ * Authentication Activity class is used login a user inside the app.
+ */
+
 public class AuthenticationActivity extends AppCompatActivity implements ConnectAPI.ServerAuthenticateListener,
         View.OnClickListener, ViewUtils, GoogleApiClient.OnConnectionFailedListener {
 
@@ -67,6 +71,10 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
         setInit();
     }
 
+    /**
+     * This function is used to initialize all the views in the layout.
+     * {@link ConnectAPI} class instance is created and used to make network calls to the server and fetch data.
+     */
 
     private void init() {
         initializeGooglePlusVariables();
@@ -85,6 +93,10 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
         connectAPI = new ConnectAPI(this);
     }
 
+    /**
+     * This function is used to setup Signin using Google+.
+     */
+
     private void initializeGooglePlusVariables() {
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -96,6 +108,10 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
     }
+
+    /**
+     * This function is used to setup listeners and animations.
+     */
 
     private void setInit() {
         signin.setOnClickListener(this);
@@ -148,15 +164,28 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
         }
     }
 
+    /**
+     * This function is used to get email and password that user entered in EditText.
+     */
+
     private void getCredentials() {
         emailInput = email.getText().toString();
         passInput = password.getText().toString();
     }
 
+    /**
+     * This function is used for Signin using Google+.
+     */
+
     private void signInWithGPlus() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+
+    /**
+     * This function is used to disable the email and password (EditText) when network call is made.
+     * @param code Event code which specifies, call to which API has been made.
+     */
 
     @Override
     public void onRequestInitiated(int code) {
@@ -168,6 +197,12 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
 
     }
 
+    /**
+     * This function is executed when the request is completed and data is saved in Database through DataHandler if request is success.
+     * If the request is failed error message is displayed.
+     * @param code   Event code which specifies, call to which API has been made.
+     * @param result Result Object which needs to be casted to specific class as required
+     */
 
     @Override
     public void onRequestCompleted(int code, Object result) {
@@ -195,6 +230,12 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
         }
     }
 
+    /**
+     * This function is executed when server request returns invalid credentials.
+     * @param code    Event code which specifies, call to which API has been made.
+     * @param message Error description
+     */
+
     @Override
     public void onRequestError(int code, String message) {
 
@@ -210,6 +251,13 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
         }
 
     }
+
+    /**
+     * This function is executed when Signin using Google+ is completed and user is sent to {@link MainActivity}
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -235,11 +283,21 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
             super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Used to open Soft Input Keyboard to a particular view.
+     * @param view view to which focus is required.
+     */
+
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }
+
+    /**
+     * This function handles all click operations in this Activity.
+     * @param v
+     */
 
     @Override
     public void onClick(View v) {
@@ -262,12 +320,20 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
 
     }
 
+    /**
+     * Guest Login feature.
+     */
+
     private void guestLogin() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("status", Status.GUEST_USER);
         startActivity(intent);
         finish();
     }
+
+    /**
+     * This function is used to make network calls to the server and authenticate the user credentials.
+     */
 
     private void login() {
 
@@ -281,10 +347,20 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
         //Toast.makeText(this, emailInput.toString()+passInput.toString(),Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * This function is used to disable the signin button to avoid multiple network calls.
+     */
+
     private void disable() {
         signin.setClickable(false);
         signin.setText("Signing in...");
+        signin.setBackgroundColor(getResources().getColor(R.color.textColorSecondary));
     }
+
+    /**
+     * Shows the message passed in a Snackbar to the user.
+     * @param message which has to be shown in Snackbar
+     */
 
     @Override
     public void showMessage(String message) {
@@ -301,6 +377,11 @@ public class AuthenticationActivity extends AppCompatActivity implements Connect
     public void showErrorDialog(String message) {
 
     }
+
+    /**
+     * Used to Log the Error message when connection is failed.
+     * @param connectionResult result message received when connection is failed.
+     */
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
