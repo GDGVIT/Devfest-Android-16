@@ -36,6 +36,10 @@ import link.fls.swipestack.SwipeStack;
  * Created by Shuvam Ghosh on 10/12/2016.
  */
 
+/**
+ * This class is used to display all the coupons that the attendees get like Food, Goodies etc.
+ */
+
 public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackListener, ConnectAPI.ServerAuthenticateListener ,
         ViewUtils{
 
@@ -61,6 +65,9 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         return root;
     }
 
+    /**
+     * This function is used to fetch the data from server through {@link ConnectAPI} instance.
+     */
 
     private void fetchData() {
         connectApi.coupon(DataHandler.getInstance(getActivity()).getUser().getAuthToken());
@@ -72,6 +79,11 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         setData();
     }
 
+    /**
+     * This function is used to initialize all views in layout.
+     * @param root layout in which these views can be found.
+     */
+
     private void init(View root) {
         swipeStack = (SwipeStack)root.findViewById(R.id.swipeStack);
         qrCodeImage=(ImageView)root.findViewById(R.id.qr_code);
@@ -82,11 +94,19 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         connectApi = new ConnectAPI(getActivity());
     }
 
+    /**
+     * This function is used to initialize listeners.
+     */
+
     private void setInit() {
         swipeStack.setListener(this);
         swipeStack.setAllowedSwipeDirections(SwipeStack.SWIPE_DIRECTION_ONLY_RIGHT);
         connectApi.setServerAuthenticateListener(this);
     }
+
+    /**
+     * This function is used to set data to view. Make request to server and fetch details if data not found.
+     */
 
     private void setData() {
         //List<Coupon> coupons = DataHandler.getInstance(getContext()).getCoupons();
@@ -101,6 +121,11 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         //}
 
     }
+
+    /**
+     * A QR code is generated for each item. (Eg. Food, Goodies each will have one QR code)
+     * @param pos
+     */
 
     private void updateQrCode(int pos) {
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
@@ -119,6 +144,11 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
 
     }
 
+    /**
+     * Initialize behaviour when a card is swiped right.
+     * @param position
+     */
+
     @Override
     public void onViewSwipedToRight(int position) {
         adapter.add(couponsList.get(position), couponsList.size());
@@ -131,6 +161,11 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
 
     }
 
+    /**
+     * Show progress dialog when request is made to the server.
+     * @param code Event code which specifies, call to which API has been made.
+     */
+
     @Override
     public void onRequestInitiated(int code) {
 
@@ -140,6 +175,12 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         }
 
     }
+
+    /**
+     * Once the data is fetched from the server it's not saved in database since we need updated status every time.
+     * @param code   Event code which specifies, call to which API has been made.
+     * @param result Result Object which needs to be casted to specific class as required
+     */
 
     @Override
     public void onRequestCompleted(int code, Object result) {
@@ -159,12 +200,23 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
 
     }
 
+    /**
+     * List of coupons are fetched from the server and set to Swipe Stack (For stacked up cardview).
+     * @param coupons
+     */
+
     private void setData(RealmList<Coupon> coupons) {
         couponsList=coupons;
         adapter=new SwipeStackAdapter(coupons);
         swipeStack.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
+
+    /**
+     * On request failed message is shown to the user.
+     * @param code    Event code which specifies, call to which API has been made.
+     * @param message Error description
+     */
 
     @Override
     public void onRequestError(int code, String message) {
@@ -174,6 +226,9 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         }
     }
 
+    /**
+     * Adapter class for SwipeStack.
+     */
 
     public class SwipeStackAdapter extends BaseAdapter {
 
@@ -197,6 +252,14 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         public long getItemId(int position) {
             return position;
         }
+
+        /**
+         * Initialize local variables to views.
+         * @param position position in Stack
+         * @param convertView view layout where views can be found.
+         * @param parent Parent viewGroup.
+         * @return
+         */
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
@@ -224,6 +287,11 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
             mData.add(position,text);
         }
     }
+
+    /**
+     * To show message passed in Snackbar.
+     * @param message String data which has to shown in Snackbar
+     */
 
     @Override
     public void showMessage(String message) {
