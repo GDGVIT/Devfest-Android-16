@@ -42,7 +42,12 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
- * Created by Prince Bansal Local on 10/11/2016.
+ * Created by Prince Banselemal Local on 10/11/2016.
+ */
+
+/**
+ * This is About Fragment all information about the event like Speakers, Contact information are present in this Fragment.
+ * It implements {@link com.gdgvitvellore.devfest.Boundary.API.ConnectAPI.ServerAuthenticateListener} to listen to network calls and to get response from the server.
  */
 
 public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenticateListener, ViewUtils {
@@ -69,6 +74,11 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         return rootView;
     }
 
+    /**
+     * This function is used to initialise all variables created.
+     * @param rootView {@link View} instance of root layout of the fragment.
+     */
+
     private void init(View rootView) {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         speakersRecyclerView = (RecyclerView) rootView.findViewById(R.id.speakers_recycler_view);
@@ -86,6 +96,10 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         }
     }
 
+    /**
+     * This function is used to initialise all variables created.
+     */
+
 
     private void setInit() {
         //Set data for ExpandableListView in About page
@@ -95,11 +109,18 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         speakersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
+    /**
+     * This function is used to set all the data to recycler views.
+     */
 
     private void setData() {
         setSpeakers();
         setAboutData();
     }
+
+    /**
+     * This function is executed to set speakers details from Realm database through DataHandler.
+     */
 
     private void setSpeakers() {
         speakersList = DataHandler.getInstance(getContext()).getSpeakers();
@@ -114,6 +135,11 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         }
     }
 
+    /**
+     * This function is used to set the contact details and Patron's details of GDG.
+     * groupList contains List of {@link Group} which is set to mRecyclerView.
+     */
+
     private void setAboutData() {
 
         groupList.add(AboutDataGenerator.getPatrons(this));
@@ -123,6 +149,9 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         mRecyclerView.setAdapter(myAdapter);
     }
 
+    /**
+     * Every time when the Fragment starts setData function is called to set all necessary details.
+     */
 
     @Override
     public void onStart() {
@@ -130,12 +159,23 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         setData();
     }
 
+    /**
+     * When request is initiated this function is executed.
+     * @param code Event code which specifies, call to which API has been made.
+     */
+
     @Override
     public void onRequestInitiated(int code) {
         if (code == ConnectAPI.SPEAKERS_CODE) {
             progressDialog.show();
         }
     }
+
+    /**
+     * This function us executed when request to server is completed. If the result is not null saveSpeakers function is called in which the result is stored in database.
+     * @param code   Event code which specifies, call to which API has been made.
+     * @param result Result Object which needs to be casted to specific class as required
+     */
 
     @Override
     public void onRequestCompleted(int code, Object result) {
@@ -151,12 +191,22 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         }
     }
 
+    /**
+     * If the request returns any error showMessage is executed to show the error message to the user.
+     * @param code    Event code which specifies, call to which API has been made.
+     * @param message Error description
+     */
 
     @Override
     public void onRequestError(int code, String message) {
         progressDialog.cancel();
         showMessage(message);
     }
+
+    /**
+     * This function takes message of String data type as input parameter and shows a snack bar with that message.
+     * @param message
+     */
 
     @Override
     public void showMessage(String message) {
@@ -172,6 +222,10 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
     public void showErrorDialog(String message) {
 
     }
+
+    /**
+     * Group class is used for Expandable RecyclerView to set headings and child items.
+     */
 
     public class Group implements ParentListItem {
 
@@ -206,6 +260,11 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
             mItems = members;
         }
     }
+
+    /**
+     * This is Adapter class for Expandable recyclerview used in this fragment.
+     * Expandable Recycler Views are used for Contact, Patrons.
+     */
 
 
     public class MyAdapter extends ExpandableRecyclerAdapter<MyAdapter.GroupViewHolder, MyAdapter.ItemViewHolder> {
@@ -311,6 +370,10 @@ public class AboutFragment extends Fragment implements ConnectAPI.ServerAuthenti
         }
 
     }
+
+    /**
+     * This class is an Adapter for Speakers RecyclerView contains details about the speakers.
+     */
 
     public class SpeakersAdapter extends RecyclerView.Adapter<SpeakersAdapter.SpeakersViewHolder> {
 

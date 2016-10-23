@@ -61,6 +61,7 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         return root;
     }
 
+
     private void fetchData() {
         connectApi.coupon(DataHandler.getInstance(getActivity()).getUser().getAuthToken());
     }
@@ -155,7 +156,6 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
                 }
             }
         }
-
 
     }
 
