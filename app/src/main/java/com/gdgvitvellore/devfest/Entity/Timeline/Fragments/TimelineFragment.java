@@ -1,7 +1,6 @@
 package com.gdgvitvellore.devfest.Entity.Timeline.Fragments;
 
 
-import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -44,6 +42,14 @@ import java.util.List;
 
 /**
  * Created by Prince Bansal Local on 10/10/2016.
+ */
+
+/**
+ * This Fragment contains the UI action and code for Timeline Fragment.
+ * Timeline Fragment: Shows the timeline of the entire event and description about it.
+ * Implements {@link com.gdgvitvellore.devfest.Boundary.API.ConnectAPI.ServerAuthenticateListener} to listen to
+ * network calls and {@link android.support.v4.view.ViewPager.OnPageChangeListener} to listen when the page is
+ * changed from particular event in Timeline image to description.
  */
 
 public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthenticateListener, ViewUtils, ViewPager.OnPageChangeListener {
@@ -79,13 +85,18 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     private Phase currentPhase;
     private int currentPhasePosition = -1;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_timeline, container, false);
         return rootView;
     }
+
+    /**
+     * Used to call all the necessary functions when the view is created.
+     * @param view
+     * @param savedInstanceState
+     */
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -95,6 +106,14 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         setData();
     }
 
+    /**
+     * Initializes all the views in the layout and {@link TimelineDisplayFragment} consists the image of Particular event in Timeline,
+     * {@link TimelineAboutFragment} consists description of a particular event in the Timeline.
+     * {@link ConnectAPI} instance is initialized to make all network calls necessary for this fragment.
+     * @param view consists the view where all this UI elements are created.
+     * phasePagerAdapter is for {@link TimelineAboutFragment} and {@link TimelineDisplayFragment} to display the Phase details.
+     * Phase is a particular event in the Timeline.
+     */
 
     private void init(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.phases_list);
@@ -121,6 +140,10 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         }
     }
 
+    /**
+     * Initializes all the listeners and setup recyclerview and view pager.
+     */
+
     private void setInit() {
         connectAPI.setServerAuthenticateListener(this);
 
@@ -131,6 +154,12 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         phaseDisplayPager.setPageTransformer(false, new VerticalPageTransformer());
         phaseDisplayPager.addOnPageChangeListener(this);
     }
+
+    /**
+     * This function is used to setup the data for RecyclerView and scroll to the current Phase.
+     * All data are fetched through DataHandler from Realm database using getPhases method.
+     * If data is not found or not stored network call is made to fetch the data.
+     */
 
     private void setData() {
 
@@ -152,6 +181,10 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         }
     }
 
+    /**
+     * This function is used to find the current running phase in Timeline.
+     */
+
     private void refreshPhases() {
         for (int i = 0; i < phaseList.size(); i++) {
             Phase p = phaseList.get(i);
@@ -165,16 +198,28 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         }
     }
 
+    /**
+     * This function is used to setup appropriate phase description and image for the selected phase.
+     */
+
     private void refreshPages() {
         timelineDisplayFragment.setImage(currentPhase.getImageUrl());
         timelineAboutFragment.setAboutText(currentPhase.getDescription());
     }
 
+    /**
+     * This function is used to change the title to current phase. Title can be found below the Toolbar
+     */
 
     private void refreshCurrentEventTitles() {
         title.setText(currentPhase.getTitle());
         timer.setText(TimelineAlgos.getTime(currentPhase.getStartTime()) + " - " + TimelineAlgos.getTime(currentPhase.getEndTime()));
     }
+
+    /**
+     * Used to set the Progress dialog when network call is made.
+     * @param code Event code which specifies, call to which API has been made.
+     */
 
     @Override
     public void onRequestInitiated(int code) {
@@ -183,6 +228,13 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
             progressDialog.show();
         }
     }
+
+    /**
+     * Used to save the data to Database through DataHandler which is received from the server.
+     * And call setdata() method to set data to views once the data is saved successfully.
+     * @param code   Event code which specifies, call to which API has been made.
+     * @param result Result Object which needs to be casted to specific class as required
+     */
 
     @Override
     public void onRequestCompleted(int code, Object result) {
@@ -203,6 +255,12 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
     }
 
+    /**
+     * Used to show error message to the user when there is a error while making request to the server.
+     * @param code    Event code which specifies, call to which API has been made.
+     * @param message Error description
+     */
+
     @Override
     public void onRequestError(int code, String message) {
         progressDialog.cancel();
@@ -210,6 +268,11 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
             showMessage(message);
         }
     }
+
+    /**
+     * Used to show a snackbar message which is passed as a parameter.
+     * @param message Message which has to be displayed.
+     */
 
     @Override
     public void showMessage(String message) {
@@ -222,7 +285,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     }
 
     @Override
-    public void showErrorDialog() {
+    public void showErrorDialog(String message) {
 
     }
 
@@ -230,6 +293,12 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
     }
+
+    /**
+     * This function is used to indicate which fragment is currently active.
+     * {@link TimelineAboutFragment} and {@link TimelineDisplayFragment} are two fragments.
+     * @param position
+     */
 
     @Override
     public void onPageSelected(int position) {
@@ -248,6 +317,10 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
 
     }
 
+    /**
+     * This class is the ViewPagerAdapter for the fragment which shows detailed information about a particular Phase.
+     * {@link TimelineAboutFragment} and {@link TimelineDisplayFragment} instances are used for the same.
+     */
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
@@ -276,6 +349,10 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         }
 
     }
+
+    /**
+     * This class is used to setup the RecyclerView which shows the information about the list of Phases.
+     */
 
     public class PhasesAdapter extends RecyclerView.Adapter<PhasesAdapter.MyViewHolder> {
         private List<Phase> phasesList;
@@ -331,6 +408,10 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
         }
 
 
+        /**
+         * Used to handle the click events on RecyclerView items.
+         */
+
 
         public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -367,10 +448,7 @@ public class TimelineFragment extends Fragment implements ConnectAPI.ServerAuthe
             }
 
         }
-
-
     }
-
 }
 
 

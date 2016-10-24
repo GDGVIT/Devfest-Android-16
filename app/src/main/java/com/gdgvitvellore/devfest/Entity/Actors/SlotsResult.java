@@ -17,7 +17,7 @@ public class SlotsResult extends RealmObject {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(int status){
         this.status = status;
     }
 

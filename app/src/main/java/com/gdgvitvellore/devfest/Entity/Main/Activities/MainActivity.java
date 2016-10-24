@@ -137,23 +137,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (i == lastFragmentSelected) {
             return;
         } else {
+            Bundle args=new Bundle();
+            args.putInt("position",i);
             lastFragmentSelected = i;
             if (ISGUEST) {
                 switch (i) {
                     case 0:
                         Fragment timelineFragment = new TimelineFragment();
+                        timelineFragment.setArguments(args);
                         manager.beginTransaction().replace(R.id.fragment_holder, timelineFragment, TimelineFragment.class.getSimpleName()).commit();
                         break;
                     case 1:
                         Fragment slotMachineFragment = new SlotMachineFragment();
+                        slotMachineFragment.setArguments(args);
                         manager.beginTransaction().replace(R.id.fragment_holder, slotMachineFragment, SlotMachineFragment.class.getSimpleName()).commit();
                         break;
                     case 2:
                         Fragment faqFragment = new FAQFragment();
+                        faqFragment.setArguments(args);
                         manager.beginTransaction().replace(R.id.fragment_holder, faqFragment, FAQFragment.class.getSimpleName()).commit();
                         break;
                     case 3:
                         Fragment aboutFragment = new AboutFragment();
+                        aboutFragment.setArguments(args);
                         manager.beginTransaction().replace(R.id.fragment_holder, aboutFragment, AboutFragment.class.getSimpleName()).commit();
                         break;
                     case 4:
@@ -167,26 +173,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 switch (i) {
                     case 0:
                         Fragment timelineFragment = new TimelineFragment();
+                        timelineFragment.setArguments(args);
                         manager.beginTransaction().replace(R.id.fragment_holder, timelineFragment, TimelineFragment.class.getSimpleName()).commit();
                         break;
                     case 1:
                         Fragment myTeamFragment = new MyTeamFragment();
+                        myTeamFragment.setArguments(args);
                         manager.beginTransaction().replace(R.id.fragment_holder, myTeamFragment, MyTeamFragment.class.getSimpleName()).commit();
                         break;
                     case 2:
                         Fragment slotMachineFragment = new SlotMachineFragment();
+                        slotMachineFragment.setArguments(args);
                         manager.beginTransaction().replace(R.id.fragment_holder, slotMachineFragment, SlotMachineFragment.class.getSimpleName()).commit();
                         break;
                     case 3:
                         Fragment couponsFragment = new CouponsFragment();
+                        couponsFragment.setArguments(args);
                         manager.beginTransaction().replace(R.id.fragment_holder, couponsFragment, CouponsFragment.class.getSimpleName()).commit();
                         break;
                     case 4:
                         Fragment faqFragment = new FAQFragment();
+                        faqFragment.setArguments(args);
                         manager.beginTransaction().replace(R.id.fragment_holder, faqFragment, FAQFragment.class.getSimpleName()).commit();
                         break;
                     case 5:
                         Fragment aboutFragment = new AboutFragment();
+                        aboutFragment.setArguments(args);
                         manager.beginTransaction().replace(R.id.fragment_holder, aboutFragment, AboutFragment.class.getSimpleName()).commit();
                         break;
                     case 6:
@@ -274,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void showErrorDialog() {
+    public void showErrorDialog(String message) {
 
     }
 

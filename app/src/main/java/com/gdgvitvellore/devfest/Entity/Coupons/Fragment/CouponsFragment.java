@@ -1,13 +1,11 @@
 package com.gdgvitvellore.devfest.Entity.Coupons.Fragment;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,27 +13,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
 
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
-import com.bumptech.glide.Glide;
 import com.gdgvitvellore.devfest.Boundary.API.ConnectAPI;
 import com.gdgvitvellore.devfest.Boundary.Handlers.DataHandler;
 import com.gdgvitvellore.devfest.Control.Contracts.ErrorDefinitions;
 import com.gdgvitvellore.devfest.Control.Utils.ViewUtils;
 import com.gdgvitvellore.devfest.Entity.Actors.Coupon;
 import com.gdgvitvellore.devfest.Entity.Actors.CouponResult;
-import com.gdgvitvellore.devfest.Entity.Actors.Phase;
-import com.gdgvitvellore.devfest.Entity.Actors.TimelineResult;
-import com.gdgvitvellore.devfest.Entity.Timeline.Fragments.TimelineFragment;
 import com.gdgvitvellore.devfest.gdgdevfest.R;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -43,16 +29,15 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import java.util.List;
-
 import io.realm.RealmList;
 import link.fls.swipestack.SwipeStack;
 
-import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
-import static com.gdgvitvellore.devfest.gdgdevfest.R.id.root;
-
 /**
  * Created by Shuvam Ghosh on 10/12/2016.
+ */
+
+/**
+ * This class is used to display all the coupons that the attendees get like Food, Goodies etc.
  */
 
 public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackListener, ConnectAPI.ServerAuthenticateListener ,
@@ -80,6 +65,10 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         return root;
     }
 
+    /**
+     * This function is used to fetch the data from server through {@link ConnectAPI} instance.
+     */
+
     private void fetchData() {
         connectApi.coupon(DataHandler.getInstance(getActivity()).getUser().getAuthToken());
     }
@@ -89,6 +78,11 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         super.onViewCreated(view, savedInstanceState);
         setData();
     }
+
+    /**
+     * This function is used to initialize all views in layout.
+     * @param root layout in which these views can be found.
+     */
 
     private void init(View root) {
         swipeStack = (SwipeStack)root.findViewById(R.id.swipeStack);
@@ -100,11 +94,19 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         connectApi = new ConnectAPI(getActivity());
     }
 
+    /**
+     * This function is used to initialize listeners.
+     */
+
     private void setInit() {
         swipeStack.setListener(this);
         swipeStack.setAllowedSwipeDirections(SwipeStack.SWIPE_DIRECTION_ONLY_RIGHT);
         connectApi.setServerAuthenticateListener(this);
     }
+
+    /**
+     * This function is used to set data to view. Make request to server and fetch details if data not found.
+     */
 
     private void setData() {
         //List<Coupon> coupons = DataHandler.getInstance(getContext()).getCoupons();
@@ -119,6 +121,11 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         //}
 
     }
+
+    /**
+     * A QR code is generated for each item. (Eg. Food, Goodies each will have one QR code)
+     * @param pos
+     */
 
     private void updateQrCode(int pos) {
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
@@ -137,6 +144,11 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
 
     }
 
+    /**
+     * Initialize behaviour when a card is swiped right.
+     * @param position
+     */
+
     @Override
     public void onViewSwipedToRight(int position) {
         adapter.add(couponsList.get(position), couponsList.size());
@@ -149,6 +161,11 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
 
     }
 
+    /**
+     * Show progress dialog when request is made to the server.
+     * @param code Event code which specifies, call to which API has been made.
+     */
+
     @Override
     public void onRequestInitiated(int code) {
 
@@ -158,6 +175,12 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         }
 
     }
+
+    /**
+     * Once the data is fetched from the server it's not saved in database since we need updated status every time.
+     * @param code   Event code which specifies, call to which API has been made.
+     * @param result Result Object which needs to be casted to specific class as required
+     */
 
     @Override
     public void onRequestCompleted(int code, Object result) {
@@ -175,8 +198,12 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
             }
         }
 
-
     }
+
+    /**
+     * List of coupons are fetched from the server and set to Swipe Stack (For stacked up cardview).
+     * @param coupons
+     */
 
     private void setData(RealmList<Coupon> coupons) {
         couponsList=coupons;
@@ -184,6 +211,12 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         swipeStack.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
+
+    /**
+     * On request failed message is shown to the user.
+     * @param code    Event code which specifies, call to which API has been made.
+     * @param message Error description
+     */
 
     @Override
     public void onRequestError(int code, String message) {
@@ -193,6 +226,9 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         }
     }
 
+    /**
+     * Adapter class for SwipeStack.
+     */
 
     public class SwipeStackAdapter extends BaseAdapter {
 
@@ -216,6 +252,14 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         public long getItemId(int position) {
             return position;
         }
+
+        /**
+         * Initialize local variables to views.
+         * @param position position in Stack
+         * @param convertView view layout where views can be found.
+         * @param parent Parent viewGroup.
+         * @return
+         */
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
@@ -244,6 +288,11 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
         }
     }
 
+    /**
+     * To show message passed in Snackbar.
+     * @param message String data which has to shown in Snackbar
+     */
+
     @Override
     public void showMessage(String message) {
         Snackbar.make(root, message, Snackbar.LENGTH_SHORT).show();
@@ -255,7 +304,7 @@ public class CouponsFragment extends Fragment implements SwipeStack.SwipeStackLi
     }
 
     @Override
-    public void showErrorDialog() {
+    public void showErrorDialog(String message) {
 
     }
 

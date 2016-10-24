@@ -27,6 +27,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -48,6 +49,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+/**
+ * This Java class handles the FAQ Fragment. ChatBot UI and General FAQ code is present here.
+ */
+
 
 public class FAQFragment extends Fragment implements
         RecognitionListener, View.OnClickListener, ConnectAPI.ServerAuthenticateListener, ViewUtils {
@@ -71,12 +77,8 @@ public class FAQFragment extends Fragment implements
     private boolean isOn = false;
     private int stateId = 101;
 
-    public String[] AUDIO_PERMS = {
-            Manifest.permission.RECORD_AUDIO,
-    };
-    private String email,auth;
-
-    private FaqFragmentManager fragmentManager;
+    public String AUDIO_PERMS = Manifest.permission.RECORD_AUDIO;
+    private String email, auth;
 
     private ConnectAPI connectAPI;
 
@@ -90,6 +92,10 @@ public class FAQFragment extends Fragment implements
         return rootView;
     }
 
+    /**
+     * Initializes all the views in the layout and {@link SpeechRecognizer} Class which is used to
+     * to record audio for speech to text conversions.
+     */
     private void init(View rootView) {
         voiceFab = (FloatingActionButton) rootView.findViewById(R.id.activity_faq_fab_voice);
         rvExpanded = (RecyclerView) rootView.findViewById(R.id.content_scrolling_recyclerView);
@@ -101,19 +107,37 @@ public class FAQFragment extends Fragment implements
         etQuestion = (EditText) rootView.findViewById(R.id.fragment_faq_et_question);
         connectAPI = new ConnectAPI(getActivity());
 
-        fragmentManager = new FaqFragmentManager();
         recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
-        if(!MainActivity.ISGUEST){
-            email=DataHandler.getInstance(getContext()).getUser().getEmail();
-            auth=DataHandler.getInstance(getContext()).getUser().getAuthToken();
+        if (!MainActivity.ISGUEST) {
+            email = DataHandler.getInstance(getContext()).getUser().getEmail();
+            auth = DataHandler.getInstance(getContext()).getUser().getAuthToken();
         }
 
     }
 
+    /**
+     * This method is used to change icons on textchange for Chatbot and to add basic speech to text
+     * constraints to SpeechRecogniser instance.
+     */
     private void setInit() {
 
         connectAPI.setServerAuthenticateListener(this);
+        etQuestion.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_RIGHT = 2;
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (etQuestion.getCompoundDrawables()[DRAWABLE_RIGHT] != null)
+                        if (event.getRawX() >= (etQuestion.getRight() - etQuestion.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                            etQuestion.setText("");
+                            return true;
+                        }
+                }
+                return false;
+            }
+        });
+        etQuestion.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         etQuestion.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -125,10 +149,13 @@ public class FAQFragment extends Fragment implements
                 if (charSequence.length() > 0) {
                     stateId = 201;
                     voiceFab.setImageResource(R.drawable.ic_done);
+                    etQuestion.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0);
                     //change button
                 } else {
                     stateId = 101;
                     //set it back to microphone
+
+                    etQuestion.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                     voiceFab.setImageResource(R.drawable.ic_mic_black_24px);
                 }
             }
@@ -162,6 +189,10 @@ public class FAQFragment extends Fragment implements
         });
     }
 
+    /**
+     * This method sets the adapter to the recyclerView if the data is available or calls the API
+     * in {@link ConnectAPI}
+     */
     private void setData() {
         faqList = DataHandler.getInstance(getContext()).getFAQ();
         if (faqList != null && faqList.size() > 0) {
@@ -178,6 +209,10 @@ public class FAQFragment extends Fragment implements
         setData();
     }
 
+
+    /**
+     * The following methods are implemented when RecognitionListener is implemented.
+     */
 
     @Override
     public void onReadyForSpeech(Bundle bundle) {
@@ -213,6 +248,9 @@ public class FAQFragment extends Fragment implements
         Log.i(TAG, "onError: " + i);
     }
 
+    /**
+     * We get an array of possible sentences framed from which only the first String is considered
+     */
     @Override
     public void onResults(Bundle bundle) {
         ArrayList<String> matches = bundle
@@ -225,6 +263,44 @@ public class FAQFragment extends Fragment implements
         etQuestion.setText(matches.get(0));
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onPartialResults(Bundle bundle) {
+        String text;
+
+        ArrayList<String> matches = bundle
+                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+
+        Log.i(TAG, "onPartialResults: sieze" + matches.size());
+        for (String result : matches) {
+
+            text = result.toLowerCase();
+            etQuestion.setText(text);
+            Log.i(TAG, "onPartialResults: " + text);
+
+        }
+    }
+
+    @Override
+    public void onEvent(int i, Bundle bundle) {
+
+    }
+
+    /**
+     * Method which creates the AlertDialog to display the chatbot response from our APIs.
+     *
+     * @param chatbotResult instance of ChatbotResult which contains the question and answer
+     */
     public void displayChatbotResponse(ChatbotResult chatbotResult) {
 
         if (chatbotResult.getStatus() == ErrorDefinitions.CODE_SUCCESS) {
@@ -260,37 +336,6 @@ public class FAQFragment extends Fragment implements
 
     }
 
-
-    @Override
-    public void onPause() {
-        speechRecognizer.destroy();
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onPartialResults(Bundle bundle) {
-        String text;
-
-        ArrayList<String> matches = bundle
-                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-
-        for (String result : matches) {
-
-            text = result.toLowerCase();
-            Log.i(TAG, "onPartialResults: " + text);
-        }
-    }
-
-    @Override
-    public void onEvent(int i, Bundle bundle) {
-
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -303,6 +348,7 @@ public class FAQFragment extends Fragment implements
                         if (!isOn || speechRecognizer != null) {
                             Log.i(TAG, "onClick: IS ON NOW");
                             speechRecognizer.startListening(recognizerIntent);
+
                             voiceFab.setImageResource(R.drawable.ic_record_voice_over);
                         } else {
                             Log.i(TAG, "onClick: IS OFF NOW");
@@ -326,58 +372,46 @@ public class FAQFragment extends Fragment implements
         }
     }
 
+    /**
+     * checks whether permission is granted or not.
+     *
+     * @param permission String of the permission required in this context
+     */
+
+    private boolean hasPermissionsGranted(String permission) {
+        return ActivityCompat.checkSelfPermission(this.getActivity(), permission)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * This method creates an alert which explains the need for the audio permissions, only when the
+     * user has denied permission once in history. Otherwise, it simply requests the permission.
+     */
+    private void requestAudioPermissions() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), AUDIO_PERMS)) {
+            showPermissionRationale();
+        } else {
+            ActivityCompat.requestPermissions(this.getActivity(), new String[]{AUDIO_PERMS}, REQUEST_AUDIO_PERMS);
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        int flag = 0;
 
         if (requestCode == REQUEST_AUDIO_PERMS) {
-            if (grantResults.length == AUDIO_PERMS.length) {
+            if (grantResults.length == 1) {
                 for (int result : grantResults) {
                     if (result != PackageManager.PERMISSION_GRANTED) {
-                        ErrorDialog.newInstance(getString(R.string.permission_request))
-                                .show(fragmentManager, TAG);
+                        showErrorDialog(getString(R.string.permission_request));
                         break;
                     }
-                    flag++;
                 }
-                speechRecognizer.cancel();
-                speechRecognizer.stopListening();
-                speechRecognizer.setRecognitionListener(this);
-                voiceFab.performClick();
             } else {
-                ErrorDialog.newInstance(getString(R.string.permission_request))
-                        .show(fragmentManager, TAG);
+                showErrorDialog(getString(R.string.permission_request));
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-    }
-
-    private boolean hasPermissionsGranted(String[] permissions) {
-        for (String permission : permissions) {
-            if (ActivityCompat.checkSelfPermission(this.getActivity(), permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void requestAudioPermissions() {
-        if (shouldShowRequestPermissionRationale(AUDIO_PERMS)) {
-            new ConfirmationDialog().show(fragmentManager, TAG);
-        } else {
-            ActivityCompat.requestPermissions(this.getActivity(), AUDIO_PERMS, REQUEST_AUDIO_PERMS);
-        }
-    }
-
-    private boolean shouldShowRequestPermissionRationale(String[] permissions) {
-        for (String permission : permissions) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(), permission)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -432,60 +466,35 @@ public class FAQFragment extends Fragment implements
     }
 
     @Override
-    public void showErrorDialog() {
+    public void showErrorDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                .setTitle("Error")
+                .setMessage(message)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                });
+        builder.create().show();
     }
 
-    public static class ErrorDialog extends DialogFragment {
+    /**
+     * This is the custom dialog which will be used to explain the actual need of the permission
+     * when the user does not grant permission.
+     */
+    private void showPermissionRationale() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                .setTitle("Access to microphone")
+                .setMessage(R.string.permission_request)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-        private static final String ARG_MESSAGE = "message";
-
-        public static ErrorDialog newInstance(String message) {
-            ErrorDialog dialog = new ErrorDialog();
-            Bundle args = new Bundle();
-            args.putString(ARG_MESSAGE, message);
-            dialog.setArguments(args);
-            return dialog;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Activity activity = getActivity();
-            return new AlertDialog.Builder(activity)
-                    .setMessage(getArguments().getString(ARG_MESSAGE))
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                        }
-                    })
-                    .create();
-
-        }
-
-    }
-
-    public static class ConfirmationDialog extends DialogFragment {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Activity parent = getActivity();
-            return new AlertDialog.Builder(getActivity())
-                    .setMessage(R.string.permission_request)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(parent, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    REQUEST_AUDIO_PERMS);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                    .create();
-        }
-
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{AUDIO_PERMS},
+                                REQUEST_AUDIO_PERMS);
+                    }
+                });
+        builder.create().show();
     }
 }
