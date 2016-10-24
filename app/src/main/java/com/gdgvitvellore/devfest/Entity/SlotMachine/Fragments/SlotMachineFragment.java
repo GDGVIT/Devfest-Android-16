@@ -48,6 +48,14 @@ import java.util.Random;
 
 /**
  * Created by Shuvam Ghosh on 10/11/2016.
+ *
+ */
+
+/**
+ * Class for showing and implementing the interactive Slot Machine which the user can play with.
+ *
+ * The slot was intended to assign teams with APIs with which they as supposed to work as per the rules of the Hackathon
+ * This class can be modified according to the requirements.
  */
 
 public class SlotMachineFragment extends Fragment implements View.OnTouchListener, ConnectAPI.ServerAuthenticateListener, ViewUtils {
@@ -66,7 +74,6 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
     private int sec = 0;
     private PointF downPT = new PointF();
     private PointF startPT = new PointF();
-
 
     private CountDownTimer timer;
     private ConnectAPI connectAPI;
@@ -132,6 +139,11 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
         }
     }
 
+    /**
+     * Getting the list pf API names and Setting the list of APIs
+     * along with which a timer is set to disable the trigger for a certain amount of time starting from the current time immediately
+     * after the slot machine stops
+     */
     private void setData() {
         apiList = DataHandler.getInstance(getContext()).getAllApis();
 
@@ -151,6 +163,9 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
         }
     }
 
+    /**
+     * Randomly assigning API logos to the three slots.
+     */
     private void prepareBitmaps() {
         trigger.setEnabled(false);
         bitmapArray = new Bitmap[apiList.size()];
@@ -162,6 +177,14 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
         slot3.setImageBitmap(bitmapArray[new Random().nextInt(bitmapArray.length - 1)]);
         showMessage("Slot machine ready");
     }
+
+    /**
+     * This function
+     * 1.) shows the sliding animation of logos in and out of the slots.
+     * 2.) Uses CountDownTimer class to run for 10 secs and after every 100 milliseconds it randomly chooses an
+     *      index from the apiList.
+     *
+     */
 
     private void animateSlots() {
 
@@ -186,7 +209,8 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
             @Override
             public void onTick(long l) {
 
-                if (l > 6000 && l <= 10000) {
+                if (l > 6000 && l <= 10000) //For the first 4 seconds
+                {
                     i = i >= bitmapArray.length - 1 ? 0 : i + 1;
                     j = j >= bitmapArray.length - 1 ? 0 : j + 1;
                     k = k >= bitmapArray.length - 1 ? 0 : k + 1;
@@ -207,6 +231,10 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
                 }
             }
 
+
+            /**
+             * Display the allotted API names below each slots after the slot machine stops
+             */
             @Override
             public void onFinish() {
                 startWaitTimer(PrivateContract.SLOT_WAIT_TIME);
@@ -223,6 +251,13 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
         }.start();
     }
 
+
+    /**
+     * Fading in and out of the Digital Clock that appears after the stopping of Slot Machine.
+     * Its waiting time is decided to be 30mins after the machine stops before which the trigger is locked.
+     *
+     * @param waitTime
+     */
     private void startWaitTimer(long waitTime) {
         trigger.setEnabled(false);
         if (timer != null) {
@@ -263,12 +298,24 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
         }.start();
     }
 
+    /**
+     *
+     * Handling touch and motion events of the slot trigger.
+     * It includes:
+     *          1. Initializing the initial position of the triger when the user touches it.
+     *          2. Update the trigger position as it moves.
+     *          3. Restricting the motion of the trigger only in the vertical orientation within a range of coordinates.
+     *
+     * @param v
+     * @param event
+     * @return
+     */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
         int eid = event.getAction();
         switch (eid) {
-            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_DOWN:  //When the trigger is touched.
                 ObjectAnimations.fadeOutAnimation(apiNamesHolder).start();
                 ObjectAnimations.fadeOutAnimation(arrowLayout).start();
                 downPT.x = event.getX();
@@ -286,7 +333,7 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
                     startPT = new PointF(trigger.getX(), trigger.getY());
                 }
                 break;
-            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_UP: //After the trigger is released.
                 Animator animator = ObjectAnimations.flickerAnimation(trigger);
                 animator.addListener(new Animator.AnimatorListener() {
                     @Override
@@ -296,7 +343,7 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
 
                     @Override
                     public void onAnimationEnd(Animator animator) {
-                        ObjectAnimations.fadeInAnimation(arrowLayout).start();
+                        ObjectAnimations.fadeInAnimation(arrowLayout).start();  //Fading in of the arrows below the trigger
                         arrowLayout.setVisibility(View.VISIBLE);
                     }
 
@@ -331,6 +378,10 @@ public class SlotMachineFragment extends Fragment implements View.OnTouchListene
         }
     }
 
+    /**
+     *
+     * @param code Event code which specifies, call to which API has been made.
+     */
     @Override
     public void onRequestInitiated(int code) {
         if (code == ConnectAPI.ALL_APIS_CODE) {

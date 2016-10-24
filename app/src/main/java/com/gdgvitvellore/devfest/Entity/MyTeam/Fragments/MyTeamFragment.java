@@ -255,6 +255,7 @@ public class MyTeamFragment extends Fragment implements ConnectAPI.ServerAuthent
                 mGroupTextView.setText(group.getName());
             }
         }
+
         public class ItemViewHolder extends ChildViewHolder {
 
             private TextView mItemTextView;
